@@ -2,7 +2,7 @@
   --primary-color: #1e1e2e;
   --text-color: #cdd6f4;
   --accent-color: #f38ba8;
-  --hovor-color: #313244;
+  --hover-color: #313244;
 }
 * {
   margin: 0;
@@ -17,7 +17,7 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   background-color: var(--primary-color);
-  display: gid;
+  display: grid;
   grid-template-rows: auto 1fr auto;
 }
 main {
@@ -35,7 +35,7 @@ main p {
 }
 nav {
   background-color: var(--primary-color);
-  border-bottom: 1px solid var(--hovor-color);
+  border-bottom: 1px solid var(--hover-color);
 }
 nav li {
   display: flex;
@@ -55,7 +55,7 @@ nav a {
   transition: background-color 0.3s ease;
 }
 nav a:hover {
-  background-color: var(--hovor-color);
+  background-color: var(--hover-color);
 }
 nav a.active-link {
   border-bottom: 2px solid var(--text-color);
@@ -89,7 +89,7 @@ nav a.accent-link {
     height: 100vh;
     width: min(100%, 15em);
     z-index: 10;
-    border-left: 1px solid var(--hovor-color);
+    border-left: 1px solid var(--hover-color);
     transition: right 0.3s ease;
   }
   nav.show {
