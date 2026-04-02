@@ -1,0 +1,27 @@
+{
+  "name": "zartagswritings",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Grottenolm2702/ZartagsWritings#readme",
+  "bugs": {
+    "url": "https://github.com/Grottenolm2702/ZartagsWritings/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grottenolm2702/ZartagsWritings.git"
+  },
+  "license": "",
+  "author": "Ronny Wittmer, Melissa Armbruster",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "prettier": "^3.8.1",
+    "vite": "^8.0.3"
+  }
+}
