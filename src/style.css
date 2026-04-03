@@ -76,6 +76,7 @@ nav a.accent-link {
   border: none;
   padding: 1em;
   cursor: pointer;
+  justify-self: start;
 }
 @media screen and (max-width: 800px) {
   #open-sidebar-button,
