@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Zartags Writings</title>
-    <link href="src/style.css" rel="stylesheet" />
-    <script src="src/script.js" defer></script>
+    <link href="style.css" rel="stylesheet" />
+    <script src="script.js" defer></script>
   </head>
   <body>
     <button
@@ -62,31 +62,51 @@
           </button>
         </li>
         <li class="home-li">
-          <a class="active-link" aria-current="page" href="index.html">Home</a>
+          <a href="../index.html">Home</a>
         </li>
-        <li><a href="./src/pc.html">Player Character</a></li>
-        <li><a href="./src/about.html">About</a></li>
-        <li><a class="accent-link" href="./src/login.html">Login</a></li>
+        <li>
+          <a class="active-link" aria-current="page" href="pc.html"
+            >Player Character</a
+          >
+        </li>
+        <li><a href="about.html">About</a></li>
+        <li><a class="accent-link" href="login.html">Login</a></li>
       </ul>
     </nav>
 
     <div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>
     <main>
-      <h1>Zartags Writings</h1>
+      <h1>Player Character</h1>
+      <div class="content-header">
+        <div class="content-header-item">
+          <span class="label">Name:</span>
+          <span class="value">Melissa</span>
+        </div>
+        <div class="content-header-item">
+          <span class="label">Class:</span>
+          <span class="value">Fighter</span>
+        </div>
+        <div class="content-header-item">
+          <span class="label">Race:</span>
+          <span class="value">Tiefling</span>
+        </div>
+      </div>
       <div class="items-grid">
-        <div class="item-card">
-          <h2>My First Blog Post</h2>
+        <div class="item-card small">
+          <h2>Short Decscription</h2>
           <p>
-            This is the content of my first blog post. It contains some
-            interesting information about my thoughts and experiences.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat.
           </p>
         </div>
-        <div class="item-card">
-          <h2>My Second Blog Post</h2>
-          <p>
-            This is the content of my first blog post. It contains some
-            interesting information about my thoughts and experiences.
-          </p>
+        <div class="item-card medium">
+          <h2>Picture</h2>
+          <img
+            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.PIOJ1VrKV0mux7r68o6BjgHaHa%3Fpid%3DApi&f=1&ipt=8db0a96b75aec1cad70144c59e25e2a048a04e4ee38832ea092bb35c6b2a98d2&ipo=images"
+            alt="Character Picture"
+          />
         </div>
       </div>
     </main>
