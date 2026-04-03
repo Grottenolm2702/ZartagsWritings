@@ -19,7 +19,13 @@ body {
   background-color: var(--primary-color);
 }
 main {
-  padding: min(5em, 7%);
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-right: min(5em, 7%);
+  padding-left: min(5em, 7%);
+}
+h1 {
+  padding: 0.5em;
 }
 main p {
   margin-top: 0.35em;
@@ -111,4 +117,19 @@ nav a.accent-link {
   nav .home-li {
     margin-right: unset;
   }
+}
+.items-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  justify-content: center;
+  gap: 1em;
+}
+.item-card {
+  background-color: var(--hover-color);
+  border-radius: 0.5em;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
