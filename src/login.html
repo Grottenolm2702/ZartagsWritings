@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zartags Writings</title>
+    <link href="style.css" rel="stylesheet" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <button
+      id="open-sidebar-button"
+      onclick="openSidebar()"
+      aria-label="Open Sidebar"
+      aria-expanded="false"
+      aria-controls="navbar"
+    >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect y="4" width="24" height="2" fill="#666" />
+        <rect y="11" width="24" height="2" fill="#666" />
+        <rect y="18" width="24" height="2" fill="#666" />
+      </svg>
+    </button>
+    <nav id="navbar">
+      <ul>
+        <li>
+          <button
+            id="close-sidebar-button"
+            onclick="closeSidebar()"
+            aria-label="Close sidebar"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <line
+                x1="4.22183"
+                y1="4.22183"
+                x2="19.7782"
+                y2="19.7782"
+                stroke="#666"
+                stroke-width="2"
+              />
+              <line
+                x1="4.22183"
+                y1="19.7782"
+                x2="19.7782"
+                y2="4.22183"
+                stroke="#666"
+                stroke-width="2"
+              />
+            </svg>
+          </button>
+        </li>
+        <li class="home-li">
+          <a href="../index.html">Home</a>
+        </li>
+        <li>
+          <a aria-current="page" href="pc.html"
+            >Player Character</a
+          >
+        </li>
+        <li><a href="about.html">About</a></li>
+        <li><a class="accent-link active-link" href="login.html">Login</a></li>
+      </ul>
+    </nav>
+
+    <div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>
+    <h1>Login</h1>
+    <main>
+        <form action="login.html" method="POST">
+            <label for="email"> E-mail-Adresse</label>
+            <input type="email" id="email" name="email" placeholder="youre@email.com" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required minlength="8">
+            <button type="submit">Login</button>
+
+
+        </form>
+        
+    </main>
+  </body>
+</html>
