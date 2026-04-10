@@ -72,87 +72,79 @@
     <div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>
     <main>
       <h1>Overview</h1>
-      <section class="element-section">
+      <div class="filter-container">
+        <input
+          type="text"
+          class="searchbar"
+          placeholder="search entries"
+          aria-label="search"
+        />
+        <div class="filter-buttons">
+          <button class="filter-button active" data-category="all">All</button>
+          <button class="filter-button" data-category="Pcs">
+            Player Caracter
+          </button>
+          <button class="filter-button" data-category="Mi">Magic Items</button>
+          <button class="filter-button" data-category="Loc">Locations</button>
+          <button class="filter-button" data-category="Npcs">Npcs</button>
+        </div>
+      </div>
+      <section class="element-section" data-category="Pcs">
         <h2>Player Caracters</h2>
         <ul class="element-list">
           <li>
-            <a href="pc.html">
-              Melissa - Fighter - Tiefling
-            </a>
+            <a href="pc.html"> Melissa - Fighter - Tiefling </a>
           </li>
           <li>
-            <a href="pc.html">
-              Ronny - Garten - Zwerg
-            </a>
+            <a href="pc.html"> Ronny - Garten - Zwerg </a>
           </li>
           <li>
-            <a href="pc.html">
-              Human - Male - Fighter
-            </a>
+            <a href="pc.html"> Human - Male - Fighter </a>
           </li>
         </ul>
       </section>
-                  <section class="element-section">
+      <section class="element-section" data-category="Npcs">
         <h2>Npcs</h2>
         <ul class="element-list">
           <li>
-            <a href="#">
-              Zartag
-            </a>
+            <a href="#"> Zartag </a>
           </li>
           <li>
-            <a href="#">
-              Irenäus
-            </a>
+            <a href="#"> Irenäus </a>
           </li>
           <li>
-            <a href="#">
-              Manuel
-            </a>
+            <a href="#"> Manuel </a>
           </li>
         </ul>
       </section>
-            <section class="element-section">
+      <section class="element-section" data-category="Mi">
         <h2>Magic Items</h2>
         <ul class="element-list">
           <li>
-            <a href="#">
-              Das Buch
-            </a>
+            <a href="#"> Das Buch </a>
           </li>
           <li>
-            <a href="#">
-              Warschip
-            </a>
+            <a href="#"> Warschip </a>
           </li>
           <li>
-            <a href="#">
-              haus
-            </a>
+            <a href="#"> haus </a>
           </li>
         </ul>
       </section>
-                  <section class="element-section">
+      <section class="element-section" data-category="Loc">
         <h2>Locations</h2>
         <ul class="element-list">
           <li>
-            <a href="#">
-              Elarint
-            </a>
+            <a href="#"> Elarint </a>
           </li>
           <li>
-            <a href="#">
-              Das Herrenhaus
-            </a>
+            <a href="#"> Das Herrenhaus </a>
           </li>
           <li>
-            <a href="#">
-              Der Brunnen
-            </a>
+            <a href="#"> Der Brunnen </a>
           </li>
         </ul>
       </section>
-
     </main>
   </body>
 </html>
