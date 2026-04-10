@@ -3,6 +3,7 @@
   --text-color: #cdd6f4;
   --accent-color: #f38ba8;
   --hover-color: #313244;
+  --highlight-color:#3a3a4f;
 }
 * {
   margin: 0;
@@ -146,6 +147,7 @@ nav a.accent-link {
   break-inside: avoid;
   overflow: hidden;
 }
+
 .item-card img {
   width: 100%;
   height: auto;
@@ -158,6 +160,36 @@ nav a.accent-link {
   width: 100%;
   display: block;
   margin-bottom: 0.75em;
+}
+
+.campaign-card {
+  background-color: var(--hover-color);
+  color: var(--text-color);
+  border-radius: 0.5em;
+  padding: 1em;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition:transform 0.2s ease, background-color 0.2s ease;
+  width: 100%;
+  margin-bottom: 0.75em;
+  break-inside: avoid;
+  overflow: hidden;
+
+}
+.campaign-card:hover {
+  background-color: var(--highlight-color);
+  transform:translateY(-2px) ;
+}
+.campaign-card h2 {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--accent-color);
+  margin: 0;
+}
+.campaign-card p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin: 0;
 }
 
 .content-header {
@@ -180,13 +212,6 @@ nav a.accent-link {
 .content-header-item .label {
   font-weight: bold;
   color: var(--accent-color);
-}
-
-.content-header-log {
-  display: flex;
-  margin: auto;
-  gap: 0.5em;
-  font-size: 2rem;
 }
 
 form {
