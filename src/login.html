@@ -65,9 +65,7 @@
           <a href="../index.html">Home</a>
         </li>
         <li>
-          <a aria-current="page" href="pc.html"
-            >Player Character</a
-          >
+          <a aria-current="page" href="pc.html">Player Character</a>
         </li>
         <li><a href="about.html">About</a></li>
         <li><a class="accent-link active-link" href="login.html">Login</a></li>
@@ -75,16 +73,30 @@
     </nav>
 
     <div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>
-    <h1>Login</h1>
     <main>
-        <form action="login.html" method="POST">
-            <label for="email"> E-mail-Adresse:</label>
-            <input type="email" id="email" name="email" placeholder="youre@email.com" autocomplete="email" required>
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required minlength="8" maxlength="30">
-            <button type="submit">Login</button>
-        </form>
-        
+      <h1>Login</h1>
+      <form action="login.html" method="POST">
+        <label for="email"> E-mail-Adresse:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="youre@email.com"
+          autocomplete="email"
+          required
+        />
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          required
+          minlength="8"
+          maxlength="30"
+        />
+        <button type="submit">Login</button>
+      </form>
     </main>
   </body>
 </html>
+
