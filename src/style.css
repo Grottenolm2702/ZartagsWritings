@@ -3,7 +3,7 @@
   --text-color: #cdd6f4;
   --accent-color: #f38ba8;
   --hover-color: #313244;
-  --highlight-color:#3a3a4f;
+  --highlight-color: #3a3a4f;
 }
 * {
   margin: 0;
@@ -170,16 +170,17 @@ nav a.accent-link {
   text-decoration: none;
   display: flex;
   flex-direction: column;
-  transition:transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
   width: 100%;
   margin-bottom: 0.75em;
   break-inside: avoid;
   overflow: hidden;
-
 }
 .campaign-card:hover {
   background-color: var(--highlight-color);
-  transform:translateY(-2px) ;
+  transform: translateY(-2px);
 }
 .campaign-card h2 {
   font-size: clamp(1.1rem, 2vw, 1.5rem);
@@ -215,11 +216,11 @@ nav a.accent-link {
 }
 
 form {
-max-width: max(600px , 40%) ;
-margin: 2em auto;
-padding: 2em;
-border-radius: 0.5em;
-background-color: var(--hover-color);
+  max-width: max(600px, 40%);
+  margin: 2em auto;
+  padding: 2em;
+  border-radius: 0.5em;
+  background-color: var(--hover-color);
 }
 
 form label {
@@ -230,7 +231,7 @@ form label {
   color: var(--accent-color);
 }
 
-form input{
+form input {
   width: 100%;
   padding: 0.75em;
   background-color: var(--primary-color);
@@ -266,7 +267,7 @@ form button:hover {
   margin: 2em 1em;
 }
 
-.element-section h2{
+.element-section h2 {
   font-size: clamp(1.3rem, 2.5vw, 1.8rem);
   color: var(--accent-color);
   padding-bottom: 0.75em;
@@ -280,19 +281,72 @@ form button:hover {
   gap: 0.5em;
 }
 
-.element-list li{
+.element-list li {
   background-color: var(--hover-color);
   border-radius: 0.25em;
   overflow: hidden;
 }
-.element-list a{
+.element-list a {
   display: block;
   padding: clamp(0.75em, 2vw, 1em);
   text-decoration: none;
   color: var(--text-color);
-  transition: backgroundcolor 2s ease, padding-left 0.2s ease;
+  transition:
+    backgroundcolor 2s ease,
+    padding-left 0.2s ease;
 }
-.element-list a:hover{
+.element-list a:hover {
   background-color: var(--highlight-color);
   padding-left: 1.5em;
+}
+
+.filter-container {
+  background-color: var(--hover-color);
+  border-radius: 0.5em;
+  padding: 1.5em;
+  margin: 1em 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+.searchbar {
+  width: 100%;
+  padding: 0.75em;
+  background-color: var(--primary-color);
+  border: 1px solid var(--highlight-color);
+  border-radius: 0.25em;
+  color: var(--text-color);
+  font-size: clamp(0.9rem, 1vw, 1rem);
+  transition: border-color 0.2s ease;
+}
+.searchbar:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+.searchbar::placeholder {
+  color: var(--text-color);
+}
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+}
+.filter-button {
+  padding: 0.6em 1.2em;
+  background-color: var(--primary-color);
+  border: 1px solid var(--highlight-color);
+  border-radius: 0.25em;
+  color: var(--text-color);
+  font-size: clamp(0.85rem, 0.9vw, 1rem);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.filter-button:hover {
+  background-color: var(--highlight-color);
+  border-color: var(--accent-color);
+}
+.filter-button.active {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+  border-color: var(--accent-color);
 }

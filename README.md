@@ -34,5 +34,5 @@ npm run preview
 
 ## Authors
 
-Melissa Armbruster, 
+Melissa Armbruster,
 Ronny Wittmer
