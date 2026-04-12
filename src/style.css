@@ -162,7 +162,15 @@ nav a.accent-link {
 .item-card li a {
   text-decoration: none;
   color: var(--text-color);
+    transition:
+    backgroundcolor 0.2s ease,
+    padding-left 0.5s ease;
 }
+.item-card li a:hover {
+  background-color: var(--highlight-color);
+  padding-left: 0.5em;
+}
+
 .atribute-list {
   margin-top: 1em;
   display: grid;
