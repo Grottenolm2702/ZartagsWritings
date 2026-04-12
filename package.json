@@ -16,10 +16,17 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "prettier": "^3.8.1",
     "vite": "^8.0.3"
+  },
+  "devDependencies": {
+    "simple-git-hooks": "^2.13.1"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npm run format"
   }
 }
