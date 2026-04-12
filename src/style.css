@@ -159,6 +159,11 @@ nav a.accent-link {
   font-size: 1.25em;
   margin-left: 1em;
 }
+.item-card li a {
+    text-decoration: none;
+  color: var(--text-color);
+
+}
 .atribute-list {
   margin-top: 1em;
   display: grid;
