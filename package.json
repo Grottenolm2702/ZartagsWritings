@@ -17,7 +17,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "prepare": "simple-git-hooks"
+    "postinstall": "simple-git-hooks"
   },
   "dependencies": {
     "prettier": "^3.8.1",
