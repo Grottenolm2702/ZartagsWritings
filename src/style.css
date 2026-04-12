@@ -387,3 +387,35 @@ form button:hover {
   color: var(--primary-color);
   border-color: var(--accent-color);
 }
+
+.about-section  {
+  margin: 2em 1em;
+  padding: 1.5em;
+  background-color: var(--hover-color);
+  border-radius: 0.5em;
+  border-left: 3px solid var(--accent-color);
+}
+
+.about-section h2 {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  color: var(--accent-color);
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+.about-section p{
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+.about-section ul{
+  list-style: none;
+  padding-left: 0;
+}
+
+.about-section li{
+  padding: 0.75em 0;
+  line-height: 1.6;
+}
+
+.about-section li strong{
+  color: var(--accent-color);
+}
