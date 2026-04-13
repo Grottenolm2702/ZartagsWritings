@@ -1,0 +1,149 @@
+.items-grid {
+  width: 100%;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.items-masonry {
+  column-count: 2;
+  column-gap: 0.75em;
+}
+
+@media screen and (max-width: 600px) {
+  .items-masonry {
+    column-count: 1;
+  }
+}
+
+.item-card {
+  background-color: var(--hover-color);
+  border-radius: 0.5em;
+  padding: 1em;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 0.75em;
+  break-inside: avoid;
+  overflow: hidden;
+}
+
+.item-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 0.25em;
+}
+
+.item-card li {
+  font-size: 1.25em;
+  margin-left: 1em;
+}
+
+.item-card li a {
+  text-decoration: none;
+  color: var(--text-color);
+  transition:
+    background-color 0.2s ease,
+    padding-left 0.5s ease;
+}
+
+.item-card li a:hover {
+  background-color: var(--highlight-color);
+  padding-left: 0.5em;
+}
+
+.atribute-list {
+  margin-top: 1em;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75em 1.5em;
+  list-style: none;
+}
+
+.atribute-list dt {
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.atribute-list dd {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.item-card.wide {
+  width: 100%;
+  display: block;
+  margin-bottom: 0.75em;
+}
+
+.campaign-card {
+  background-color: var(--hover-color);
+  color: var(--text-color);
+  border-radius: 0.5em;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+  width: 100%;
+  margin-bottom: 0.75em;
+  break-inside: avoid;
+  overflow: hidden;
+}
+
+.campaign-card a {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.campaign-card:hover {
+  background-color: var(--highlight-color);
+  transform: translateY(-2px);
+}
+
+.campaign-card h2 {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--accent-color);
+  margin: 0;
+}
+
+.campaign-card p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.content-header {
+  background-color: var(--hover-color);
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(clamp(60px, 25vw, 120px), 1fr)
+  );
+  align-items: center;
+  padding: 1em;
+  margin: 0.5em;
+  border-radius: 0.5em;
+  gap: 1em;
+}
+
+.content-header-item {
+  display: flex;
+  margin: auto;
+  gap: 0.25em;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.content-header-item .label {
+  font-weight: bold;
+  color: var(--accent-color);
+}

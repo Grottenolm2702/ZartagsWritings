@@ -1,0 +1,97 @@
+.element-section {
+  margin: 2em 1em;
+}
+
+.element-section h2 {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  color: var(--accent-color);
+  padding-bottom: 0.75em;
+  border-bottom: 2px solid var(--accent-color);
+  margin-bottom: 1em;
+}
+
+.element-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.element-list li {
+  background-color: var(--hover-color);
+  border-radius: 0.25em;
+  overflow: hidden;
+}
+
+.element-list a {
+  display: block;
+  padding: clamp(0.75em, 2vw, 1em);
+  text-decoration: none;
+  color: var(--text-color);
+  transition:
+    background-color 2s ease,
+    padding-left 0.2s ease;
+}
+
+.element-list a:hover {
+  background-color: var(--highlight-color);
+  padding-left: 1.5em;
+}
+
+.filter-container {
+  background-color: var(--hover-color);
+  border-radius: 0.5em;
+  padding: 1.5em;
+  margin: 1em 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.searchbar {
+  width: 100%;
+  padding: 0.75em;
+  background-color: var(--primary-color);
+  border: 1px solid var(--highlight-color);
+  border-radius: 0.25em;
+  color: var(--text-color);
+  font-size: clamp(0.9rem, 1vw, 1rem);
+  transition: border-color 0.2s ease;
+}
+
+.searchbar:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.searchbar::placeholder {
+  color: var(--text-color);
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+}
+
+.filter-button {
+  padding: 0.6em 1.2em;
+  background-color: var(--primary-color);
+  border: 1px solid var(--highlight-color);
+  border-radius: 0.25em;
+  color: var(--text-color);
+  font-size: clamp(0.85rem, 0.9vw, 1rem);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+  background-color: var(--highlight-color);
+  border-color: var(--accent-color);
+}
+
+.filter-button.active {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+  border-color: var(--accent-color);
+}

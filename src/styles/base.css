@@ -1,0 +1,39 @@
+:root {
+  --primary-color: #1e1e2e;
+  --text-color: #cdd6f4;
+  --accent-color: #f38ba8;
+  --hover-color: #313244;
+  --highlight-color: #3a3a4f;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--primary-color);
+}
+
+main {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-right: min(5em, 7%);
+  padding-left: min(5em, 7%);
+}
+
+h1 {
+  padding: 0.5em;
+}
+
+main p {
+  margin-top: 0.35em;
+}

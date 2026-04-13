@@ -9,8 +9,8 @@ For more Info see the about page.
 |---|---|---|
 | Semantische HTML-Struktur | about.html | Z. 30-72  & 76–132 |
 | Formular mit Labels | login.html | Z. 75–95 |
-| Responsives Layout (Flexbox/Grid) | style.css | Z. 227-248 |
-| Media Query | style.css | Z. 86 |
+| Responsives Layout (Flexbox/Grid) | src/styles/content.css | Klassen: `.items-grid`, `.items-masonry` |
+| Media Query | src/styles/navigation.css | Breakpoint: `max-width: 800px` |
 | URL-Struktur | pc.html, about.html | Pfade: /src/campain1/pc, /src |
 
 ## Setup
