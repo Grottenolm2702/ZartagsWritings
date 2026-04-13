@@ -1,0 +1,47 @@
+form {
+  max-width: max(600px, 40%);
+  margin: 2em auto;
+  padding: 2em;
+  border-radius: 0.5em;
+  background-color: var(--hover-color);
+}
+
+form label {
+  display: block;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+form input {
+  width: 100%;
+  padding: 0.75em;
+  background-color: var(--primary-color);
+  border: 1px solid var(--hover-color);
+  border-radius: 0.25em;
+  color: var(--text-color);
+  font-size: 1em;
+}
+
+form input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+form button {
+  width: 100%;
+  padding: 0.75em;
+  margin-top: 1.5em;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 0.25em;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 300ms ease;
+}
+
+form button:hover {
+  opacity: 0.85;
+}
