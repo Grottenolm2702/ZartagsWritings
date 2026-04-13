@@ -5,13 +5,14 @@ Using Templates to navigate beetween all sorts of items, Caracters and places.
 For more Info see the about page.
 
 ## Kriterien-Zuordnung M1
-| Kriterium | Datei | Zeile / Hinweis |
-|---|---|---|
-| Semantische HTML-Struktur | about.html | Z. 30-72  & 76–132 |
-| Formular mit Labels | login.html | Z. 75–95 |
-| Responsives Layout (Flexbox/Grid) | src/styles/content.css | Klassen: `.items-grid`, `.items-masonry` |
-| Media Query | src/styles/navigation.css | Breakpoint: `max-width: 800px` |
-| URL-Struktur | pc.html, about.html | Pfade: /src/campain1/pc, /src |
+
+| Kriterium                         | Datei                     | Zeile / Hinweis                          |
+| --------------------------------- | ------------------------- | ---------------------------------------- |
+| Semantische HTML-Struktur         | about.html                | Z. 30-72 & 76–132                        |
+| Formular mit Labels               | login.html                | Z. 75–95                                 |
+| Responsives Layout (Flexbox/Grid) | src/styles/content.css    | Klassen: `.items-grid`, `.items-masonry` |
+| Media Query                       | src/styles/navigation.css | Breakpoint: `max-width: 800px`           |
+| URL-Struktur                      | pc.html, about.html       | Pfade: /src/campain1/pc, /src            |
 
 ## Setup
 
@@ -49,4 +50,5 @@ Melissa Armbruster (313275),
 Ronny Wittmer(313387)
 
 ## Repository Link
+
 https://github.com/Grottenolm2702/ZartagsWritings
