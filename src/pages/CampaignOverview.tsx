@@ -9,7 +9,11 @@ export default function CampaignOverview() {
 
   const items: Item[] = React.useMemo(
     () => [
-      { category: "Pcs", title: "Melissa - Fighter - Tiefling", to: "/capaign1/pc" },
+      {
+        category: "Pcs",
+        title: "Melissa - Fighter - Tiefling",
+        to: "/capaign1/pc",
+      },
       { category: "Pcs", title: "Ronny - Garten - Zwerg", to: "#" },
       { category: "Pcs", title: "Human - Male - Fighter", to: "#" },
 
@@ -25,13 +29,14 @@ export default function CampaignOverview() {
       { category: "Loc", title: "Das Herrenhaus", to: "/capaign1/location" },
       { category: "Loc", title: "Der Brunnen", to: "#" },
     ],
-    []
+    [],
   );
 
   const q = query.trim().toLowerCase();
   const filtered = React.useMemo(
-    () => (q === "" ? items : items.filter((i) => i.title.toLowerCase().includes(q))),
-    [items, q]
+    () =>
+      q === "" ? items : items.filter((i) => i.title.toLowerCase().includes(q)),
+    [items, q],
   );
 
   React.useEffect(() => {
@@ -79,7 +84,11 @@ export default function CampaignOverview() {
         ) : (
           categories.map((cat) =>
             grouped[cat] && grouped[cat].length > 0 ? (
-              <section key={cat} className="element-section" data-category={cat}>
+              <section
+                key={cat}
+                className="element-section"
+                data-category={cat}
+              >
                 <h2>{labelMap[cat]}</h2>
                 <ul className="element-list">
                   {grouped[cat].map((it, idx) => (
@@ -89,7 +98,7 @@ export default function CampaignOverview() {
                   ))}
                 </ul>
               </section>
-            ) : null
+            ) : null,
           )
         )}
       </main>

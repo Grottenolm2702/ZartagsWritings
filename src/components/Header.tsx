@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -13,10 +13,12 @@ export default function Header() {
             <Link to="/about">About</Link>
           </li>
           <li>
-            <Link className="accent-link" to="/login">Login</Link>
+            <Link className="accent-link" to="/login">
+              Login
+            </Link>
           </li>
         </ul>
       </nav>
     </header>
-  )
+  );
 }

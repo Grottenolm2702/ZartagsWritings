@@ -1,5 +1,5 @@
-import React from 'react'
-import Layout from '../../components/Layout'
+import React from "react";
+import Layout from "../../components/Layout";
 
 export default function MagicItem() {
   return (
@@ -7,9 +7,66 @@ export default function MagicItem() {
       <main>
         <h1>Magic Item</h1>
         <div className="content-header">
-          <div className="content-header-item"><span className="label">Name:</span><span className="value">Die Unendliche Geschichte</span></div>
+          <div className="content-header-item">
+            <span className="label">Name:</span>
+            <span className="value">Die Unendliche Geschichte</span>
+          </div>
+          <div className="content-header-item">
+            <span className="label">Type:</span>
+            <span className="value">Book</span>
+          </div>
+          <div className="content-header-item">
+            <span className="label">Weight:</span>
+            <span className="value">???</span>
+          </div>
+          <div className="content-header-item">
+            <span className="label">Cost:</span>
+            <span className="value">???</span>
+          </div>
+          <div className="content-header-item">
+            <span className="label">Quantity:</span>
+            <span className="value">1</span>
+          </div>
+        </div>
+        <div className="items-grid">
+          <div className="items-masonry">
+            <div className="item-card">
+              <h2>Magical Atributes</h2>
+              <dl className="atribute-list">
+                <dt>School:</dt>
+                <dd>Abduration</dd>
+                <dt>Attunment:</dt>
+                <dd>None</dd>
+              </dl>
+            </div>
+            <div className="item-card">
+              <h2>Effect</h2>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </p>
+            </div>
+            <div className="item-card">
+              <h2>Picture</h2>
+              <img
+                src="https://img.freepik.com/free-vector/book-magic-spells-witchcraft_105738-781.jpg?semt=ais_hybrid&w=740&q=80"
+                alt="Character Picture"
+              />
+            </div>
+          </div>
+          <div className="item-card wide">
+            <h2>Generell Notes</h2>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </p>
+          </div>
         </div>
       </main>
     </Layout>
-  )
+  );
 }
