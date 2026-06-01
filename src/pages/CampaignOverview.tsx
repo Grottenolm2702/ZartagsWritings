@@ -4,7 +4,13 @@ import Layout from "../components/Layout";
 import { useAuthSafe } from "../context/AuthContext";
 import raw from "../data/exampleData.json";
 
-type Item = { id: string; category: string; title: string; to: string; visible?: boolean };
+type Item = {
+  id: string;
+  category: string;
+  title: string;
+  to: string;
+  visible?: boolean;
+};
 
 export default function CampaignOverview() {
   const [query, setQuery] = React.useState<string>("");
@@ -97,12 +103,6 @@ export default function CampaignOverview() {
     Mi: "magicitem",
     Loc: "location",
   };
-
-  const slugify = (s: string) =>
-    s
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
 
   const grouped = React.useMemo(() => {
     const g: Record<string, Item[]> = {} as Record<string, Item[]>;
