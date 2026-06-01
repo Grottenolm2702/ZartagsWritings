@@ -34,8 +34,34 @@ export default function CampaignDetail({
   );
   const [showAddMenu, setShowAddMenu] = React.useState(false);
 
-  React.useEffect(() => setLocalHeader(headerFields), [headerFields]);
+  const [players, setPlayers] = React.useState<{ id: string; name: string }[]>([]);
+  const [newPlayer, setNewPlayer] = React.useState("");
+
+  const slugify = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+  React.useEffect(() => {
+    setLocalHeader(headerFields);
+  }, [headerFields]);
   React.useEffect(() => setLocalCards(cards), [cards]);
+
+  React.useEffect(() => {
+    if (!type) return;
+    try {
+      const stored = localStorage.getItem(`players:${type}`);
+      if (stored) setPlayers(JSON.parse(stored));
+    } catch {}
+  }, [type]);
+
+  function savePlayers(list: { id: string; name: string }[]) {
+    if (!type) return;
+    try {
+      localStorage.setItem(`players:${type}`, JSON.stringify(list));
+    } catch {}
+  }
 
   function addField(typeName: string) {
     const newCard: CardSpec = { title: "New Field" } as CardSpec;
@@ -165,6 +191,63 @@ export default function CampaignDetail({
           )}
         </div>
       </div>
+
+      {auth.isDungeonMaster ? (
+        <div style={{ marginTop: "12px", padding: "8px", border: "1px solid var(--hover-color)", borderRadius: "6px", background: "var(--primary-color)" }}>
+          <h3 style={{ margin: "0 0 8px 0" }}>Players</h3>
+          <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+            <input value={newPlayer} onChange={(e) => setNewPlayer(e.target.value)} placeholder="Player name" />
+            <button
+              className="action-button"
+              onClick={() => {
+                const name = newPlayer.trim();
+                if (!name || !type) return;
+                const id = slugify(name + "-" + Date.now());
+                const p = { id, name };
+                const next = [p, ...players];
+                setPlayers(next);
+                savePlayers(next);
+                setNewPlayer("");
+              }}
+            >
+              Add
+            </button>
+          </div>
+
+          <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+            {players.map((p) => (
+              <li key={p.id} style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "6px" }}>
+                <span style={{ flex: 1 }}>{p.name}</span>
+                <button
+                  className="action-button secondary"
+                  onClick={() => {
+                    // kick
+                    const next = players.filter((x) => x.id !== p.id);
+                    setPlayers(next);
+                    savePlayers(next);
+                  }}
+                >
+                  Kick
+                </button>
+                <button
+                  className="action-button"
+                  onClick={() => {
+                    const link = `${window.location.origin}/capaign1/${type}?join=${encodeURIComponent(p.id)}`;
+                    try {
+                      navigator.clipboard?.writeText(link);
+                    } catch {}
+                    // show prompt fallback
+                    // eslint-disable-next-line no-alert
+                    alert(`Invite link copied:\n${link}`);
+                  }}
+                >
+                  Invite
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       {localHeader && (
         <ContentHeader

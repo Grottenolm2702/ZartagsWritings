@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
+import { useAuth } from "../context/AuthContext";
 import {
   MAGICITEM_EXAMPLE,
   PC_EXAMPLE,
@@ -8,7 +9,7 @@ import {
   LOCATION_EXAMPLE,
 } from "../data/exampleData";
 
-type Item = { category: string; title: string; to: string };
+type Item = { category: string; title: string; to: string; visible?: boolean };
 
 export default function CampaignOverview() {
   const [query, setQuery] = React.useState<string>("");
@@ -18,30 +19,42 @@ export default function CampaignOverview() {
       category: "Pcs",
       title: "Melissa - Fighter - Tiefling",
       to: "/capaign1/pc",
+      visible: true,
     },
-    { category: "Pcs", title: "Ronny - Garten - Zwerg", to: "#" },
-    { category: "Pcs", title: "Human - Male - Fighter", to: "#" },
+    { category: "Pcs", title: "Ronny - Garten - Zwerg", to: "#", visible: true },
+    { category: "Pcs", title: "Human - Male - Fighter", to: "#", visible: true },
 
-    { category: "Npcs", title: "Zartag", to: "/capaign1/npc" },
-    { category: "Npcs", title: "Irenäus", to: "#" },
-    { category: "Npcs", title: "Manuel", to: "#" },
+    { category: "Npcs", title: "Zartag", to: "/capaign1/npc", visible: true },
+    { category: "Npcs", title: "Irenäus", to: "#", visible: true },
+    { category: "Npcs", title: "Manuel", to: "#", visible: true },
 
-    { category: "Mi", title: "Das Buch", to: "/capaign1/magicitem" },
-    { category: "Mi", title: "Warschip", to: "#" },
-    { category: "Mi", title: "haus", to: "#" },
+    { category: "Mi", title: "Das Buch", to: "/capaign1/magicitem", visible: true },
+    { category: "Mi", title: "Warschip", to: "#", visible: true },
+    { category: "Mi", title: "haus", to: "#", visible: true },
 
-    { category: "Loc", title: "Elarint", to: "#" },
-    { category: "Loc", title: "Das Herrenhaus", to: "/capaign1/location" },
-    { category: "Loc", title: "Der Brunnen", to: "#" },
+    { category: "Loc", title: "Elarint", to: "#", visible: true },
+    { category: "Loc", title: "Das Herrenhaus", to: "/capaign1/location", visible: true },
+    { category: "Loc", title: "Der Brunnen", to: "#", visible: true },
   ];
   const [items, setItems] = React.useState<Item[]>(initialItems);
 
+  const auth = (() => {
+    try {
+      return useAuth();
+    } catch {
+      return { isEditor: false, isDungeonMaster: false } as any;
+    }
+  })();
+
   const q = query.trim().toLowerCase();
-  const filtered = React.useMemo(
-    () =>
-      q === "" ? items : items.filter((i) => i.title.toLowerCase().includes(q)),
-    [items, q],
-  );
+  const filtered = React.useMemo(() => {
+    const base = q === "" ? items : items.filter((i) => i.title.toLowerCase().includes(q));
+    // if not editor or dm, hide invisible entries
+    if (!auth.isEditor && !auth.isDungeonMaster) {
+      return base.filter((i) => i.visible !== false);
+    }
+    return base;
+  }, [items, q, auth.isEditor, auth.isDungeonMaster]);
 
   React.useEffect(() => {
     // keep effect for future analytics
@@ -127,10 +140,29 @@ export default function CampaignOverview() {
                     New
                   </button>
                 </h2>
-                <ul className="element-list">
+                  <ul className="element-list">
                   {grouped[cat].map((it, idx) => (
-                    <li key={idx}>
-                      <Link to={it.to}>{it.title}</Link>
+                    <li key={idx} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Link to={it.to} style={{ opacity: it.visible === false ? 0.4 : 1 }}>{it.title}</Link>
+                      {auth.isDungeonMaster ? (
+                        <label style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <input
+                            type="checkbox"
+                            checked={it.visible !== false}
+                            onChange={() => {
+                              setItems((s) => {
+                                const copy = [...s];
+                                const globalIdx = s.indexOf(it);
+                                if (globalIdx >= 0) {
+                                  copy[globalIdx] = { ...copy[globalIdx], visible: !(copy[globalIdx].visible === false) };
+                                }
+                                return copy;
+                              });
+                            }}
+                          />
+                          visible
+                        </label>
+                      ) : null}
                     </li>
                   ))}
                 </ul>

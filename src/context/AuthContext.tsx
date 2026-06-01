@@ -1,9 +1,13 @@
 import React from "react";
+import { DEV_ROLES } from "../config/devRoles";
 
 type AuthContextType = {
   isEditor: boolean;
   setIsEditor: (v: boolean) => void;
   toggleEditor: () => void;
+  isDungeonMaster: boolean;
+  setIsDungeonMaster: (v: boolean) => void;
+  toggleDungeonMaster: () => void;
 };
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -11,9 +15,21 @@ const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isEditor, setIsEditor] = React.useState<boolean>(() => {
     try {
-      return localStorage.getItem("isEditor") === "true";
+      const stored = localStorage.getItem("isEditor");
+      if (stored !== null) return stored === "true";
+      return !!DEV_ROLES.isEditor;
     } catch {
-      return false;
+      return !!DEV_ROLES.isEditor;
+    }
+  });
+
+  const [isDungeonMaster, setIsDungeonMaster] = React.useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem("isDungeonMaster");
+      if (stored !== null) return stored === "true";
+      return !!DEV_ROLES.isDungeonMaster;
+    } catch {
+      return !!DEV_ROLES.isDungeonMaster;
     }
   });
 
@@ -23,10 +39,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, [isEditor]);
 
+  React.useEffect(() => {
+    try {
+      localStorage.setItem(
+        "isDungeonMaster",
+        isDungeonMaster ? "true" : "false",
+      );
+    } catch {}
+  }, [isDungeonMaster]);
+
   const toggleEditor = React.useCallback(() => setIsEditor((v) => !v), []);
+  const toggleDungeonMaster = React.useCallback(
+    () => setIsDungeonMaster((v) => !v),
+    [],
+  );
 
   return (
-    <AuthContext.Provider value={{ isEditor, setIsEditor, toggleEditor }}>
+    <AuthContext.Provider
+      value={{
+        isEditor,
+        setIsEditor,
+        toggleEditor,
+        isDungeonMaster,
+        setIsDungeonMaster,
+        toggleDungeonMaster,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
