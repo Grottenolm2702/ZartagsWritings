@@ -41,7 +41,9 @@ export default function ItemCard({
   };
 
   return (
-    <div className={`${contentStyles.itemCard}${wide ? ` ${contentStyles.wide}` : ""}`}>
+    <div
+      className={`${contentStyles.itemCard}${wide ? ` ${contentStyles.wide}` : ""}`}
+    >
       <div
         className={layoutStyles.flexRow}
         style={{ justifyContent: "space-between" }}
@@ -96,9 +98,7 @@ export default function ItemCard({
             "picture") ||
         pictureSrc) ? (
         <div className={contentStyles.pictureUrlField}>
-          <label className={contentStyles.pictureUrlInput}>
-            Picture URL
-          </label>
+          <label className={contentStyles.pictureUrlInput}>Picture URL</label>
           <input
             value={pictureSrc || (card && (card.pictureSrc || ""))}
             onChange={(e) => updateField({ pictureSrc: e.target.value })}

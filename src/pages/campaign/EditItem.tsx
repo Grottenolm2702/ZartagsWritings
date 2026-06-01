@@ -5,6 +5,7 @@ import Layout from "../../components/Layout";
 import EditableCardContent from "../../components/campaign/EditableCardContent";
 import { useAuth } from "../../context/AuthContext";
 import contentStyles from "../../styles/content.module.css";
+import layoutStyles from "../../styles/layout.module.css";
 import type {
   RawData,
   CampaignData,
@@ -89,17 +90,12 @@ export default function EditItemPage() {
               <input
                 defaultValue={foundCard?.title}
                 placeholder="Card title"
-                style={{
-                  width: "100%",
-                  fontSize: "1.25rem",
-                  fontWeight: 700,
-                  border: "none",
-                  background: "transparent",
-                }}
+                className={contentStyles.cardTitleInput}
               />
             </div>
             <div style={{ marginLeft: "1rem" }}>
               <button
+                className={contentStyles.actionButton}
                 onClick={() => {
                   try {
                     auth.setIsEditor(false);
@@ -122,7 +118,7 @@ export default function EditItemPage() {
         </div>
 
         <div style={{ marginTop: "16px" }}>
-          <button onClick={() => navigate(-1)}>Cancel</button>
+          <button className={contentStyles.actionButton} onClick={() => navigate(-1)}>Cancel</button>
         </div>
       </main>
     </Layout>
