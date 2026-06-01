@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Header() {
   return (
@@ -6,18 +7,18 @@ export default function Header() {
       <nav id="navbar">
         <ul>
           <li className="home-li">
-            <a href="/">Home</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="/about">About</a>
+            <Link to="/about">About</Link>
           </li>
           <li>
-            <a className="accent-link" href="/login">
+            <Link className="accent-link" to="/login">
               Login
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
     </header>
-  );
+  )
 }
