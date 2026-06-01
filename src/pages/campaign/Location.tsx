@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
 import type { HeaderField } from "../../components/campaign/ContentHeader";
 import type { CardSpec } from "../../components/campaign/ItemsGrid";
+import { LOCATION_EXAMPLE } from "../../data/exampleData";
 
 export function createCampaignPage(
   title: string,
@@ -26,40 +27,4 @@ export function createCampaignPage(
   };
 }
 
-const defaultHeader: HeaderField[] = [
-  { label: "Name:", value: "Das Herrenhaus" },
-  { label: "Type:", value: "House" },
-];
-
-const defaultCards: CardSpec[] = [
-  {
-    title: "Short Description",
-    content: (
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-    ),
-  },
-  {
-    title: "Related Places",
-    content: (
-      <ul>
-        <li><a href="#">Garten</a></li>
-        <li><a href="#">Keller</a></li>
-        <li><a href="#">Küche</a></li>
-      </ul>
-    ),
-  },
-  {
-    title: "General Notes",
-    content: (
-      <p>
-        Misc notes. Replace with backend content when available.
-      </p>
-    ),
-    wide: true,
-  },
-];
-
-export default createCampaignPage("Location", defaultHeader, defaultCards);
+export default createCampaignPage("Location", LOCATION_EXAMPLE.header, LOCATION_EXAMPLE.cards);
