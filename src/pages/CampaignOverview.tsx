@@ -215,7 +215,11 @@ export default function CampaignOverview() {
                               setItems((s) =>
                                 s.map((x) =>
                                   x.id === it.id
-                                    ? { ...x, visible: !(x.visible === false) }
+                                    ? {
+                                        ...x,
+                                        visible:
+                                          x.visible === false ? true : false,
+                                      }
                                     : x,
                                 ),
                               );
@@ -249,9 +253,11 @@ export default function CampaignOverview() {
                     const slug = slugify(newTitle || "new");
                     const to = `/capaign1/${type}/${slug}`;
                     const ni: Item = {
+                      id: slug,
                       category: showNewFor as string,
                       title: newTitle || "New Entry",
                       to,
+                      visible: true,
                     };
                     setItems((s) => [ni, ...s]);
 
