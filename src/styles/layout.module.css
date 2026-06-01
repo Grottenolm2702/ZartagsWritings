@@ -1,57 +1,57 @@
 /* Layout & spacing utilities */
 
-.flex-row {
+.flexRow {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.flex-column {
+.flexColumn {
   display: flex;
   flex-direction: column;
 }
 
-.gap-small {
+.gapSmall {
   gap: 6px;
 }
 
-.gap-medium {
+.gapMedium {
   gap: 8px;
 }
 
-.gap-large {
+.gapLarge {
   gap: 12px;
 }
 
 /* Header styles */
 
-.header-container {
+.headerContainer {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.header-title {
+.headerTitle {
   margin: 0;
 }
 
-.header-actions {
+.headerActions {
   margin-left: auto;
 }
 
 /* Menu/modal backdrop */
 
-.menu-backdrop {
+.menuBackdrop {
   display: none;
 }
 
-.menu-backdrop.open {
+.menuBackdropOpen {
   display: block;
 }
 
 /* Button containers */
 
-.button-row {
+.buttonRow {
   margin-top: 12px;
   display: flex;
   gap: 8px;
@@ -59,12 +59,12 @@
 
 /* Relative positioning for overlays */
 
-.position-relative {
+.positionRelative {
   position: relative;
 }
 
 /* Remove default margin */
 
-.no-margin {
+.noMargin {
   margin: 0;
 }

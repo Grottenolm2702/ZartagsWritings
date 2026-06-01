@@ -1,5 +1,6 @@
 import React from "react";
 import Layout from "../components/Layout";
+import aboutStyles from "../styles/about.module.css";
 
 export default function About() {
   return (
@@ -7,7 +8,7 @@ export default function About() {
       <main>
         <h1>About Zartags Writings</h1>
 
-        <section className="about-section">
+        <section className={aboutStyles.aboutSection}>
           <h2>Who We Are</h2>
           <p>
             Welcome to Zartags Writings – a note-taking tool dedicated to D&D
@@ -15,7 +16,7 @@ export default function About() {
           </p>
         </section>
 
-        <section className="about-section">
+        <section className={aboutStyles.aboutSection}>
           <h2>Our Mission</h2>
           <p>
             The goal is to build a tool that helps both DMs and players easily
@@ -23,7 +24,7 @@ export default function About() {
           </p>
         </section>
 
-        <section className="about-section">
+        <section className={aboutStyles.aboutSection}>
           <h2>What We Offer</h2>
           <ul>
             <li>
@@ -47,7 +48,7 @@ export default function About() {
           </ul>
         </section>
 
-        <section className="about-section">
+        <section className={aboutStyles.aboutSection}>
           <h2>The Authors</h2>
           <p>
             Zartags Writings is being developed by Melissa Armbruster and Ronny
@@ -55,7 +56,7 @@ export default function About() {
           </p>
         </section>
 
-        <section className="about-section">
+        <section className={aboutStyles.aboutSection}>
           <h2>Get Involved</h2>
           <p>Have feedback? Feel free to reach out.</p>
         </section>

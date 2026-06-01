@@ -1,6 +1,7 @@
 import React from "react";
 import ItemCard from "./ItemCard";
 import CardContent from "./CardContent";
+import contentStyles from "../../styles/content.module.css";
 import type {
   CardSpec,
   CardContent as CardContentType,
@@ -47,8 +48,8 @@ export default function ItemsGrid({
   }
 
   return (
-    <div className="items-grid">
-      <div className="items-masonry">
+    <div className={contentStyles.itemsGrid}>
+      <div className={contentStyles.itemsMasonry}>
         {normal.map((c, i) => (
           <ItemCard
             key={i}
@@ -64,7 +65,7 @@ export default function ItemsGrid({
         ))}
       </div>
       {wide.length > 0 && (
-        <div className="item-card wide">
+        <div className={`${contentStyles.itemCard} ${contentStyles.wide}`}>
           {wide.map((c, i) => (
             <ItemCard
               key={i}

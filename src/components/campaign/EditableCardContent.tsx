@@ -4,8 +4,7 @@ import type {
   AttributeItem,
   ListItem,
 } from "../../types/campaign";
-import "../../styles/forms.css";
-import "../../styles/layout.css";
+import styles from "../../styles/forms.module.css";
 
 interface EditableCardContentProps {
   content?: CardContentType;
@@ -39,7 +38,7 @@ export default function EditableCardContent({
     return (
       <div>
         {paragraphs.map((p: string, i: number) => (
-          <div key={i} className="form-textarea-container">
+          <div key={i} className={styles.formTextareaContainer}>
             <textarea
               value={paragraphs[i]}
               onChange={(e) => {
@@ -48,7 +47,7 @@ export default function EditableCardContent({
                 update("paragraphs", next);
               }}
               rows={4}
-              className="form-textarea"
+              className={styles.formTextarea}
             />
           </div>
         ))}
@@ -69,7 +68,7 @@ export default function EditableCardContent({
           value={state.text ?? content.text ?? ""}
           onChange={(e) => update("text", e.target.value)}
           rows={6}
-          className="form-textarea"
+          className={styles.formTextarea}
         />
       </div>
     );
@@ -78,9 +77,9 @@ export default function EditableCardContent({
   if (content.type === "list") {
     const items: ListItem[] = state.items || content.items || [];
     return (
-      <ul className="list-unstyled">
+      <ul className={styles.listUnstyled}>
         {items.map((it: ListItem, i: number) => (
-          <li key={i} className="list-item-spacer">
+          <li key={i} className={styles.listItemSpacer}>
             <input
               value={it.label || ""}
               onChange={(e) => {
@@ -89,7 +88,7 @@ export default function EditableCardContent({
                 );
                 update("items", next);
               }}
-              className="form-input-transparent"
+              className={styles.formInputTransparent}
             />
           </li>
         ))}
@@ -120,7 +119,7 @@ export default function EditableCardContent({
                   );
                   update("items", next);
                 }}
-                className="form-input-transparent"
+                className={styles.formInputTransparent}
               />
             </dt>
             <dd>
@@ -132,7 +131,7 @@ export default function EditableCardContent({
                   );
                   update("items", next);
                 }}
-                className="form-input-transparent form-input-full-width"
+                className={`${styles.formInputTransparent} ${styles.formInputFullWidth}`}
               />
             </dd>
           </React.Fragment>

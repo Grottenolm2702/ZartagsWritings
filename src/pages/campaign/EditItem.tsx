@@ -4,6 +4,7 @@ import raw from "../../data/exampleData.json";
 import Layout from "../../components/Layout";
 import EditableCardContent from "../../components/campaign/EditableCardContent";
 import { useAuth } from "../../context/AuthContext";
+import contentStyles from "../../styles/content.module.css";
 import type {
   RawData,
   CampaignData,
@@ -53,13 +54,13 @@ export default function EditItemPage() {
         </h1>
 
         {dataset.header && (
-          <div className="content-header" style={{ marginTop: "0.5rem" }}>
+          <div className={contentStyles.contentHeader} style={{ marginTop: "0.5rem" }}>
             {dataset.header.map((h: HeaderField, i: number) => (
-              <div className="content-header-item" key={i}>
-                <span className="label">{h.label}</span>
+              <div className={contentStyles.contentHeaderItem} key={i}>
+                <span className={contentStyles.label}>{h.label}</span>
                 <input
                   defaultValue={h.value}
-                  className="value"
+                  className={contentStyles.value}
                   style={{
                     border: "none",
                     background: "transparent",
@@ -72,7 +73,7 @@ export default function EditItemPage() {
           </div>
         )}
 
-        <div className="item-card" style={{ marginTop: "1rem" }}>
+        <div className={contentStyles.itemCard} style={{ marginTop: "1rem" }}>
           <div
             style={{
               display: "flex",

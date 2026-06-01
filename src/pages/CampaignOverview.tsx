@@ -4,6 +4,8 @@ import Layout from "../components/Layout";
 import { useAuthSafe } from "../context/AuthContext";
 import raw from "../data/exampleData.json";
 import { slugify } from "../utils/string";
+import overviewStyles from "../styles/overview.module.css";
+import contentStyles from "../styles/content.module.css";
 import type {
   RawData,
   CampaignData,
@@ -126,7 +128,7 @@ export default function CampaignOverview() {
           <h1 style={{ margin: 0 }}>Overview</h1>
           <div style={{ marginLeft: "auto" }}>
             <button
-              className="action-button"
+              className={contentStyles.actionButton}
               onClick={() => navigate("/capaign1/manage")}
             >
               Campaign verwalten
@@ -134,10 +136,10 @@ export default function CampaignOverview() {
           </div>
         </div>
 
-        <div className="filter-container">
+        <div className={overviewStyles.filterContainer}>
           <input
             type="text"
-            className="searchbar"
+            className={overviewStyles.searchbar}
             placeholder="search entries"
             aria-label="search"
             value={query}
@@ -152,7 +154,7 @@ export default function CampaignOverview() {
             grouped[cat] && grouped[cat].length > 0 ? (
               <section
                 key={cat}
-                className="element-section"
+                className={overviewStyles.elementSection}
                 data-category={cat}
               >
                 <h2
@@ -165,7 +167,7 @@ export default function CampaignOverview() {
                   <span>{LABEL_MAP[cat]}</span>
                   {auth.isEditor ? (
                     <button
-                      className="new-button"
+                      className={contentStyles.newButton}
                       onClick={() => {
                         setShowNewFor(cat);
                         setNewTitle("");
@@ -175,7 +177,7 @@ export default function CampaignOverview() {
                     </button>
                   ) : null}
                 </h2>
-                <ul className="element-list">
+                <ul className={overviewStyles.elementList}>
                   {grouped[cat].map((it) => (
                     <li
                       key={it.id}
@@ -237,8 +239,8 @@ export default function CampaignOverview() {
         )}
 
         {showNewFor ? (
-          <div className="modal-overlay">
-            <div className="modal" role="dialog" aria-modal="true">
+          <div className={contentStyles.modalOverlay}>
+            <div className={contentStyles.modal} role="dialog" aria-modal="true">
               <h3>Create new entry in {LABEL_MAP[showNewFor]}</h3>
               <label>Title</label>
               <input
@@ -247,7 +249,7 @@ export default function CampaignOverview() {
               />
               <div style={{ marginTop: "12px", display: "flex", gap: "8px" }}>
                 <button
-                  className="action-button"
+                  className={contentStyles.actionButton}
                   onClick={() => {
                     const type = TYPE_MAP[showNewFor as string];
                     const slug = slugify(newTitle || "new");
@@ -369,7 +371,7 @@ export default function CampaignOverview() {
                   Save
                 </button>
                 <button
-                  className="action-button secondary"
+                  className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                   onClick={() => setShowNewFor(null)}
                 >
                   Cancel

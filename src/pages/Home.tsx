@@ -1,14 +1,15 @@
 import React from "react";
 import Layout from "../components/Layout";
+import contentStyles from "../styles/content.module.css";
 
 export default function Home() {
   return (
     <Layout>
       <main>
         <h1>Zartags Writings</h1>
-        <section className="items-grid">
-          <div className="items-masonry">
-            <article className="campaign-card">
+        <section className={contentStyles.itemsGrid}>
+          <div className={contentStyles.itemsMasonry}>
+            <article className={contentStyles.campaignCard}>
               <a href="/capaign1/overview">
                 <h2>Vergessene Geschichten Kavantas</h2>
                 <p>

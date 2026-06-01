@@ -2,6 +2,7 @@ import React from "react";
 import ContentHeader from "./ContentHeader";
 import ItemsGrid from "./ItemsGrid";
 import { useAuthSafe } from "../../context/AuthContext";
+import contentStyles from "../../styles/content.module.css";
 import type { CardSpec, HeaderField } from "../../types/campaign";
 
 interface CampaignDetailProps {
@@ -71,7 +72,7 @@ export default function CampaignDetail({
       : title;
 
   return (
-    <main className="campaign-detail">
+    <main className={contentStyles.campaignDetail}>
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
         <h1 style={{ margin: 0 }}>{displayTitle}</h1>
         <div
@@ -85,7 +86,7 @@ export default function CampaignDetail({
           {auth.isEditor ? (
             <>
               <button
-                className="action-button secondary"
+                className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                 onClick={() => setShowDeleteConfirm(true)}
                 title="Delete this item"
               >
@@ -93,7 +94,7 @@ export default function CampaignDetail({
               </button>
 
               <button
-                className="action-button"
+                className={contentStyles.actionButton}
                 onClick={() => {
                   try {
                     auth.setIsEditor(false);
@@ -103,7 +104,7 @@ export default function CampaignDetail({
                 Save
               </button>
               <button
-                className="action-button secondary"
+                className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                 onClick={() => {
                   // Cancel edits: revert by reloading page
                   try {
@@ -116,7 +117,7 @@ export default function CampaignDetail({
               </button>
               <div style={{ position: "relative" }}>
                 <button
-                  className="action-button"
+                  className={contentStyles.actionButton}
                   onClick={() => setShowAddMenu((s) => !s)}
                 >
                   Add Field
@@ -136,31 +137,31 @@ export default function CampaignDetail({
                     }}
                   >
                     <button
-                      className="action-button"
+                      className={contentStyles.actionButton}
                       onClick={() => addField("paragraph")}
                     >
                       Paragraph
                     </button>
                     <button
-                      className="action-button"
+                      className={contentStyles.actionButton}
                       onClick={() => addField("paragraphs")}
                     >
                       Paragraphs
                     </button>
                     <button
-                      className="action-button"
+                      className={contentStyles.actionButton}
                       onClick={() => addField("list")}
                     >
                       List
                     </button>
                     <button
-                      className="action-button"
+                      className={contentStyles.actionButton}
                       onClick={() => addField("attributes")}
                     >
                       Attributes
                     </button>
                     <button
-                      className="action-button"
+                      className={contentStyles.actionButton}
                       onClick={() => addField("picture")}
                     >
                       Picture
@@ -201,8 +202,8 @@ export default function CampaignDetail({
       )}
 
       {showDeleteConfirm ? (
-        <div className="modal-overlay">
-          <div className="modal" role="dialog" aria-modal="true">
+        <div className={contentStyles.modalOverlay}>
+          <div className={contentStyles.modal} role="dialog" aria-modal="true">
             <h3>Delete this item?</h3>
             <p>
               This will exit edit mode and navigate back to Manage. This action
@@ -210,7 +211,7 @@ export default function CampaignDetail({
             </p>
             <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
               <button
-                className="action-button secondary"
+                className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                 onClick={() => {
                   confirmDeleteItem();
                   setShowDeleteConfirm(false);
@@ -219,7 +220,7 @@ export default function CampaignDetail({
                 Confirm Delete
               </button>
               <button
-                className="action-button"
+                className={contentStyles.actionButton}
                 onClick={() => setShowDeleteConfirm(false)}
               >
                 Cancel

@@ -1,4 +1,4 @@
-form {
+.form {
   max-width: max(600px, 40%);
   margin: 2em auto;
   padding: 2em;
@@ -6,7 +6,7 @@ form {
   background-color: var(--hover-color);
 }
 
-form label {
+.formLabel {
   display: block;
   margin-top: 1em;
   margin-bottom: 0.5em;
@@ -14,7 +14,7 @@ form label {
   color: var(--accent-color);
 }
 
-form input {
+.formInput {
   width: 100%;
   padding: 0.75em;
   background-color: var(--primary-color);
@@ -24,12 +24,12 @@ form input {
   font-size: 1em;
 }
 
-form input:focus {
+.formInput:focus {
   outline: none;
   border-color: var(--accent-color);
 }
 
-form button {
+.formButton {
   width: 100%;
   padding: 0.75em;
   margin-top: 1.5em;
@@ -42,6 +42,6 @@ form button {
   transition: opacity 300ms ease;
 }
 
-form button:hover {
+.formButton:hover {
   opacity: 0.85;
 }

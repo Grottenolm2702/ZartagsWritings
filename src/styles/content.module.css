@@ -1,4 +1,4 @@
-.items-grid {
+.itemsGrid {
   width: 100%;
   padding: 1em;
   display: flex;
@@ -6,18 +6,18 @@
   gap: 0.75em;
 }
 
-.items-masonry {
+.itemsMasonry {
   column-count: 2;
   column-gap: 0.75em;
 }
 
 @media screen and (max-width: 600px) {
-  .items-masonry {
+  .itemsMasonry {
     column-count: 1;
   }
 }
 
-.item-card {
+.itemCard {
   background-color: var(--hover-color);
   border-radius: 0.5em;
   padding: 1em;
@@ -28,7 +28,7 @@
   overflow: hidden;
 }
 
-.item-card img {
+.itemCard img {
   width: 100%;
   height: auto;
   display: block;
@@ -36,12 +36,12 @@
   border-radius: 0.25em;
 }
 
-.item-card li {
+.itemCard li {
   font-size: 1.25em;
   margin-left: 1em;
 }
 
-.item-card li a {
+.itemCard li a {
   text-decoration: none;
   color: var(--text-color);
   transition:
@@ -49,12 +49,12 @@
     padding-left 0.5s ease;
 }
 
-.item-card li a:hover {
+.itemCard li a:hover {
   background-color: var(--highlight-color);
   padding-left: 0.5em;
 }
 
-.atribute-list {
+.atributeList {
   margin-top: 1em;
   display: grid;
   grid-template-columns: auto 1fr;
@@ -62,23 +62,23 @@
   list-style: none;
 }
 
-.atribute-list dt {
+.atributeList dt {
   font-weight: bold;
   color: var(--accent-color);
 }
 
-.atribute-list dd {
+.atributeList dd {
   margin: 0;
   color: var(--text-color);
 }
 
-.item-card.wide {
+.itemCard.wide {
   width: 100%;
   display: block;
   margin-bottom: 0.75em;
 }
 
-.campaign-card {
+.campaignCard {
   background-color: var(--hover-color);
   color: var(--text-color);
   border-radius: 0.5em;
@@ -94,7 +94,7 @@
   overflow: hidden;
 }
 
-.campaign-card a {
+.campaignCard a {
   display: flex;
   flex-direction: column;
   padding: 1em;
@@ -103,24 +103,24 @@
   height: 100%;
 }
 
-.campaign-card:hover {
+.campaignCard:hover {
   background-color: var(--highlight-color);
   transform: translateY(-2px);
 }
 
-.campaign-card h2 {
+.campaignCard h2 {
   font-size: clamp(1.1rem, 2vw, 1.5rem);
   color: var(--accent-color);
   margin: 0;
 }
 
-.campaign-card p {
+.campaignCard p {
   font-size: 0.9rem;
   opacity: 0.9;
   margin: 0;
 }
 
-.content-header {
+.contentHeader {
   background-color: var(--hover-color);
   display: grid;
   grid-template-columns: repeat(
@@ -134,7 +134,7 @@
   gap: 1em;
 }
 
-.content-header-item {
+.contentHeaderItem {
   display: flex;
   margin: auto;
   gap: 0.25em;
@@ -143,15 +143,15 @@
   text-align: center;
 }
 
-.content-header-item .label {
+.contentHeaderItem .label {
   font-weight: bold;
   color: var(--accent-color);
 }
 
 /* Inputs styled to match rendered text when editing */
-.content-header input.value,
-.content-header .value input,
-.content-header input {
+.contentHeader input.value,
+.contentHeader .value input,
+.contentHeader input {
   border: none;
   background: transparent;
   color: var(--text-color);
@@ -160,13 +160,13 @@
   width: 100%;
 }
 
-.item-card h2 {
+.itemCard h2 {
   font-size: clamp(1.1rem, 2vw, 1.5rem);
   color: var(--accent-color);
   margin: 0 0 0.5rem 0;
 }
 
-.item-card .item-title-input {
+.itemCard .itemTitleInput {
   font-size: clamp(1.1rem, 2vw, 1.5rem);
   color: var(--accent-color);
   font-weight: 700;
@@ -176,22 +176,22 @@
 }
 
 /* campaign title color */
-.campaign-detail h1 {
+.campaignDetail h1 {
   color: var(--accent-color);
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin: 0;
 }
 
 /* add menu buttons vertical stack */
-.campaign-detail .add-menu button {
+.campaignDetail .addMenu button {
   display: block;
   width: 100%;
   margin-bottom: 6px;
 }
 
-.item-card input[type="text"],
-.item-card input:not([type]),
-.item-card textarea {
+.itemCard input[type="text"],
+.itemCard input:not([type]),
+.itemCard textarea {
   border: none;
   background: transparent;
   color: inherit;
@@ -201,7 +201,7 @@
   margin: 0;
 }
 
-.atribute-list input {
+.atributeList input {
   border: none;
   background: transparent;
   color: inherit;
@@ -210,9 +210,9 @@
 }
 
 /* Buttons matching site style */
-.action-button,
-.edit-button,
-.new-button {
+.actionButton,
+.editButton,
+.newButton {
   display: inline-block;
   padding: 0.4em 0.75em;
   background-color: var(--accent-color);
@@ -224,21 +224,21 @@
   text-decoration: none;
 }
 
-.action-button:hover,
-.edit-button:hover,
-.new-button:hover {
+.actionButton:hover,
+.editButton:hover,
+.newButton:hover {
   opacity: 0.9;
 }
 
 /* smaller secondary button */
-.action-button.secondary {
+.actionButton.secondary {
   background: transparent;
   color: var(--text-color);
   border: 1px solid var(--hover-color);
 }
 
 /* modal */
-.modal-overlay {
+.modalOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.35);

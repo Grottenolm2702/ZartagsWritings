@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import raw from "../../data/exampleData.json";
 import { useAuthSafe } from "../../context/AuthContext";
 import { storageUtils } from "../../utils/localStorage";
+import contentStyles from "../../styles/content.module.css";
 import type { RawData, Player } from "../../types/campaign";
 
 export default function ManageCampaign() {
@@ -70,7 +71,7 @@ export default function ManageCampaign() {
             style={{ width: "100%" }}
           />
           <button
-            className="action-button"
+            className={contentStyles.actionButton}
             onClick={() => {
               try {
                 navigator.clipboard?.writeText(
@@ -128,7 +129,7 @@ export default function ManageCampaign() {
                 <>
                   {dmId && p.id === dmId ? null : (
                     <button
-                      className="action-button"
+                      className={contentStyles.actionButton}
                       onClick={() => {
                         const next = players.map((x) =>
                           x.id === p.id ? { ...x, isEditor: !x.isEditor } : x,
@@ -141,7 +142,7 @@ export default function ManageCampaign() {
                   )}
 
                   <button
-                    className="action-button secondary"
+                    className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                     onClick={() => {
                       const next = players.filter((x) => x.id !== p.id);
                       // if kicked player was dm, clear dm and pick new later
@@ -161,7 +162,7 @@ export default function ManageCampaign() {
 
               {currentId && p.id === currentId ? (
                 <button
-                  className="action-button"
+                  className={contentStyles.actionButton}
                   onClick={() => {
                     const next = players.filter((x) => x.id !== p.id);
                     save(next);

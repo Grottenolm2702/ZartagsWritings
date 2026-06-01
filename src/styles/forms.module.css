@@ -1,6 +1,6 @@
 /* Form input styles */
 
-.form-textarea {
+.formTextarea {
   width: 100%;
   border: none;
   background: transparent;
@@ -9,34 +9,34 @@
   resize: vertical;
 }
 
-.form-textarea-container {
+.formTextareaContainer {
   margin-bottom: 0.5rem;
 }
 
-.form-input-transparent {
+.formInputTransparent {
   width: 100%;
   border: none;
   background: transparent;
 }
 
-.form-input-full-width {
+.formInputFullWidth {
   width: 100%;
 }
 
 /* Label styles */
 
-.form-label {
+.formLabel {
   display: block;
   font-weight: 600;
 }
 
-.form-label-inline {
+.formLabelInline {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.form-label-with-spacing {
+.formLabelWithSpacing {
   display: block;
   font-weight: 600;
   margin-top: 6px;
@@ -44,16 +44,16 @@
 
 /* List styles */
 
-.list-item-spacer {
+.listItemSpacer {
   margin-bottom: 0.25rem;
 }
 
-.list-unstyled {
+.listUnstyled {
   list-style: none;
   padding: 0;
 }
 
-.list-item-input-row {
+.listItemInputRow {
   display: flex;
   gap: 8px;
   align-items: center;
@@ -61,14 +61,14 @@
 
 /* Field/attribute item styles */
 
-.form-field-item {
+.formFieldItem {
   margin-bottom: 0.5rem;
 }
 
-.form-field-input {
+.formFieldInput {
   flex: 1;
 }
 
-.form-field-button {
+.formFieldButton {
   padding: 6px 12px;
 }
