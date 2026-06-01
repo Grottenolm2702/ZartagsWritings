@@ -37,7 +37,11 @@ export default function EditItemPage() {
   return (
     <Layout>
       <main>
-        <h1 style={{ marginBottom: "0.5rem" }}>{isNew ? `Create new ${dataset.title}` : `Edit: ${foundCard?.title || slug}`}</h1>
+        <h1 style={{ marginBottom: "0.5rem" }}>
+          {isNew
+            ? `Create new ${dataset.title}`
+            : `Edit: ${foundCard?.title || slug}`}
+        </h1>
 
         {/* Header uses same layout as render but with inputs */}
         {dataset.header && (
@@ -62,7 +66,14 @@ export default function EditItemPage() {
 
         {/* Card editor styled like the item-card */}
         <div className="item-card" style={{ marginTop: "1rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "0.5rem",
+            }}
+          >
             <div style={{ flex: 1 }}>
               <input
                 defaultValue={foundCard?.title}

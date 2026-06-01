@@ -1,6 +1,12 @@
 import React from "react";
 
-export default function EditableCardContent({ content, onChange }: { content?: any; onChange?: (c: any) => void }) {
+export default function EditableCardContent({
+  content,
+  onChange,
+}: {
+  content?: any;
+  onChange?: (c: any) => void;
+}) {
   const [state, setState] = React.useState<any>(content || {});
 
   React.useEffect(() => setState(content || {}), [content]);
@@ -78,15 +84,25 @@ export default function EditableCardContent({ content, onChange }: { content?: a
             <input
               value={it.label || ""}
               onChange={(e) => {
-                const next = items.map((x: any, idx: number) => (idx === i ? { ...x, label: e.target.value } : x));
+                const next = items.map((x: any, idx: number) =>
+                  idx === i ? { ...x, label: e.target.value } : x,
+                );
                 update("items", next);
               }}
-              style={{ border: "none", background: "transparent", font: "inherit", width: "100%" }}
+              style={{
+                border: "none",
+                background: "transparent",
+                font: "inherit",
+                width: "100%",
+              }}
             />
           </li>
         ))}
         <li>
-          <button onClick={() => update("items", [...items, { label: "" }])} type="button">
+          <button
+            onClick={() => update("items", [...items, { label: "" }])}
+            type="button"
+          >
             Add item
           </button>
         </li>
@@ -104,26 +120,42 @@ export default function EditableCardContent({ content, onChange }: { content?: a
               <input
                 value={it.dt || ""}
                 onChange={(e) => {
-                  const next = items.map((x: any, idx: number) => (idx === i ? { ...x, dt: e.target.value } : x));
+                  const next = items.map((x: any, idx: number) =>
+                    idx === i ? { ...x, dt: e.target.value } : x,
+                  );
                   update("items", next);
                 }}
-                style={{ border: "none", background: "transparent", font: "inherit" }}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  font: "inherit",
+                }}
               />
             </dt>
             <dd>
               <input
                 value={it.dd || ""}
                 onChange={(e) => {
-                  const next = items.map((x: any, idx: number) => (idx === i ? { ...x, dd: e.target.value } : x));
+                  const next = items.map((x: any, idx: number) =>
+                    idx === i ? { ...x, dd: e.target.value } : x,
+                  );
                   update("items", next);
                 }}
-                style={{ border: "none", background: "transparent", font: "inherit", width: "100%" }}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  font: "inherit",
+                  width: "100%",
+                }}
               />
             </dd>
           </React.Fragment>
         ))}
         <div>
-          <button onClick={() => update("items", [...items, { dt: "", dd: "" }])} type="button">
+          <button
+            onClick={() => update("items", [...items, { dt: "", dd: "" }])}
+            type="button"
+          >
             Add attribute
           </button>
         </div>

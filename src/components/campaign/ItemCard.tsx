@@ -30,38 +30,64 @@ export default function ItemCard({
   // local handlers for updating card fields
   const updateField = (patch: any) => {
     if (onUpdate) {
-      const updated = { ...(card || {}), title, pictureSrc, pictureAlt, ...patch };
+      const updated = {
+        ...(card || {}),
+        title,
+        pictureSrc,
+        pictureAlt,
+        ...patch,
+      };
       onUpdate(updated);
     }
   };
 
   return (
     <div className={"item-card" + (wide ? " wide" : "")}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         {auth.isEditor ? (
           <input
             className="item-title-input"
             defaultValue={title}
             onChange={(e) => updateField({ title: e.target.value })}
-            style={{ fontSize: "1.1rem", fontWeight: 700, border: "none", background: "transparent" }}
+            style={{
+              fontSize: "1.1rem",
+              fontWeight: 700,
+              border: "none",
+              background: "transparent",
+            }}
           />
         ) : (
           <h2>{title}</h2>
         )}
-
       </div>
 
       {/* picture editor when in edit mode, only for picture fields */}
-      {auth.isEditor && onUpdate && (card?.pictureSrc !== undefined || (card && card.content && card.content.type === "picture") || pictureSrc) ? (
+      {auth.isEditor &&
+      onUpdate &&
+      (card?.pictureSrc !== undefined ||
+        (card && card.content && card.content.type === "picture") ||
+        pictureSrc) ? (
         <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-          <label style={{ display: "block", fontWeight: 600 }}>Picture URL</label>
+          <label style={{ display: "block", fontWeight: 600 }}>
+            Picture URL
+          </label>
           <input
             value={pictureSrc || (card && (card.pictureSrc || ""))}
             onChange={(e) => updateField({ pictureSrc: e.target.value })}
             placeholder="https://..."
             style={{ width: "100%", border: "none", background: "transparent" }}
           />
-          <label style={{ display: "block", fontWeight: 600, marginTop: "6px" }}>Alt text</label>
+          <label
+            style={{ display: "block", fontWeight: 600, marginTop: "6px" }}
+          >
+            Alt text
+          </label>
           <input
             value={pictureAlt || (card && (card.pictureAlt || ""))}
             onChange={(e) => updateField({ pictureAlt: e.target.value })}

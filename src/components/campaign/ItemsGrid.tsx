@@ -18,7 +18,15 @@ function slugify(s: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-export default function ItemsGrid({ cards, type, onUpdate }: { cards: CardSpec[]; type?: string; onUpdate?: (idx: number, updated: CardSpec) => void }) {
+export default function ItemsGrid({
+  cards,
+  type,
+  onUpdate,
+}: {
+  cards: CardSpec[];
+  type?: string;
+  onUpdate?: (idx: number, updated: CardSpec) => void;
+}) {
   const auth = (() => {
     try {
       return useAuth();
@@ -29,7 +37,9 @@ export default function ItemsGrid({ cards, type, onUpdate }: { cards: CardSpec[]
 
   if (!cards || cards.length === 0) return null;
   // filter out cards that have neither content nor picture
-  const hasContent = (c: CardSpec) => (c.content !== undefined && c.content !== null) || c.pictureSrc !== undefined;
+  const hasContent = (c: CardSpec) =>
+    (c.content !== undefined && c.content !== null) ||
+    c.pictureSrc !== undefined;
   const normal = cards.filter((c) => !c.wide && hasContent(c));
   const wide = cards.filter((c) => c.wide && hasContent(c));
 
@@ -40,7 +50,14 @@ export default function ItemsGrid({ cards, type, onUpdate }: { cards: CardSpec[]
     if (React.isValidElement(anyContent)) return anyContent;
     // If plain object describing content, render CardContent with onChange
     if (typeof anyContent === "object") {
-      return <CardContent content={anyContent} onChange={(nc: any) => onUpdate && onUpdate(idx, { ...c, content: nc })} />;
+      return (
+        <CardContent
+          content={anyContent}
+          onChange={(nc: any) =>
+            onUpdate && onUpdate(idx, { ...c, content: nc })
+          }
+        />
+      );
     }
     // Otherwise content might be simple string/node
     return anyContent;
@@ -50,7 +67,14 @@ export default function ItemsGrid({ cards, type, onUpdate }: { cards: CardSpec[]
     <div className="items-grid">
       <div className="items-masonry">
         {normal.map((c, i) => (
-          <ItemCard key={i} card={c} title={c.title} pictureSrc={c.pictureSrc} pictureAlt={c.pictureAlt} onUpdate={(updated) => onUpdate && onUpdate(i, updated)}>
+          <ItemCard
+            key={i}
+            card={c}
+            title={c.title}
+            pictureSrc={c.pictureSrc}
+            pictureAlt={c.pictureAlt}
+            onUpdate={(updated) => onUpdate && onUpdate(i, updated)}
+          >
             {renderContent(c, i)}
           </ItemCard>
         ))}
@@ -58,7 +82,15 @@ export default function ItemsGrid({ cards, type, onUpdate }: { cards: CardSpec[]
       {wide.length > 0 && (
         <div className="item-card wide">
           {wide.map((c, i) => (
-            <ItemCard key={i} card={c} title={c.title} pictureSrc={c.pictureSrc} pictureAlt={c.pictureAlt} wide onUpdate={(updated) => onUpdate && onUpdate(i, updated)}>
+            <ItemCard
+              key={i}
+              card={c}
+              title={c.title}
+              pictureSrc={c.pictureSrc}
+              pictureAlt={c.pictureAlt}
+              wide
+              onUpdate={(updated) => onUpdate && onUpdate(i, updated)}
+            >
               {renderContent(c, i)}
             </ItemCard>
           ))}

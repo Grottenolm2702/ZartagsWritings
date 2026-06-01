@@ -2,7 +2,13 @@ import React from "react";
 import EditableCardContent from "./EditableCardContent";
 import { useAuth } from "../../context/AuthContext";
 
-export default function CardContent({ content, onChange }: { content?: any; onChange?: (c: any) => void }) {
+export default function CardContent({
+  content,
+  onChange,
+}: {
+  content?: any;
+  onChange?: (c: any) => void;
+}) {
   if (!content) return null;
   const auth = (() => {
     try {

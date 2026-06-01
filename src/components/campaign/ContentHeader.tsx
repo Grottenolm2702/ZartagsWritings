@@ -3,7 +3,13 @@ import { useAuth } from "../../context/AuthContext";
 
 export type HeaderField = { label: string; value: string };
 
-export default function ContentHeader({ fields, onChange }: { fields: HeaderField[]; onChange?: (idx: number, updated: HeaderField) => void }) {
+export default function ContentHeader({
+  fields,
+  onChange,
+}: {
+  fields: HeaderField[];
+  onChange?: (idx: number, updated: HeaderField) => void;
+}) {
   const auth = (() => {
     try {
       return useAuth();
@@ -22,8 +28,15 @@ export default function ContentHeader({ fields, onChange }: { fields: HeaderFiel
             <input
               value={f.value}
               className="value"
-              style={{ border: "none", background: "transparent", textAlign: "center", width: "100%" }}
-              onChange={(e) => onChange && onChange(i, { ...f, value: e.target.value })}
+              style={{
+                border: "none",
+                background: "transparent",
+                textAlign: "center",
+                width: "100%",
+              }}
+              onChange={(e) =>
+                onChange && onChange(i, { ...f, value: e.target.value })
+              }
             />
           ) : (
             <span className="value">{f.value}</span>

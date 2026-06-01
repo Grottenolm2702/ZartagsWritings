@@ -42,7 +42,11 @@ export default function CampaignTypePage() {
     try {
       return useAuth();
     } catch {
-      return { isEditor: false, setIsEditor: (_: boolean) => {}, toggleEditor: () => {} } as any;
+      return {
+        isEditor: false,
+        setIsEditor: (_: boolean) => {},
+        toggleEditor: () => {},
+      } as any;
     }
   })();
 
