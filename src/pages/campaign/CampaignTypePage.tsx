@@ -1,38 +1,48 @@
 import React from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Location } from "react-router-dom";
 import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
 import raw from "../../data/exampleData.json";
 import { useAuthSafe } from "../../context/AuthContext";
+import type {
+  RawData,
+  HeaderField,
+  CardSpec,
+  NavigationState,
+  CampaignType,
+} from "../../types/campaign";
 
-const MAP: Record<string, { header: any; cards: any[]; title?: string }> = {
+const MAP: Record<
+  string,
+  { header: HeaderField[]; cards: CardSpec[]; title?: string }
+> = {
   pc: {
-    header: (raw as any).pc.header,
-    cards: (raw as any).pc.cards,
-    title: (raw as any).pc.header?.[0]?.value || "Player Character",
+    header: (raw as RawData).pc.header,
+    cards: (raw as RawData).pc.cards,
+    title: (raw as RawData).pc.header?.[0]?.value || "Player Character",
   },
   npc: {
-    header: (raw as any).npc.header,
-    cards: (raw as any).npc.cards,
-    title: (raw as any).npc.header?.[0]?.value || "Non Playable Character",
+    header: (raw as RawData).npc.header,
+    cards: (raw as RawData).npc.cards,
+    title: (raw as RawData).npc.header?.[0]?.value || "Non Playable Character",
   },
   magicitem: {
-    header: (raw as any).magicItem.header,
-    cards: (raw as any).magicItem.cards,
-    title: (raw as any).magicItem.header?.[0]?.value || "Magic Item",
+    header: (raw as RawData).magicItem.header,
+    cards: (raw as RawData).magicItem.cards,
+    title: (raw as RawData).magicItem.header?.[0]?.value || "Magic Item",
   },
   location: {
-    header: (raw as any).location.header,
-    cards: (raw as any).location.cards,
-    title: (raw as any).location.header?.[0]?.value || "Location",
+    header: (raw as RawData).location.header,
+    cards: (raw as RawData).location.cards,
+    title: (raw as RawData).location.header?.[0]?.value || "Location",
   },
 };
 
 export default function CampaignTypePage() {
   const { type } = useParams();
   const key = (type || "").toLowerCase();
-  const location = useLocation();
-  const state = (location && (location.state as any)) || {};
+  const location = useLocation() as Location<NavigationState>;
+  const state = (location?.state as NavigationState) || {};
   const auth = useAuthSafe();
 
   const data = MAP[key];
@@ -45,7 +55,7 @@ export default function CampaignTypePage() {
         auth.setIsEditor(true);
       } catch {}
     }
-  }, [state?.newDraft]);
+  }, [state?.newDraft, auth]);
 
   if (!data) {
     return (
@@ -64,7 +74,7 @@ export default function CampaignTypePage() {
         title={data.title}
         headerFields={headerFields}
         cards={cards}
-        type={key}
+        type={key as CampaignType}
       />
     </Layout>
   );

@@ -1,7 +1,8 @@
 import React from "react";
 import { useAuthSafe } from "../../context/AuthContext";
+import type { HeaderField } from "../../types/campaign";
 
-export type HeaderField = { label: string; value: string };
+export type { HeaderField };
 
 export default function ContentHeader({
   fields,

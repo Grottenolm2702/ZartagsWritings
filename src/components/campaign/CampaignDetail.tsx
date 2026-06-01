@@ -1,58 +1,46 @@
 import React from "react";
-import ContentHeader, { HeaderField } from "./ContentHeader";
-import ItemsGrid, { CardSpec } from "./ItemsGrid";
+import ContentHeader from "./ContentHeader";
+import ItemsGrid from "./ItemsGrid";
 import { useAuthSafe } from "../../context/AuthContext";
+import type { CardSpec, HeaderField } from "../../types/campaign";
+
+interface CampaignDetailProps {
+  title: string;
+  headerFields?: HeaderField[];
+  cards?: CardSpec[];
+  type?: string;
+}
 
 export default function CampaignDetail({
   title,
   headerFields,
   cards,
   type,
-}: {
-  title: string;
-  headerFields?: HeaderField[];
-  cards?: CardSpec[];
-  type?: string;
-}) {
+}: CampaignDetailProps) {
   const auth = useAuthSafe();
 
-  const [localHeader, setLocalHeader] = React.useState<
-    HeaderField[] | undefined
-  >(headerFields);
+  const [localHeader, setLocalHeader] = React.useState<HeaderField[] | undefined>(
+    headerFields
+  );
   const [localCards, setLocalCards] = React.useState<CardSpec[] | undefined>(
     cards,
   );
   const [showAddMenu, setShowAddMenu] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
-  React.useEffect(() => {
-    if (JSON.stringify(localHeader) !== JSON.stringify(headerFields)) {
-      setLocalHeader(headerFields);
-    }
-  }, [headerFields, localHeader]);
-
-  React.useEffect(() => {
-    if (JSON.stringify(localCards) !== JSON.stringify(cards)) {
-      setLocalCards(cards);
-    }
-  }, [cards, localCards]);
-
   function addField(typeName: string) {
-    const newCard: CardSpec = { title: "New Field" } as CardSpec;
+    const newCard: CardSpec = { title: "New Field" };
     if (typeName === "paragraph") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      newCard.content = { type: "paragraph", text: "" } as any;
+      newCard.content = { type: "paragraph", text: "" };
     } else if (typeName === "paragraphs") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      newCard.content = { type: "paragraphs", paragraphs: [""] } as any;
+      newCard.content = { type: "paragraphs", paragraphs: [""] };
     } else if (typeName === "list") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      newCard.content = { type: "list", items: [{ label: "" }] } as any;
+      newCard.content = { type: "list", items: [{ label: "" }] };
     } else if (typeName === "attributes") {
       newCard.content = {
         type: "attributes",
         items: [{ dt: "", dd: "" }],
-      } as any;
+      };
     } else if (typeName === "picture") {
       newCard.pictureSrc = "";
       newCard.pictureAlt = "";

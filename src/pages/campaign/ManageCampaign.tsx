@@ -2,18 +2,43 @@ import React from "react";
 import Layout from "../../components/Layout";
 import raw from "../../data/exampleData.json";
 import { useAuthSafe } from "../../context/AuthContext";
+import type { RawData } from "../../types/campaign";
+
+type Player = {
+  id: string;
+  name: string;
+  isEditor?: boolean;
+};
 
 export default function ManageCampaign() {
   const auth = useAuthSafe();
 
-  const examplePlayers: any[] = (raw as any).overview?.campaignPlayers || [];
-  const [players, setPlayers] = React.useState<
-    { id: string; name: string; isEditor?: boolean }[]
-  >([]);
+  // Initialize players state with all logic in the initializer to avoid setState in effect
+  const [players, setPlayers] = React.useState<Player[]>(() => {
+    try {
+      const examplePlayers: Player[] = (raw as RawData).overview?.campaignPlayers || [];
+      const stored = localStorage.getItem("campaign:players");
+      const loaded = stored ? JSON.parse(stored) : examplePlayers;
+      
+      const dmId = localStorage.getItem("campaign:dm") || (loaded.length > 0 ? loaded[0].id : null);
+      if (dmId && !localStorage.getItem("campaign:dm")) {
+        localStorage.setItem("campaign:dm", dmId);
+      }
+      
+      // Ensure dm is editor
+      return dmId
+        ? loaded.map((p: Player) => (p.id === dmId ? { ...p, isEditor: true } : p))
+        : loaded;
+    } catch {
+      const examplePlayers: Player[] = (raw as RawData).overview?.campaignPlayers || [];
+      return examplePlayers;
+    }
+  });
 
   const [currentId, setCurrentId] = React.useState<string | null>(() => {
     try {
-      return localStorage.getItem("currentPlayerId");
+      const stored = localStorage.getItem("currentPlayerId");
+      return stored;
     } catch {
       return null;
     }
@@ -27,49 +52,7 @@ export default function ManageCampaign() {
     }
   });
 
-  React.useEffect(() => {
-    try {
-      const stored = localStorage.getItem("campaign:players");
-      if (stored) setPlayers(JSON.parse(stored));
-      else setPlayers(examplePlayers);
-    } catch {
-      setPlayers(examplePlayers);
-    }
-  }, []);
-
-  // ensure there is a dmId (default to first player) and enforce dm is editor
-  React.useEffect(() => {
-    if (players && players.length > 0) {
-      if (!dmId) {
-        const first = players[0].id;
-        try {
-          localStorage.setItem("campaign:dm", first);
-        } catch {}
-        setDmId(first);
-      } else {
-        // ensure dm is editor
-        const updated = players.map((p) =>
-          p.id === dmId ? { ...p, isEditor: true } : p,
-        );
-        const changed = JSON.stringify(updated) !== JSON.stringify(players);
-        if (changed) {
-          try {
-            localStorage.setItem("campaign:players", JSON.stringify(updated));
-          } catch {}
-          setPlayers(updated);
-        }
-      }
-    }
-  }, [players, dmId]);
-
-  React.useEffect(() => {
-    // if no currentId set, default to first player
-    if (!currentId && players && players.length > 0) {
-      setCurrentId((prev) => prev || players[0].id);
-    }
-  }, [players, currentId]);
-
-  function save(list: typeof players) {
+  function save(list: Player[]) {
     try {
       // enforce dm always editor
       const enforced = dmId

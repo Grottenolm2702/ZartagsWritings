@@ -1,5 +1,17 @@
 import React from "react";
 import { useAuthSafe } from "../../context/AuthContext";
+import type { CardSpec } from "../../types/campaign";
+
+interface ItemCardProps {
+  card?: CardSpec;
+  title: string;
+  children?: React.ReactNode;
+  pictureSrc?: string;
+  pictureAlt?: string;
+  wide?: boolean;
+  onUpdate?: (updated: CardSpec) => void;
+  onRemove?: () => void;
+}
 
 export default function ItemCard({
   card,
@@ -10,33 +22,20 @@ export default function ItemCard({
   wide,
   onUpdate,
   onRemove,
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  card?: any;
-  title: string;
-  children?: React.ReactNode;
-  pictureSrc?: string;
-  pictureAlt?: string;
-  wide?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onUpdate?: (updated: any) => void;
-  onRemove?: () => void;
-}) {
+}: ItemCardProps) {
   const auth = useAuthSafe();
 
   // local handlers for updating card fields
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateField = (patch: any) => {
-    if (onUpdate) {
-      const updated = {
-        ...(card || {}),
-        title,
-        pictureSrc,
-        pictureAlt,
-        ...patch,
-      };
-      onUpdate(updated);
-    }
+  const updateField = (patch: Partial<CardSpec>) => {
+    if (!onUpdate) return;
+    const updated: CardSpec = {
+      ...(card || { title: "" }),
+      title,
+      pictureSrc,
+      pictureAlt,
+      ...patch,
+    };
+    onUpdate(updated);
   };
 
   return (
@@ -79,8 +78,7 @@ export default function ItemCard({
                       `Delete field '${title}'? This cannot be undone.`,
                     )
                   ) {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                    onRemove && onRemove();
+                    onRemove?.();
                   }
                 } catch {}
               }}
@@ -94,7 +92,7 @@ export default function ItemCard({
       {auth.isEditor &&
       onUpdate &&
       (card?.pictureSrc !== undefined ||
-        (card && card.content && card.content.type === "picture") ||
+        (card && card.content && (card.content as unknown as Record<string, unknown>).type === "picture") ||
         pictureSrc) ? (
         <div style={{ marginTop: "8px", marginBottom: "8px" }}>
           <label style={{ display: "block", fontWeight: 600 }}>

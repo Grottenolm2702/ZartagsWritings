@@ -3,6 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { useAuthSafe } from "../context/AuthContext";
 import raw from "../data/exampleData.json";
+import type {
+  RawData,
+  CampaignData,
+  HeaderField,
+  CardSpec,
+  NavigationState,
+} from "../types/campaign";
 
 type Item = {
   id: string;
@@ -10,6 +17,20 @@ type Item = {
   title: string;
   to: string;
   visible?: boolean;
+};
+
+const CATEGORIES = ["Pcs", "Npcs", "Mi", "Loc"] as const;
+const LABEL_MAP: Record<string, string> = {
+  Pcs: "Player Caracters",
+  Npcs: "Npcs",
+  Mi: "Magic Items",
+  Loc: "Locations",
+};
+const TYPE_MAP: Record<string, string> = {
+  Pcs: "pc",
+  Npcs: "npc",
+  Mi: "magicitem",
+  Loc: "location",
 };
 
 export default function CampaignOverview() {
@@ -89,30 +110,15 @@ export default function CampaignOverview() {
     // keep effect for future analytics
   }, [query, filtered.length]);
 
-  const categories = ["Pcs", "Npcs", "Mi", "Loc"];
-  const labelMap: Record<string, string> = {
-    Pcs: "Player Caracters",
-    Npcs: "Npcs",
-    Mi: "Magic Items",
-    Loc: "Locations",
-  };
-
-  const typeMap: Record<string, string> = {
-    Pcs: "pc",
-    Npcs: "npc",
-    Mi: "magicitem",
-    Loc: "location",
-  };
-
   const grouped = React.useMemo(() => {
     const g: Record<string, Item[]> = {} as Record<string, Item[]>;
-    for (const c of categories) g[c] = [];
+    for (const c of CATEGORIES) g[c] = [];
     for (const it of filtered) {
       if (!g[it.category]) g[it.category] = [];
       g[it.category].push(it);
     }
     return g;
-  }, [filtered, items]);
+  }, [filtered]);
 
   // modal state for new item
   const [showNewFor, setShowNewFor] = React.useState<string | null>(null);
@@ -148,7 +154,7 @@ export default function CampaignOverview() {
         {filtered.length === 0 ? (
           <p>No entries found.</p>
         ) : (
-          categories.map((cat) =>
+          CATEGORIES.map((cat) =>
             grouped[cat] && grouped[cat].length > 0 ? (
               <section
                 key={cat}
@@ -162,7 +168,7 @@ export default function CampaignOverview() {
                     alignItems: "center",
                   }}
                 >
-                  <span>{labelMap[cat]}</span>
+                  <span>{LABEL_MAP[cat]}</span>
                   {auth.isEditor ? (
                     <button
                       className="new-button"
@@ -239,7 +245,7 @@ export default function CampaignOverview() {
         {showNewFor ? (
           <div className="modal-overlay">
             <div className="modal" role="dialog" aria-modal="true">
-              <h3>Create new entry in {labelMap[showNewFor]}</h3>
+              <h3>Create new entry in {LABEL_MAP[showNewFor]}</h3>
               <label>Title</label>
               <input
                 value={newTitle}
@@ -249,7 +255,7 @@ export default function CampaignOverview() {
                 <button
                   className="action-button"
                   onClick={() => {
-                    const type = typeMap[showNewFor as string];
+                    const type = TYPE_MAP[showNewFor as string];
                     const slug = slugify(newTitle || "new");
                     const to = `/capaign1/${type}/${slug}`;
                     const ni: Item = {
@@ -263,20 +269,20 @@ export default function CampaignOverview() {
 
                     // build empty draft from example data for selected category
                     const titleFallback = newTitle || "New Entry";
-                    const exampleMap: Record<string, any> = {
-                      Pcs: (raw as any).pc,
-                      Npcs: (raw as any).npc,
-                      Mi: (raw as any).magicItem,
-                      Loc: (raw as any).location,
+                    const exampleMap: Record<string, CampaignData | undefined> = {
+                      Pcs: (raw as RawData).pc,
+                      Npcs: (raw as RawData).npc,
+                      Mi: (raw as RawData).magicItem,
+                      Loc: (raw as RawData).location,
                     };
                     const example = exampleMap[showNewFor as string];
 
                     if (example) {
-                      const emptyHeader = (example.header || []).map(
-                        (h: any) => ({ ...h, value: titleFallback }),
+                      const emptyHeader: HeaderField[] = (example.header || []).map(
+                        (h) => ({ ...h, value: titleFallback }),
                       );
-                      const emptyCards = (example.cards || []).map((c: any) => {
-                        const base: any = { title: c.title, wide: c.wide };
+                      const emptyCards: CardSpec[] = (example.cards || []).map((c) => {
+                        const base: Partial<CardSpec> = { title: c.title, wide: c.wide };
                         const cardTitle =
                           c && c.title ? c.title : titleFallback;
                         if (c.pictureSrc !== undefined) {
@@ -288,12 +294,12 @@ export default function CampaignOverview() {
                         const rawContent =
                           c &&
                           c.content &&
-                          c.content.props &&
-                          c.content.props.content
-                            ? c.content.props.content
+                          (c.content as unknown as Record<string, unknown>).props &&
+                          ((c.content as unknown as Record<string, unknown>).props as Record<string, unknown>).content
+                            ? ((c.content as unknown as Record<string, unknown>).props as Record<string, unknown>).content
                             : c.content;
                         if (rawContent) {
-                          const ct = rawContent.type;
+                          const ct = (rawContent as Record<string, unknown>).type;
                           if (ct === "paragraph")
                             base.content = {
                               type: "paragraph",
@@ -311,8 +317,10 @@ export default function CampaignOverview() {
                             };
                           else if (ct === "attributes") {
                             const dt =
-                              rawContent.items && rawContent.items[0]
-                                ? rawContent.items[0].dt || ""
+                              (rawContent as Record<string, unknown>).items &&
+                              Array.isArray((rawContent as Record<string, unknown>).items) &&
+                              ((rawContent as Record<string, unknown>).items as unknown[])[0]
+                                ? (((rawContent as Record<string, unknown>).items as unknown[])[0] as Record<string, unknown>).dt || ""
                                 : "";
                             base.content = {
                               type: "attributes",
@@ -320,14 +328,14 @@ export default function CampaignOverview() {
                             };
                           }
                         }
-                        return base;
+                        return base as CardSpec;
                       });
                       navigate(to, {
                         state: {
                           newDraft: true,
                           header: emptyHeader,
                           cards: emptyCards,
-                        },
+                        } as NavigationState,
                       });
                     } else {
                       navigate(to);

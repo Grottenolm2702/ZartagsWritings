@@ -1,9 +1,9 @@
 import React from "react";
 import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
-import type { HeaderField } from "../../components/campaign/ContentHeader";
-import type { CardSpec } from "../../components/campaign/ItemsGrid";
+import type { HeaderField, CardSpec } from "../../types/campaign";
 import raw from "../../data/exampleData.json";
+import type { RawData } from "../../types/campaign";
 
 export function createCampaignPage(
   title: string,
@@ -29,6 +29,6 @@ export function createCampaignPage(
 
 export default createCampaignPage(
   "Non Playable Character",
-  (raw as any).npc.header,
-  (raw as any).npc.cards,
+  (raw as RawData).npc.header,
+  (raw as RawData).npc.cards,
 );

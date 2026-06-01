@@ -1,35 +1,20 @@
 import React from "react";
 import ItemCard from "./ItemCard";
 import CardContent from "./CardContent";
-import { useAuthSafe } from "../../context/AuthContext";
+import type { CardSpec, CardContent as CardContentType } from "../../types/campaign";
 
-export type CardSpec = {
-  title: string;
-  content?: any;
-  pictureSrc?: string;
-  pictureAlt?: string;
-  wide?: boolean;
-};
-
-function slugify(s: string) {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-export default function ItemsGrid({
-  cards,
-  type,
-  onUpdate,
-  onRemove,
-}: {
+interface ItemsGridProps {
   cards: CardSpec[];
   type?: string;
   onUpdate?: (idx: number, updated: CardSpec) => void;
   onRemove?: (idx: number) => void;
-}) {
-  const auth = useAuthSafe();
+}
+
+export default function ItemsGrid({
+  cards,
+  onUpdate,
+  onRemove,
+}: ItemsGridProps) {
 
   if (!cards || cards.length === 0) return null;
   // filter out cards that have neither content nor picture
@@ -40,23 +25,23 @@ export default function ItemsGrid({
   const wide = cards.filter((c) => c.wide && hasContent(c));
 
   function renderContent(c: CardSpec, idx: number) {
-    const anyContent: any = c.content as any;
-    if (!anyContent) return null;
+    const contentValue = c.content;
+    if (!contentValue) return null;
     // If content already a React element, return as-is
-    if (React.isValidElement(anyContent)) return anyContent;
+    if (React.isValidElement(contentValue)) return contentValue;
     // If plain object describing content, render CardContent with onChange
-    if (typeof anyContent === "object") {
+    if (typeof contentValue === "object") {
       return (
         <CardContent
-          content={anyContent}
-          onChange={(nc: any) =>
+          content={contentValue as CardContentType}
+          onChange={(nc: CardContentType) =>
             onUpdate && onUpdate(idx, { ...c, content: nc })
           }
         />
       );
     }
     // Otherwise content might be simple string/node
-    return anyContent;
+    return contentValue;
   }
 
   return (

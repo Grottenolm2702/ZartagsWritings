@@ -4,6 +4,7 @@ import raw from "../../data/exampleData.json";
 import Layout from "../../components/Layout";
 import EditableCardContent from "../../components/campaign/EditableCardContent";
 import { useAuth } from "../../context/AuthContext";
+import type { RawData, CampaignData, CardSpec, HeaderField } from "../../types/campaign";
 
 function slugify(s: string) {
   return s
@@ -18,7 +19,9 @@ export default function EditItemPage() {
   const auth = useAuth();
   const key = (type || "").toLowerCase();
 
-  const dataset: any = (raw as any)[key];
+  const dataset: CampaignData | undefined = (raw as RawData)[
+    key as keyof RawData
+  ] as CampaignData | undefined;
   if (!dataset) {
     return (
       <Layout>
@@ -31,9 +34,9 @@ export default function EditItemPage() {
   }
 
   const isNew = slug === "new" || !slug;
-  const foundCard = isNew
+  const foundCard: CardSpec | undefined = isNew
     ? { title: "New Card", content: { type: "paragraph", text: "" } }
-    : dataset.cards.find((c: any) => slugify(c.title) === slug);
+    : dataset.cards.find((c: CardSpec) => slugify(c.title) === slug);
 
   return (
     <Layout>
@@ -46,7 +49,7 @@ export default function EditItemPage() {
 
         {dataset.header && (
           <div className="content-header" style={{ marginTop: "0.5rem" }}>
-            {dataset.header.map((h: any, i: number) => (
+            {dataset.header.map((h: HeaderField, i: number) => (
               <div className="content-header-item" key={i}>
                 <span className="label">{h.label}</span>
                 <input

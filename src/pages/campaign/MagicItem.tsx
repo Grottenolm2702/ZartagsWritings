@@ -1,9 +1,9 @@
 import React from "react";
 import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
-import type { HeaderField } from "../../components/campaign/ContentHeader";
-import type { CardSpec } from "../../components/campaign/ItemsGrid";
+import type { HeaderField, CardSpec } from "../../types/campaign";
 import raw from "../../data/exampleData.json";
+import type { RawData } from "../../types/campaign";
 
 export function createCampaignPage(
   title: string,
@@ -29,6 +29,6 @@ export function createCampaignPage(
 
 export default createCampaignPage(
   "Magic Item",
-  (raw as any).magicItem.header,
-  (raw as any).magicItem.cards,
+  (raw as RawData).magicItem.header,
+  (raw as RawData).magicItem.cards,
 );

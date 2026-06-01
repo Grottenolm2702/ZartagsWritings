@@ -1,30 +1,32 @@
 import React from "react";
+import type {
+  CardContent as CardContentType,
+  AttributeItem,
+  ListItem,
+} from "../../types/campaign";
+
+interface EditableCardContentProps {
+  content?: CardContentType;
+  onChange?: (c: CardContentType) => void;
+}
 
 export default function EditableCardContent({
   content,
   onChange,
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  content?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onChange?: (c: any) => void;
-}) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [state, setState] = React.useState<any>(content || {});
-
-  React.useEffect(() => setState(content || {}), [content]);
+}: EditableCardContentProps) {
+  const [state, setState] = React.useState<Partial<CardContentType>>(
+    content || {}
+  );
 
   if (!content) return null;
 
   function update(path: string, value: unknown) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setState((s: any) => {
+    setState((s) => {
       const copy = { ...s };
-      copy[path] = value;
+      (copy as Record<string, unknown>)[path] = value;
       // notify parent
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        onChange && onChange(copy);
+        onChange?.(copy as CardContentType);
       } catch {}
       return copy;
     });
@@ -81,15 +83,15 @@ export default function EditableCardContent({
   }
 
   if (content.type === "list") {
-    const items = state.items || content.items || [];
+    const items: ListItem[] = state.items || content.items || [];
     return (
       <ul>
-        {items.map((it: any, i: number) => (
+        {items.map((it: ListItem, i: number) => (
           <li key={i} style={{ marginBottom: "0.25rem" }}>
             <input
               value={it.label || ""}
               onChange={(e) => {
-                const next = items.map((x: any, idx: number) =>
+                const next = items.map((x: ListItem, idx: number) =>
                   idx === i ? { ...x, label: e.target.value } : x,
                 );
                 update("items", next);
@@ -116,16 +118,16 @@ export default function EditableCardContent({
   }
 
   if (content.type === "attributes") {
-    const items = state.items || content.items || [];
+    const items: AttributeItem[] = state.items || content.items || [];
     return (
       <dl className="atribute-list">
-        {items.map((it: any, i: number) => (
+        {items.map((it: AttributeItem, i: number) => (
           <React.Fragment key={i}>
             <dt>
               <input
                 value={it.dt || ""}
                 onChange={(e) => {
-                  const next = items.map((x: any, idx: number) =>
+                  const next = items.map((x: AttributeItem, idx: number) =>
                     idx === i ? { ...x, dt: e.target.value } : x,
                   );
                   update("items", next);
@@ -141,7 +143,7 @@ export default function EditableCardContent({
               <input
                 value={it.dd || ""}
                 onChange={(e) => {
-                  const next = items.map((x: any, idx: number) =>
+                  const next = items.map((x: AttributeItem, idx: number) =>
                     idx === i ? { ...x, dd: e.target.value } : x,
                   );
                   update("items", next);
