@@ -1,0 +1,70 @@
+/* Layout & spacing utilities */
+
+.flex-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.gap-small {
+  gap: 6px;
+}
+
+.gap-medium {
+  gap: 8px;
+}
+
+.gap-large {
+  gap: 12px;
+}
+
+/* Header styles */
+
+.header-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-title {
+  margin: 0;
+}
+
+.header-actions {
+  margin-left: auto;
+}
+
+/* Menu/modal backdrop */
+
+.menu-backdrop {
+  display: none;
+}
+
+.menu-backdrop.open {
+  display: block;
+}
+
+/* Button containers */
+
+.button-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+/* Relative positioning for overlays */
+
+.position-relative {
+  position: relative;
+}
+
+/* Remove default margin */
+
+.no-margin {
+  margin: 0;
+}

@@ -4,6 +4,8 @@ import type {
   AttributeItem,
   ListItem,
 } from "../../types/campaign";
+import "../../styles/forms.css";
+import "../../styles/layout.css";
 
 interface EditableCardContentProps {
   content?: CardContentType;
@@ -32,21 +34,12 @@ export default function EditableCardContent({
     });
   }
 
-  const textareaStyle: React.CSSProperties = {
-    width: "100%",
-    border: "none",
-    background: "transparent",
-    padding: 0,
-    font: "inherit",
-    resize: "vertical",
-  };
-
   if (content.type === "paragraphs") {
     const paragraphs: string[] = state.paragraphs || content.paragraphs || [""];
     return (
       <div>
         {paragraphs.map((p: string, i: number) => (
-          <div key={i} style={{ marginBottom: "0.5rem" }}>
+          <div key={i} className="form-textarea-container">
             <textarea
               value={paragraphs[i]}
               onChange={(e) => {
@@ -55,7 +48,7 @@ export default function EditableCardContent({
                 update("paragraphs", next);
               }}
               rows={4}
-              style={{ ...textareaStyle }}
+              className="form-textarea"
             />
           </div>
         ))}
@@ -76,7 +69,7 @@ export default function EditableCardContent({
           value={state.text ?? content.text ?? ""}
           onChange={(e) => update("text", e.target.value)}
           rows={6}
-          style={textareaStyle}
+          className="form-textarea"
         />
       </div>
     );
@@ -85,9 +78,9 @@ export default function EditableCardContent({
   if (content.type === "list") {
     const items: ListItem[] = state.items || content.items || [];
     return (
-      <ul>
+      <ul className="list-unstyled">
         {items.map((it: ListItem, i: number) => (
-          <li key={i} style={{ marginBottom: "0.25rem" }}>
+          <li key={i} className="list-item-spacer">
             <input
               value={it.label || ""}
               onChange={(e) => {
@@ -96,12 +89,7 @@ export default function EditableCardContent({
                 );
                 update("items", next);
               }}
-              style={{
-                border: "none",
-                background: "transparent",
-                font: "inherit",
-                width: "100%",
-              }}
+              className="form-input-transparent"
             />
           </li>
         ))}
@@ -132,11 +120,7 @@ export default function EditableCardContent({
                   );
                   update("items", next);
                 }}
-                style={{
-                  border: "none",
-                  background: "transparent",
-                  font: "inherit",
-                }}
+                className="form-input-transparent"
               />
             </dt>
             <dd>
@@ -148,12 +132,7 @@ export default function EditableCardContent({
                   );
                   update("items", next);
                 }}
-                style={{
-                  border: "none",
-                  background: "transparent",
-                  font: "inherit",
-                  width: "100%",
-                }}
+                className="form-input-transparent form-input-full-width"
               />
             </dd>
           </React.Fragment>

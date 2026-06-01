@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuthSafe } from "../../context/AuthContext";
 import type { CardSpec } from "../../types/campaign";
+import "../../styles/layout.css";
 
 interface ItemCardProps {
   card?: CardSpec;
@@ -40,14 +41,7 @@ export default function ItemCard({
 
   return (
     <div className={"item-card" + (wide ? " wide" : "")}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "8px",
-        }}
-      >
+      <div className="flex-row" style={{ justifyContent: "space-between" }}>
         <div style={{ flex: 1 }}>
           {auth.isEditor ? (
             <input
@@ -67,7 +61,7 @@ export default function ItemCard({
         </div>
 
         {auth.isEditor && onRemove ? (
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <div className="flex-row">
             <button
               className="action-button secondary"
               onClick={() => {
