@@ -47,19 +47,28 @@ export default function Layout({ children }) {
     const openBtn = document.getElementById("open-sidebar-button");
     if (!navbar) return;
     const header = document.querySelector("header");
-    const isMobile = window.matchMedia('(max-width: 800px)').matches
+    const isMobile = window.matchMedia("(max-width: 800px)").matches;
     if (open) {
       navbar.classList.add("show");
       if (header) header.classList.add("show");
       if (openBtn) openBtn.setAttribute("aria-expanded", "true");
       navbar.removeAttribute("inert");
+      // prevent background scroll on mobile when sidebar open
+      if (isMobile) document.body.style.overflow = 'hidden';
     } else {
       navbar.classList.remove("show");
       if (header) header.classList.remove("show");
       if (openBtn) openBtn.setAttribute("aria-expanded", "false");
       if (isMobile) navbar.setAttribute("inert", "");
-      else navbar.removeAttribute('inert')
+      else navbar.removeAttribute("inert");
+      // restore scroll
+      document.body.style.overflow = '';
     }
+
+    return () => {
+      // cleanup in case component unmounts while sidebar open
+      document.body.style.overflow = '';
+    };
   }, [open]);
 
   return (

@@ -72,20 +72,25 @@ nav a.accent-link {
   nav {
     position: fixed;
     top: 0;
-    right: -100%;
+    right: 0;
     height: 100vh;
     width: min(100%, 15em);
-    z-index: 10;
+    z-index: 11;
     border-left: 1px solid var(--hover-color);
-    transition: right 0.3s ease;
+    transition: transform 0.3s ease;
+    transform: translateX(100%);
+    pointer-events: none;
+    will-change: transform;
   }
 
   nav.show {
-    right: 0;
+    transform: translateX(0);
+    pointer-events: auto;
   }
 
   header.show ~ #overlay {
     display: block;
+    pointer-events: auto;
   }
 
   nav ul {
