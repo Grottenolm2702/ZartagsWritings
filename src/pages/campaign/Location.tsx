@@ -3,7 +3,7 @@ import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
 import type { HeaderField } from "../../components/campaign/ContentHeader";
 import type { CardSpec } from "../../components/campaign/ItemsGrid";
-import { LOCATION_EXAMPLE } from "../../data/exampleData";
+import raw from "../../data/exampleData.json";
 
 export function createCampaignPage(
   title: string,
@@ -29,6 +29,6 @@ export function createCampaignPage(
 
 export default createCampaignPage(
   "Location",
-  LOCATION_EXAMPLE.header,
-  LOCATION_EXAMPLE.cards,
+  (raw as any).location.header,
+  (raw as any).location.cards,
 );

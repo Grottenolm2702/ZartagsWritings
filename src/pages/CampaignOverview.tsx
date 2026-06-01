@@ -2,12 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { useAuth } from "../context/AuthContext";
-import {
-  MAGICITEM_EXAMPLE,
-  PC_EXAMPLE,
-  NPC_EXAMPLE,
-  LOCATION_EXAMPLE,
-} from "../data/exampleData";
+import raw from "../data/exampleData.json";
 
 type Item = { category: string; title: string; to: string; visible?: boolean };
 
@@ -263,10 +258,10 @@ export default function CampaignOverview() {
                     // build empty draft from example data for selected category
                     const titleFallback = newTitle || "New Entry";
                     const exampleMap: Record<string, any> = {
-                      Pcs: PC_EXAMPLE,
-                      Npcs: NPC_EXAMPLE,
-                      Mi: MAGICITEM_EXAMPLE,
-                      Loc: LOCATION_EXAMPLE,
+                      Pcs: (raw as any).pc,
+                      Npcs: (raw as any).npc,
+                      Mi: (raw as any).magicItem,
+                      Loc: (raw as any).location,
                     };
                     const example = exampleMap[showNewFor as string];
 

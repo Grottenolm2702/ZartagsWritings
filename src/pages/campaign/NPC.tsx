@@ -3,7 +3,7 @@ import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
 import type { HeaderField } from "../../components/campaign/ContentHeader";
 import type { CardSpec } from "../../components/campaign/ItemsGrid";
-import { NPC_EXAMPLE } from "../../data/exampleData";
+import raw from "../../data/exampleData.json";
 
 export function createCampaignPage(
   title: string,
@@ -29,6 +29,6 @@ export function createCampaignPage(
 
 export default createCampaignPage(
   "Non Playable Character",
-  NPC_EXAMPLE.header,
-  NPC_EXAMPLE.cards,
+  (raw as any).npc.header,
+  (raw as any).npc.cards,
 );

@@ -2,34 +2,29 @@ import React from "react";
 import { useParams, useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
-import {
-  PC_EXAMPLE,
-  NPC_EXAMPLE,
-  MAGICITEM_EXAMPLE,
-  LOCATION_EXAMPLE,
-} from "../../data/exampleData";
+import raw from "../../data/exampleData.json";
 import { useAuth } from "../../context/AuthContext";
 
 const MAP: Record<string, { header: any; cards: any[]; title?: string }> = {
   pc: {
-    header: PC_EXAMPLE.header,
-    cards: PC_EXAMPLE.cards,
-    title: PC_EXAMPLE.header?.[0]?.value || "Player Character",
+    header: (raw as any).pc.header,
+    cards: (raw as any).pc.cards,
+    title: (raw as any).pc.header?.[0]?.value || "Player Character",
   },
   npc: {
-    header: NPC_EXAMPLE.header,
-    cards: NPC_EXAMPLE.cards,
-    title: NPC_EXAMPLE.header?.[0]?.value || "Non Playable Character",
+    header: (raw as any).npc.header,
+    cards: (raw as any).npc.cards,
+    title: (raw as any).npc.header?.[0]?.value || "Non Playable Character",
   },
   magicitem: {
-    header: MAGICITEM_EXAMPLE.header,
-    cards: MAGICITEM_EXAMPLE.cards,
-    title: MAGICITEM_EXAMPLE.header?.[0]?.value || "Magic Item",
+    header: (raw as any).magicItem.header,
+    cards: (raw as any).magicItem.cards,
+    title: (raw as any).magicItem.header?.[0]?.value || "Magic Item",
   },
   location: {
-    header: LOCATION_EXAMPLE.header,
-    cards: LOCATION_EXAMPLE.cards,
-    title: LOCATION_EXAMPLE.header?.[0]?.value || "Location",
+    header: (raw as any).location.header,
+    cards: (raw as any).location.cards,
+    title: (raw as any).location.header?.[0]?.value || "Location",
   },
 };
 
