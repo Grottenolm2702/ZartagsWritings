@@ -77,15 +77,18 @@ nav a.accent-link {
     width: min(100%, 15em);
     z-index: 11;
     border-left: 1px solid var(--hover-color);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, visibility 0s linear 0.3s;
     transform: translateX(100%);
     pointer-events: none;
+    visibility: hidden;
     will-change: transform;
   }
 
   nav.show {
     transform: translateX(0);
     pointer-events: auto;
+    visibility: visible;
+    transition-delay: 0s;
   }
 
   header.show ~ #overlay {
