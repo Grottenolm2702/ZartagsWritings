@@ -1,10 +1,9 @@
-import React from 'react'
-import Header from '../../components/Header'
+import React from "react";
+import Layout from "../../components/Layout";
 
 export default function Location() {
   return (
-    <>
-      <Header />
+    <Layout>
       <main>
         <h1>Location</h1>
         <div className="content-header">
@@ -26,14 +25,23 @@ export default function Location() {
             <div className="item-card">
               <h2>Related Places</h2>
               <ul>
-                <li><a href="#">Garten</a></li>
-                <li><a href="#">Keller</a></li>
-                <li><a href="#">Küche</a></li>
+                <li>
+                  <a href="#">Garten</a>
+                </li>
+                <li>
+                  <a href="#">Keller</a>
+                </li>
+                <li>
+                  <a href="#">Küche</a>
+                </li>
               </ul>
             </div>
             <div className="item-card">
               <h2>Picture</h2>
-              <img src="/src/media/Hero_screenshot.png" alt="Character Picture" />
+              <img
+                src="/src/media/Hero_screenshot.png"
+                alt="Character Picture"
+              />
             </div>
           </div>
           <div className="item-card wide">
@@ -42,6 +50,6 @@ export default function Location() {
           </div>
         </div>
       </main>
-    </>
-  )
+    </Layout>
+  );
 }

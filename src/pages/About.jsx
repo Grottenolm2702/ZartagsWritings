@@ -1,17 +1,16 @@
-import React from 'react'
-import Header from '../components/Header'
+import React from "react";
+import Layout from "../components/Layout";
 
 export default function About() {
   return (
-    <>
-      <Header />
+    <Layout>
       <main>
         <h1>About Zartags Writings</h1>
         <section className="about-section">
           <h2>Who We Are</h2>
           <p>
-            Welcome to Zartags Writings – a note-taking tool dedicated to D&D and
-            other pen-and-paper games.
+            Welcome to Zartags Writings – a note-taking tool dedicated to D&D
+            and other pen-and-paper games.
           </p>
         </section>
 
@@ -32,8 +31,8 @@ export default function About() {
             </li>
             <li>
               <strong>Character Profiles:</strong> Flexible, highly customizable
-              templates for both player characters (PCs) and non-player characters
-              (NPCs).
+              templates for both player characters (PCs) and non-player
+              characters (NPCs).
             </li>
             <li>
               <strong>Lore & Locations:</strong> Comprehensive templates for all
@@ -41,8 +40,8 @@ export default function About() {
               historical events, religions, and related worldbuilding aspects.
             </li>
             <li>
-              <strong>Items & Artifacts:</strong> Customizable templates for both
-              magical and non-magical items.
+              <strong>Items & Artifacts:</strong> Customizable templates for
+              both magical and non-magical items.
             </li>
           </ul>
         </section>
@@ -55,6 +54,6 @@ export default function About() {
           </p>
         </section>
       </main>
-    </>
-  )
+    </Layout>
+  );
 }

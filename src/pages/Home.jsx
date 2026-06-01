@@ -1,10 +1,9 @@
-import React from 'react'
-import Header from '../components/Header'
+import React from "react";
+import Layout from "../components/Layout";
 
 export default function Home() {
   return (
-    <>
-      <Header />
+    <Layout>
       <main>
         <h1>Zartags Writings</h1>
         <section className="items-grid">
@@ -34,6 +33,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-    </>
-  )
+    </Layout>
+  );
 }

@@ -1,10 +1,9 @@
-import React from 'react'
-import Header from '../components/Header'
+import React from "react";
+import Layout from "../components/Layout";
 
 export default function Login() {
   return (
-    <>
-      <Header />
+    <Layout>
       <main>
         <h1>Login</h1>
         <form>
@@ -29,6 +28,6 @@ export default function Login() {
           <button type="submit">Login</button>
         </form>
       </main>
-    </>
-  )
+    </Layout>
+  );
 }
