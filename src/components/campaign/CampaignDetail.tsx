@@ -115,6 +115,9 @@ export default function CampaignDetail({
                       background: "var(--hover-color)",
                       padding: "8px",
                       borderRadius: "6px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
                     }}
                   >
                     <button
