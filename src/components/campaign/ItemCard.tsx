@@ -1,7 +1,8 @@
 import React from "react";
 import { useAuthSafe } from "../../context/AuthContext";
-import type { CardSpec } from "../../types/campaign";
+import contentStyles from "../../styles/content.module.css";
 import layoutStyles from "../../styles/layout.module.css";
+import type { CardSpec } from "../../types/campaign";
 
 interface ItemCardProps {
   card?: CardSpec;
@@ -40,7 +41,7 @@ export default function ItemCard({
   };
 
   return (
-    <div className={"item-card" + (wide ? " wide" : "")}>
+    <div className={`${contentStyles.itemCard}${wide ? ` ${contentStyles.wide}` : ""}`}>
       <div
         className={layoutStyles.flexRow}
         style={{ justifyContent: "space-between" }}
@@ -48,7 +49,7 @@ export default function ItemCard({
         <div style={{ flex: 1 }}>
           {auth.isEditor ? (
             <input
-              className="item-title-input"
+              className={contentStyles.itemTitleInput}
               defaultValue={title}
               onChange={(e) => updateField({ title: e.target.value })}
               style={{
@@ -66,7 +67,7 @@ export default function ItemCard({
         {auth.isEditor && onRemove ? (
           <div className={layoutStyles.flexRow}>
             <button
-              className="action-button secondary"
+              className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
               onClick={() => {
                 try {
                   // confirm destructive action
@@ -94,8 +95,8 @@ export default function ItemCard({
           (card.content as unknown as Record<string, unknown>).type ===
             "picture") ||
         pictureSrc) ? (
-        <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-          <label style={{ display: "block", fontWeight: 600 }}>
+        <div className={contentStyles.pictureUrlField}>
+          <label className={contentStyles.pictureUrlInput}>
             Picture URL
           </label>
           <input
@@ -105,7 +106,8 @@ export default function ItemCard({
             style={{ width: "100%", border: "none", background: "transparent" }}
           />
           <label
-            style={{ display: "block", fontWeight: 600, marginTop: "6px" }}
+            className={contentStyles.pictureUrlInput}
+            style={{ marginTop: "0.5rem" }}
           >
             Alt text
           </label>
@@ -120,7 +122,7 @@ export default function ItemCard({
 
       {children}
       {pictureSrc ? (
-        <div className="item-picture">
+        <div className={contentStyles.itemPicture}>
           <img src={pictureSrc} alt={pictureAlt || title} />
         </div>
       ) : null}

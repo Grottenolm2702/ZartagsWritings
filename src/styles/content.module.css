@@ -266,3 +266,55 @@
   background: var(--primary-color);
   color: var(--text-color);
 }
+
+.itemPicture {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.itemPicture img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 0.25em;
+}
+
+.cardSection {
+  margin-top: 1.5rem;
+}
+
+.cardSectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--highlight-color);
+}
+
+.cardSectionContent {
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.pictureUrlInput {
+  display: block;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.pictureUrlField {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.pictureUrlField input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+}

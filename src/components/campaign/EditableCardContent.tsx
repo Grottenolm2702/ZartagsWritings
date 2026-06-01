@@ -5,6 +5,7 @@ import type {
   ListItem,
 } from "../../types/campaign";
 import styles from "../../styles/forms.module.css";
+import contentStyles from "../../styles/content.module.css";
 
 interface EditableCardContentProps {
   content?: CardContentType;
@@ -107,7 +108,7 @@ export default function EditableCardContent({
   if (content.type === "attributes") {
     const items: AttributeItem[] = state.items || content.items || [];
     return (
-      <dl className="atribute-list">
+      <dl className={contentStyles.atributeList}>
         {items.map((it: AttributeItem, i: number) => (
           <React.Fragment key={i}>
             <dt>
