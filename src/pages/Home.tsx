@@ -1,5 +1,5 @@
-import React from "react";
-import Layout from "../components/Layout";
+import React from 'react'
+import Layout from '../components/Layout'
 
 export default function Home() {
   return (
@@ -21,18 +21,9 @@ export default function Home() {
                 </p>
               </a>
             </article>
-            <article className="campaign-card">
-              <a href="#">
-                <h2>My Second Blog Post</h2>
-                <p>
-                  This is the content of my first blog post. It contains some
-                  interesting information about my thoughts and experiences.
-                </p>
-              </a>
-            </article>
           </div>
         </section>
       </main>
     </Layout>
-  );
+  )
 }

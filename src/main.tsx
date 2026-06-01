@@ -8,8 +8,8 @@ import "./styles/form.css";
 import "./styles/about.css";
 import "./styles/overview.css";
 
-createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
 );

@@ -27,8 +27,12 @@
     "vite": "^8.0.3"
   },
   "devDependencies": {
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^6.0.2",
-    "simple-git-hooks": "^2.13.1"
+    "simple-git-hooks": "^2.13.1",
+    "typescript": "^6.0.3"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run format"

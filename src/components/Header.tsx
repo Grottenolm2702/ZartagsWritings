@@ -13,9 +13,7 @@ export default function Header() {
             <Link to="/about">About</Link>
           </li>
           <li>
-            <Link className="accent-link" to="/login">
-              Login
-            </Link>
+            <Link className="accent-link" to="/login">Login</Link>
           </li>
         </ul>
       </nav>
