@@ -49,7 +49,6 @@ export default function CampaignDetail({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       newCard.content = { type: "list", items: [{ label: "" }] } as any;
     } else if (typeName === "attributes") {
-       
       newCard.content = {
         type: "attributes",
         items: [{ dt: "", dd: "" }],
