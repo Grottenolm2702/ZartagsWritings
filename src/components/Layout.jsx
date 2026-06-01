@@ -7,7 +7,7 @@ export default function Layout({ children }) {
   React.useEffect(() => {
     const navbar = document.getElementById("navbar");
     const openBtn = document.getElementById("open-sidebar-button");
-    const media = window.matchMedia("(width < 800px)");
+    const media = window.matchMedia("(max-width: 800px)");
 
     function updateNavbar(e) {
       const isMobile = e.matches;
@@ -29,7 +29,9 @@ export default function Layout({ children }) {
       if (!navbar) return;
       navbar.classList.remove("show");
       if (openBtn) openBtn.setAttribute("aria-expanded", "false");
-      navbar.setAttribute("inert", "");
+      const isMobile = window.matchMedia("(max-width: 800px)").matches;
+      if (isMobile) navbar.setAttribute("inert", "");
+      else navbar.removeAttribute("inert");
       setOpen(false);
     };
     navLinks.forEach((l) => l.addEventListener("click", onNavClick));
@@ -44,17 +46,19 @@ export default function Layout({ children }) {
     const navbar = document.getElementById("navbar");
     const openBtn = document.getElementById("open-sidebar-button");
     if (!navbar) return;
-    const header = document.querySelector('header')
+    const header = document.querySelector("header");
+    const isMobile = window.matchMedia('(max-width: 800px)').matches
     if (open) {
       navbar.classList.add("show");
-      if (header) header.classList.add('show')
+      if (header) header.classList.add("show");
       if (openBtn) openBtn.setAttribute("aria-expanded", "true");
       navbar.removeAttribute("inert");
     } else {
       navbar.classList.remove("show");
-      if (header) header.classList.remove('show')
+      if (header) header.classList.remove("show");
       if (openBtn) openBtn.setAttribute("aria-expanded", "false");
-      navbar.setAttribute("inert", "");
+      if (isMobile) navbar.setAttribute("inert", "");
+      else navbar.removeAttribute('inert')
     }
   }, [open]);
 
