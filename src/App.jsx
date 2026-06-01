@@ -1,41 +1,32 @@
 import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import CampaignOverview from "./pages/CampaignOverview";
-
-function Router() {
-  const [path, setPath] = React.useState(window.location.pathname);
-  React.useEffect(() => {
-    const onPop = () => setPath(window.location.pathname);
-    window.addEventListener("popstate", onPop);
-
-    const onClick = (e) => {
-      const a = e.target.closest && e.target.closest("a");
-      if (!a) return;
-      const href = a.getAttribute("href");
-      if (href && (href.startsWith("/") || href.endsWith(".html"))) {
-        e.preventDefault();
-        window.history.pushState(null, "", href);
-        setPath(href);
-      }
-    };
-    document.addEventListener("click", onClick);
-
-    return () => {
-      window.removeEventListener("popstate", onPop);
-      document.removeEventListener("click", onClick);
-    };
-  }, []);
-
-  if (path === "/" || path.endsWith("index.html")) return <Home />;
-  if (path.includes("about") || path.endsWith("about.html")) return <About />;
-  if (path.includes("login") || path.endsWith("login.html")) return <Login />;
-  if (path.includes("capaign1") || path.includes("overview"))
-    return <CampaignOverview />;
-  return <Home />;
-}
+import PC from "./pages/campaign/PC";
+import NPC from "./pages/campaign/NPC";
+import Location from "./pages/campaign/Location";
+import MagicItem from "./pages/campaign/MagicItem";
 
 export default function App() {
-  return <Router />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/index.html" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/about.html" element={<About />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/login.html" element={<Login />} />
+        <Route path="/capaign1" element={<CampaignOverview />} />
+        <Route path="/capaign1/overview" element={<CampaignOverview />} />
+        <Route path="/capaign1/pc" element={<PC />} />
+        <Route path="/capaign1/npc" element={<NPC />} />
+        <Route path="/capaign1/location" element={<Location />} />
+        <Route path="/capaign1/magicitem" element={<MagicItem />} />
+        <Route path="*" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
