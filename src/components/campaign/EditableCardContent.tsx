@@ -15,7 +15,7 @@ export default function EditableCardContent({
   onChange,
 }: EditableCardContentProps) {
   const [state, setState] = React.useState<Partial<CardContentType>>(
-    content || {}
+    content || {},
   );
 
   if (!content) return null;

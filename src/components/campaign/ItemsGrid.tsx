@@ -1,7 +1,10 @@
 import React from "react";
 import ItemCard from "./ItemCard";
 import CardContent from "./CardContent";
-import type { CardSpec, CardContent as CardContentType } from "../../types/campaign";
+import type {
+  CardSpec,
+  CardContent as CardContentType,
+} from "../../types/campaign";
 
 interface ItemsGridProps {
   cards: CardSpec[];
@@ -15,7 +18,6 @@ export default function ItemsGrid({
   onUpdate,
   onRemove,
 }: ItemsGridProps) {
-
   if (!cards || cards.length === 0) return null;
   // filter out cards that have neither content nor picture
   const hasContent = (c: CardSpec) =>

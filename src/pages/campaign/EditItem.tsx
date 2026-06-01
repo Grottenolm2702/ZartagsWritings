@@ -4,7 +4,12 @@ import raw from "../../data/exampleData.json";
 import Layout from "../../components/Layout";
 import EditableCardContent from "../../components/campaign/EditableCardContent";
 import { useAuth } from "../../context/AuthContext";
-import type { RawData, CampaignData, CardSpec, HeaderField } from "../../types/campaign";
+import type {
+  RawData,
+  CampaignData,
+  CardSpec,
+  HeaderField,
+} from "../../types/campaign";
 
 function slugify(s: string) {
   return s

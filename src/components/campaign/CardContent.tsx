@@ -1,17 +1,17 @@
 import React from "react";
 import EditableCardContent from "./EditableCardContent";
 import { useAuthSafe } from "../../context/AuthContext";
-import type { CardContent as CardContentType, ListItem } from "../../types/campaign";
+import type {
+  CardContent as CardContentType,
+  ListItem,
+} from "../../types/campaign";
 
 interface CardContentProps {
   content?: CardContentType;
   onChange?: (c: CardContentType) => void;
 }
 
-export default function CardContent({
-  content,
-  onChange,
-}: CardContentProps) {
+export default function CardContent({ content, onChange }: CardContentProps) {
   const auth = useAuthSafe();
 
   if (!content) return null;

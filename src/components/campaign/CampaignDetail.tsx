@@ -19,9 +19,9 @@ export default function CampaignDetail({
 }: CampaignDetailProps) {
   const auth = useAuthSafe();
 
-  const [localHeader, setLocalHeader] = React.useState<HeaderField[] | undefined>(
-    headerFields
-  );
+  const [localHeader, setLocalHeader] = React.useState<
+    HeaderField[] | undefined
+  >(headerFields);
   const [localCards, setLocalCards] = React.useState<CardSpec[] | undefined>(
     cards,
   );

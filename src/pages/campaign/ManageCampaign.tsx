@@ -16,21 +16,27 @@ export default function ManageCampaign() {
   // Initialize players state with all logic in the initializer to avoid setState in effect
   const [players, setPlayers] = React.useState<Player[]>(() => {
     try {
-      const examplePlayers: Player[] = (raw as RawData).overview?.campaignPlayers || [];
+      const examplePlayers: Player[] =
+        (raw as RawData).overview?.campaignPlayers || [];
       const stored = localStorage.getItem("campaign:players");
       const loaded = stored ? JSON.parse(stored) : examplePlayers;
-      
-      const dmId = localStorage.getItem("campaign:dm") || (loaded.length > 0 ? loaded[0].id : null);
+
+      const dmId =
+        localStorage.getItem("campaign:dm") ||
+        (loaded.length > 0 ? loaded[0].id : null);
       if (dmId && !localStorage.getItem("campaign:dm")) {
         localStorage.setItem("campaign:dm", dmId);
       }
-      
+
       // Ensure dm is editor
       return dmId
-        ? loaded.map((p: Player) => (p.id === dmId ? { ...p, isEditor: true } : p))
+        ? loaded.map((p: Player) =>
+            p.id === dmId ? { ...p, isEditor: true } : p,
+          )
         : loaded;
     } catch {
-      const examplePlayers: Player[] = (raw as RawData).overview?.campaignPlayers || [];
+      const examplePlayers: Player[] =
+        (raw as RawData).overview?.campaignPlayers || [];
       return examplePlayers;
     }
   });

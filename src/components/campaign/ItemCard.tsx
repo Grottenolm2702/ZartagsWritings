@@ -92,7 +92,10 @@ export default function ItemCard({
       {auth.isEditor &&
       onUpdate &&
       (card?.pictureSrc !== undefined ||
-        (card && card.content && (card.content as unknown as Record<string, unknown>).type === "picture") ||
+        (card &&
+          card.content &&
+          (card.content as unknown as Record<string, unknown>).type ===
+            "picture") ||
         pictureSrc) ? (
         <div style={{ marginTop: "8px", marginBottom: "8px" }}>
           <label style={{ display: "block", fontWeight: 600 }}>

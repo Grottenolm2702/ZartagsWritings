@@ -269,67 +269,95 @@ export default function CampaignOverview() {
 
                     // build empty draft from example data for selected category
                     const titleFallback = newTitle || "New Entry";
-                    const exampleMap: Record<string, CampaignData | undefined> = {
-                      Pcs: (raw as RawData).pc,
-                      Npcs: (raw as RawData).npc,
-                      Mi: (raw as RawData).magicItem,
-                      Loc: (raw as RawData).location,
-                    };
+                    const exampleMap: Record<string, CampaignData | undefined> =
+                      {
+                        Pcs: (raw as RawData).pc,
+                        Npcs: (raw as RawData).npc,
+                        Mi: (raw as RawData).magicItem,
+                        Loc: (raw as RawData).location,
+                      };
                     const example = exampleMap[showNewFor as string];
 
                     if (example) {
-                      const emptyHeader: HeaderField[] = (example.header || []).map(
-                        (h) => ({ ...h, value: titleFallback }),
-                      );
-                      const emptyCards: CardSpec[] = (example.cards || []).map((c) => {
-                        const base: Partial<CardSpec> = { title: c.title, wide: c.wide };
-                        const cardTitle =
-                          c && c.title ? c.title : titleFallback;
-                        if (c.pictureSrc !== undefined) {
-                          base.pictureSrc = "";
-                          base.pictureAlt = cardTitle;
-                        }
-
-                        // handle CardSpec where content might be React element or raw object
-                        const rawContent =
-                          c &&
-                          c.content &&
-                          (c.content as unknown as Record<string, unknown>).props &&
-                          ((c.content as unknown as Record<string, unknown>).props as Record<string, unknown>).content
-                            ? ((c.content as unknown as Record<string, unknown>).props as Record<string, unknown>).content
-                            : c.content;
-                        if (rawContent) {
-                          const ct = (rawContent as Record<string, unknown>).type;
-                          if (ct === "paragraph")
-                            base.content = {
-                              type: "paragraph",
-                              text: cardTitle,
-                            };
-                          else if (ct === "paragraphs")
-                            base.content = {
-                              type: "paragraphs",
-                              paragraphs: [cardTitle],
-                            };
-                          else if (ct === "list")
-                            base.content = {
-                              type: "list",
-                              items: [{ label: cardTitle }],
-                            };
-                          else if (ct === "attributes") {
-                            const dt =
-                              (rawContent as Record<string, unknown>).items &&
-                              Array.isArray((rawContent as Record<string, unknown>).items) &&
-                              ((rawContent as Record<string, unknown>).items as unknown[])[0]
-                                ? (((rawContent as Record<string, unknown>).items as unknown[])[0] as Record<string, unknown>).dt || ""
-                                : "";
-                            base.content = {
-                              type: "attributes",
-                              items: [{ dt, dd: cardTitle }],
-                            };
+                      const emptyHeader: HeaderField[] = (
+                        example.header || []
+                      ).map((h) => ({ ...h, value: titleFallback }));
+                      const emptyCards: CardSpec[] = (example.cards || []).map(
+                        (c) => {
+                          const base: Partial<CardSpec> = {
+                            title: c.title,
+                            wide: c.wide,
+                          };
+                          const cardTitle =
+                            c && c.title ? c.title : titleFallback;
+                          if (c.pictureSrc !== undefined) {
+                            base.pictureSrc = "";
+                            base.pictureAlt = cardTitle;
                           }
-                        }
-                        return base as CardSpec;
-                      });
+
+                          // handle CardSpec where content might be React element or raw object
+                          const rawContent =
+                            c &&
+                            c.content &&
+                            (c.content as unknown as Record<string, unknown>)
+                              .props &&
+                            (
+                              (c.content as unknown as Record<string, unknown>)
+                                .props as Record<string, unknown>
+                            ).content
+                              ? (
+                                  (
+                                    c.content as unknown as Record<
+                                      string,
+                                      unknown
+                                    >
+                                  ).props as Record<string, unknown>
+                                ).content
+                              : c.content;
+                          if (rawContent) {
+                            const ct = (rawContent as Record<string, unknown>)
+                              .type;
+                            if (ct === "paragraph")
+                              base.content = {
+                                type: "paragraph",
+                                text: cardTitle,
+                              };
+                            else if (ct === "paragraphs")
+                              base.content = {
+                                type: "paragraphs",
+                                paragraphs: [cardTitle],
+                              };
+                            else if (ct === "list")
+                              base.content = {
+                                type: "list",
+                                items: [{ label: cardTitle }],
+                              };
+                            else if (ct === "attributes") {
+                              const dt =
+                                (rawContent as Record<string, unknown>).items &&
+                                Array.isArray(
+                                  (rawContent as Record<string, unknown>).items,
+                                ) &&
+                                (
+                                  (rawContent as Record<string, unknown>)
+                                    .items as unknown[]
+                                )[0]
+                                  ? (
+                                      (
+                                        (rawContent as Record<string, unknown>)
+                                          .items as unknown[]
+                                      )[0] as Record<string, unknown>
+                                    ).dt || ""
+                                  : "";
+                              base.content = {
+                                type: "attributes",
+                                items: [{ dt, dd: cardTitle }],
+                              };
+                            }
+                          }
+                          return base as CardSpec;
+                        },
+                      );
                       navigate(to, {
                         state: {
                           newDraft: true,
