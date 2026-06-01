@@ -1,62 +1,59 @@
 import React from "react";
 import Layout from "../../components/Layout";
+import CampaignDetail from "../../components/campaign/CampaignDetail";
 
 export default function Location() {
+  const header = [
+    { label: "Name:", value: "Das Herrenhaus" },
+    { label: "Type:", value: "House" },
+  ];
+
+  const cards = [
+    {
+      title: "Short Decscription",
+      content: (
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+          enim ad minim veniam, quis nostrud exercitation ullamco laboris
+          nisi ut aliquip ex ea commodo consequat.
+        </p>
+      ),
+    },
+    {
+      title: "Related Places",
+      content: (
+        <ul>
+          <li>
+            <a href="#">Garten</a>
+          </li>
+          <li>
+            <a href="#">Keller</a>
+          </li>
+          <li>
+            <a href="#">Küche</a>
+          </li>
+        </ul>
+      ),
+    },
+    // no picture by default — optional
+    {
+      title: "Generell Notes",
+      content: (
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+          ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat.
+        </p>
+      ),
+      wide: true,
+    },
+  ];
+
   return (
     <Layout>
-      <main>
-        <h1>Location</h1>
-        <div className="content-header">
-          <div className="content-header-item">
-            <span className="label">Name:</span>
-            <span className="value">Das Herrenhaus</span>
-          </div>
-          <div className="content-header-item">
-            <span className="label">Type:</span>
-            <span className="value">House</span>
-          </div>
-        </div>
-        <div className="items-grid">
-          <div className="items-masonry">
-            <div className="item-card">
-              <h2>Short Decscription</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </p>
-            </div>
-            <div className="item-card">
-              <h2>Related Places</h2>
-              <ul>
-                <li>
-                  <a href="#">Garten</a>
-                </li>
-                <li>
-                  <a href="#">Keller</a>
-                </li>
-                <li>
-                  <a href="#">Küche</a>
-                </li>
-              </ul>
-            </div>
-            <div className="item-card">
-              <h2>Picture</h2>
-              <img src="/src/media/Hero_screenshot.png" alt="Location Picture" />
-            </div>
-          </div>
-          <div className="item-card wide">
-            <h2>Generell Notes</h2>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-              ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat.
-            </p>
-          </div>
-        </div>
-      </main>
+      <CampaignDetail title="Location" headerFields={header} cards={cards} />
     </Layout>
   );
 }

@@ -1,72 +1,61 @@
 import React from "react";
 import Layout from "../../components/Layout";
+import CampaignDetail from "../../components/campaign/CampaignDetail";
 
 export default function MagicItem() {
+  const header = [
+    { label: "Name:", value: "Die Unendliche Geschichte" },
+    { label: "Type:", value: "Book" },
+    { label: "Weight:", value: "???" },
+    { label: "Cost:", value: "???" },
+    { label: "Quantity:", value: "1" },
+  ];
+
+  const cards = [
+    {
+      title: "Magical Atributes",
+      content: (
+        <dl className="atribute-list">
+          <dt>School:</dt>
+          <dd>Abduration</dd>
+          <dt>Attunment:</dt>
+          <dd>None</dd>
+        </dl>
+      ),
+    },
+    {
+      title: "Effect",
+      content: (
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+          enim ad minim veniam, quis nostrud exercitation ullamco laboris
+          nisi ut aliquip ex ea commodo consequat.
+        </p>
+      ),
+    },
+    {
+      title: "Picture",
+      pictureSrc:
+        "https://img.freepik.com/free-vector/book-magic-spells-witchcraft_105738-781.jpg?semt=ais_hybrid&w=740&q=80",
+    },
+    {
+      title: "Generell Notes",
+      content: (
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+          ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat.
+        </p>
+      ),
+      wide: true,
+    },
+  ];
+
   return (
     <Layout>
-      <main>
-        <h1>Magic Item</h1>
-        <div className="content-header">
-          <div className="content-header-item">
-            <span className="label">Name:</span>
-            <span className="value">Die Unendliche Geschichte</span>
-          </div>
-          <div className="content-header-item">
-            <span className="label">Type:</span>
-            <span className="value">Book</span>
-          </div>
-          <div className="content-header-item">
-            <span className="label">Weight:</span>
-            <span className="value">???</span>
-          </div>
-          <div className="content-header-item">
-            <span className="label">Cost:</span>
-            <span className="value">???</span>
-          </div>
-          <div className="content-header-item">
-            <span className="label">Quantity:</span>
-            <span className="value">1</span>
-          </div>
-        </div>
-        <div className="items-grid">
-          <div className="items-masonry">
-            <div className="item-card">
-              <h2>Magical Atributes</h2>
-              <dl className="atribute-list">
-                <dt>School:</dt>
-                <dd>Abduration</dd>
-                <dt>Attunment:</dt>
-                <dd>None</dd>
-              </dl>
-            </div>
-            <div className="item-card">
-              <h2>Effect</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </p>
-            </div>
-            <div className="item-card">
-              <h2>Picture</h2>
-              <img
-                src="https://img.freepik.com/free-vector/book-magic-spells-witchcraft_105738-781.jpg?semt=ais_hybrid&w=740&q=80"
-                alt="Character Picture"
-              />
-            </div>
-          </div>
-          <div className="item-card wide">
-            <h2>Generell Notes</h2>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-          </div>
-        </div>
-      </main>
+      <CampaignDetail title="Magic Item" headerFields={header} cards={cards} />
     </Layout>
   );
 }
