@@ -67,7 +67,6 @@ export default function ItemCard({
         )}
       </div>
 
-      {/* picture editor when in edit mode, only for picture fields */}
       {auth.isEditor &&
       onUpdate &&
       (card?.pictureSrc !== undefined ||

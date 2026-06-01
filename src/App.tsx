@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import CampaignOverview from "./pages/CampaignOverview";
 import CampaignTypePage from "./pages/campaign/CampaignTypePage";
 import EditItemPage from "./pages/campaign/EditItem";
+import ManageCampaign from "./pages/campaign/ManageCampaign";
 import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/capaign1/:type" element={<CampaignTypePage />} />
           <Route path="/capaign1/:type/new" element={<EditItemPage />} />
           <Route path="/capaign1/:type/:slug/edit" element={<EditItemPage />} />
+          <Route path="/capaign1/manage" element={<ManageCampaign />} />
           <Route path="/capaign1/:type/:slug" element={<CampaignTypePage />} />
           <Route path="*" element={<Home />} />
         </Routes>

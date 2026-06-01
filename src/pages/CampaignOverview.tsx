@@ -120,7 +120,17 @@ export default function CampaignOverview() {
   return (
     <Layout>
       <main>
-        <h1>Overview</h1>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <h1 style={{ margin: 0 }}>Overview</h1>
+          <div style={{ marginLeft: "auto" }}>
+            <button
+              className="action-button"
+              onClick={() => navigate("/capaign1/manage")}
+            >
+              Campaign verwalten
+            </button>
+          </div>
+        </div>
 
         <div className="filter-container">
           <input
@@ -151,15 +161,17 @@ export default function CampaignOverview() {
                   }}
                 >
                   <span>{labelMap[cat]}</span>
-                  <button
-                    className="new-button"
-                    onClick={() => {
-                      setShowNewFor(cat);
-                      setNewTitle("");
-                    }}
-                  >
-                    New
-                  </button>
+                  {auth.isEditor ? (
+                    <button
+                      className="new-button"
+                      onClick={() => {
+                        setShowNewFor(cat);
+                        setNewTitle("");
+                      }}
+                    >
+                      New
+                    </button>
+                  ) : null}
                 </h2>
                 <ul className="element-list">
                   {grouped[cat].map((it, idx) => (
@@ -177,6 +189,7 @@ export default function CampaignOverview() {
                       >
                         {it.title}
                       </Link>
+
                       {auth.isDungeonMaster ? (
                         <label
                           style={{
@@ -216,7 +229,6 @@ export default function CampaignOverview() {
           )
         )}
 
-        {/* New item modal */}
         {showNewFor ? (
           <div className="modal-overlay">
             <div className="modal" role="dialog" aria-modal="true">

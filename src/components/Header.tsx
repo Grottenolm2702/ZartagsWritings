@@ -53,7 +53,7 @@ export default function Header() {
               type="checkbox"
               checked={auth.isEditor}
               onChange={auth.toggleEditor}
-            />{' '}
+            />{" "}
             Editor
           </label>
           <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -61,7 +61,7 @@ export default function Header() {
               type="checkbox"
               checked={auth.isDungeonMaster}
               onChange={auth.toggleDungeonMaster}
-            />{' '}
+            />{" "}
             DM
           </label>
         </div>

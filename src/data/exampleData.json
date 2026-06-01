@@ -1,5 +1,10 @@
 {
   "overview": {
+    "campaignPlayers": [
+      { "id": "ronny", "name": "Ronny", "isEditor": true },
+      { "id": "melissa", "name": "Melissa", "isEditor": false },
+      { "id": "robert", "name": "Robert", "isEditor": false }
+    ],
     "sections": [
       {
         "category": "Pcs",

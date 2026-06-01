@@ -43,7 +43,6 @@ export default function EditItemPage() {
             : `Edit: ${foundCard?.title || slug}`}
         </h1>
 
-        {/* Header uses same layout as render but with inputs */}
         {dataset.header && (
           <div className="content-header" style={{ marginTop: "0.5rem" }}>
             {dataset.header.map((h: any, i: number) => (
@@ -64,7 +63,6 @@ export default function EditItemPage() {
           </div>
         )}
 
-        {/* Card editor styled like the item-card */}
         <div className="item-card" style={{ marginTop: "1rem" }}>
           <div
             style={{
@@ -99,9 +97,7 @@ export default function EditItemPage() {
                       }
                     })();
                     auth.setIsEditor(false);
-                  } catch (e) {
-                    /* ignore */
-                  }
+                  } catch (e) {}
                   navigate(-1);
                 }}
               >
