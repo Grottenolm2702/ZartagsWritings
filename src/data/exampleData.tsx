@@ -2,13 +2,12 @@ import React from "react";
 import raw from "./exampleData.json";
 import type { HeaderField } from "../components/campaign/ContentHeader";
 import type { CardSpec } from "../components/campaign/ItemsGrid";
+import CardContent from "../components/campaign/CardContent";
 
 function toCardSpec(card: any): CardSpec {
   const cs: CardSpec = {
     title: card.title,
-    content: card.contentHtml ? (
-      <div dangerouslySetInnerHTML={{ __html: card.contentHtml }} />
-    ) : undefined,
+    content: card.content ? <CardContent content={card.content} /> : undefined,
     pictureSrc: card.pictureSrc,
     pictureAlt: card.pictureAlt,
     wide: card.wide,
