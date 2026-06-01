@@ -21,7 +21,9 @@ export default function CardContent({ content }: { content?: any }) {
     return (
       <ul>
         {content.items.map((it: any, i: number) => (
-          <li key={i}>{it.href ? <a href={it.href}>{it.label}</a> : it.label}</li>
+          <li key={i}>
+            {it.href ? <a href={it.href}>{it.label}</a> : it.label}
+          </li>
         ))}
       </ul>
     );

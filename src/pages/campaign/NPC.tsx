@@ -8,7 +8,7 @@ import { NPC_EXAMPLE } from "../../data/exampleData";
 export function createCampaignPage(
   title: string,
   defaultHeader?: HeaderField[],
-  defaultCards?: CardSpec[]
+  defaultCards?: CardSpec[],
 ) {
   return function CampaignPage({
     headerFields,
@@ -27,4 +27,8 @@ export function createCampaignPage(
   };
 }
 
-export default createCampaignPage("Non Playable Character", NPC_EXAMPLE.header, NPC_EXAMPLE.cards);
+export default createCampaignPage(
+  "Non Playable Character",
+  NPC_EXAMPLE.header,
+  NPC_EXAMPLE.cards,
+);

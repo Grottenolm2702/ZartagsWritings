@@ -8,7 +8,7 @@ import { PC_EXAMPLE } from "../../data/exampleData";
 export function createCampaignPage(
   title: string,
   defaultHeader?: HeaderField[],
-  defaultCards?: CardSpec[]
+  defaultCards?: CardSpec[],
 ) {
   return function CampaignPage({
     headerFields,
@@ -27,4 +27,8 @@ export function createCampaignPage(
   };
 }
 
-export default createCampaignPage("Player Character", PC_EXAMPLE.header, PC_EXAMPLE.cards);
+export default createCampaignPage(
+  "Player Character",
+  PC_EXAMPLE.header,
+  PC_EXAMPLE.cards,
+);

@@ -10,8 +10,8 @@ export default function About() {
         <section className="about-section">
           <h2>Who We Are</h2>
           <p>
-            Welcome to Zartags Writings – a note-taking tool dedicated to D&D and
-            other pen-and-paper games.
+            Welcome to Zartags Writings – a note-taking tool dedicated to D&D
+            and other pen-and-paper games.
           </p>
         </section>
 
