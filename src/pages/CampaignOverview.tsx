@@ -185,7 +185,7 @@ export default function CampaignOverview() {
                     >
                       <Link
                         to={it.to}
-                        style={{ opacity: it.visible === false ? 0.4 : 1 }}
+                        style={{ opacity: it.visible === false ? 0.4 : 1, flex: 1 }}
                       >
                         {it.title}
                       </Link>
@@ -197,7 +197,9 @@ export default function CampaignOverview() {
                             display: "flex",
                             alignItems: "center",
                             gap: "6px",
+                            paddingRight: "8px",
                           }}
+                          onClick={(e) => { e.stopPropagation(); }}
                         >
                           <input
                             type="checkbox"
@@ -209,9 +211,7 @@ export default function CampaignOverview() {
                                 if (globalIdx >= 0) {
                                   copy[globalIdx] = {
                                     ...copy[globalIdx],
-                                    visible: !(
-                                      copy[globalIdx].visible === false
-                                    ),
+                                  visible: copy[globalIdx].visible === false ? true : false,
                                   };
                                 }
                                 return copy;
