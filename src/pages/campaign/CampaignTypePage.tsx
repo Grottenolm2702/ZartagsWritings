@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
 import {
@@ -8,6 +8,7 @@ import {
   MAGICITEM_EXAMPLE,
   LOCATION_EXAMPLE,
 } from "../../data/exampleData";
+import { useAuth } from "../../context/AuthContext";
 
 const MAP: Record<string, { header: any; cards: any[]; title?: string }> = {
   pc: {
@@ -35,7 +36,27 @@ const MAP: Record<string, { header: any; cards: any[]; title?: string }> = {
 export default function CampaignTypePage() {
   const { type } = useParams();
   const key = (type || "").toLowerCase();
+  const location = useLocation();
+  const state = (location && (location.state as any)) || {};
+  const auth = (() => {
+    try {
+      return useAuth();
+    } catch {
+      return { isEditor: false, setIsEditor: (_: boolean) => {}, toggleEditor: () => {} } as any;
+    }
+  })();
+
   const data = MAP[key];
+  const headerFields = state?.header || data?.header;
+  const cards = state?.cards || data?.cards;
+
+  React.useEffect(() => {
+    if (state?.newDraft) {
+      try {
+        auth.setIsEditor(true);
+      } catch {}
+    }
+  }, [state?.newDraft]);
 
   if (!data) {
     return (
@@ -52,8 +73,9 @@ export default function CampaignTypePage() {
     <Layout>
       <CampaignDetail
         title={data.title}
-        headerFields={data.header}
-        cards={data.cards}
+        headerFields={headerFields}
+        cards={cards}
+        type={key}
       />
     </Layout>
   );

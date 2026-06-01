@@ -147,3 +147,121 @@
   font-weight: bold;
   color: var(--accent-color);
 }
+
+/* Inputs styled to match rendered text when editing */
+.content-header input.value,
+.content-header .value input,
+.content-header input {
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  text-align: center;
+  font: inherit;
+  width: 100%;
+}
+
+.item-card h2 {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--accent-color);
+  margin: 0 0 0.5rem 0;
+}
+
+.item-card .item-title-input {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--accent-color);
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  width: 100%;
+}
+
+/* campaign title color */
+.campaign-detail h1 {
+  color: var(--accent-color);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0;
+}
+
+/* add menu buttons vertical stack */
+.campaign-detail .add-menu button {
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.item-card input[type="text"],
+.item-card input:not([type]),
+.item-card textarea {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.atribute-list input {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+}
+
+/* Buttons matching site style */
+.action-button,
+.edit-button,
+.new-button {
+  display: inline-block;
+  padding: 0.4em 0.75em;
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 0.35em;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.action-button:hover,
+.edit-button:hover,
+.new-button:hover {
+  opacity: 0.9;
+}
+
+/* smaller secondary button */
+.action-button.secondary {
+  background: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--hover-color);
+}
+
+/* modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--hover-color);
+  color: var(--text-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  min-width: 320px;
+}
+
+.modal input, .modal select {
+  width: 100%;
+  margin-top: 6px;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--hover-color);
+  background: var(--primary-color);
+  color: var(--text-color);
+}

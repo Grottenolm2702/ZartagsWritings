@@ -1,7 +1,21 @@
 import React from "react";
+import EditableCardContent from "./EditableCardContent";
+import { useAuth } from "../../context/AuthContext";
 
-export default function CardContent({ content }: { content?: any }) {
+export default function CardContent({ content, onChange }: { content?: any; onChange?: (c: any) => void }) {
   if (!content) return null;
+  const auth = (() => {
+    try {
+      return useAuth();
+    } catch {
+      return { isEditor: false } as any;
+    }
+  })();
+
+  const editableTypes = ["paragraph", "paragraphs", "list", "attributes"];
+  if (auth.isEditor && editableTypes.includes(content.type)) {
+    return <EditableCardContent content={content} onChange={onChange} />;
+  }
 
   if (content.type === "paragraphs") {
     return (

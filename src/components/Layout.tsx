@@ -1,8 +1,10 @@
 import React from "react";
 import Header from "./Header";
+import { useAuth } from "../context/AuthContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
+  const auth = useAuth();
 
   React.useEffect(() => {
     // ensure body scroll not locked from previous runs
