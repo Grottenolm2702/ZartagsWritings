@@ -118,7 +118,12 @@ export default function EditItemPage() {
         </div>
 
         <div style={{ marginTop: "16px" }}>
-          <button className={contentStyles.actionButton} onClick={() => navigate(-1)}>Cancel</button>
+          <button
+            className={contentStyles.actionButton}
+            onClick={() => navigate(-1)}
+          >
+            Cancel
+          </button>
         </div>
       </main>
     </Layout>
