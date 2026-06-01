@@ -49,11 +49,17 @@
     "cards": [
       {
         "title": "Short Description",
-        "content": { "type": "paragraph", "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }
+        "content": {
+          "type": "paragraph",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        }
       },
       {
         "title": "Backstory",
-        "content": { "type": "paragraph", "text": "Character backstory content here. Replace with backend content when available." }
+        "content": {
+          "type": "paragraph",
+          "text": "Character backstory content here. Replace with backend content when available."
+        }
       },
       {
         "title": "Picture",
@@ -62,7 +68,10 @@
       },
       {
         "title": "Generell Notes",
-        "content": { "type": "paragraph", "text": "Misc notes. Replace with backend content when available." },
+        "content": {
+          "type": "paragraph",
+          "text": "Misc notes. Replace with backend content when available."
+        },
         "wide": true
       }
     ]
@@ -79,23 +88,31 @@
     "cards": [
       {
         "title": "Short Description",
-        "content": { "type": "paragraph", "text": "Zartag is a half-dwarf wizard and the author of Robert's Mageikunde-Magazin. He sends daily letters to everyone who has ever taken a card from him, describing his day and showcasing new magical tools—even if they ask him to stop. He lives in a magical hut in the woods, which is filled to the brim with mostly useless magical items. However, he is rarely home, as he spends most of his time traveling the world and visiting every convention he can find." }
+        "content": {
+          "type": "paragraph",
+          "text": "Zartag is a half-dwarf wizard and the author of Robert's Mageikunde-Magazin. He sends daily letters to everyone who has ever taken a card from him, describing his day and showcasing new magical tools—even if they ask him to stop. He lives in a magical hut in the woods, which is filled to the brim with mostly useless magical items. However, he is rarely home, as he spends most of his time traveling the world and visiting every convention he can find."
+        }
       },
       {
         "title": "Story Points",
-        "content": { "type": "list", "items": [
-          { "label": "Zartag asks the party to escort him home (forest is dangerous)" },
-          { "label": "Zartag reveals the water is magically poisoned and points to the well as source." }
-        ] }
-      },
-      {
-        "title": "Picture",
-        "pictureSrc": "./media/Hero_screenshot.png",
-        "pictureAlt": "Character Picture"
+        "content": {
+          "type": "list",
+          "items": [
+            {
+              "label": "Zartag asks the party to escort him home (forest is dangerous)"
+            },
+            {
+              "label": "Zartag reveals the water is magically poisoned and points to the well as source."
+            }
+          ]
+        }
       },
       {
         "title": "Generell Notes",
-        "content": { "type": "paragraph", "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." },
+        "content": {
+          "type": "paragraph",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        },
         "wide": true
       }
     ]
@@ -112,11 +129,20 @@
     "cards": [
       {
         "title": "Magical Attributes",
-        "content": { "type": "attributes", "items": [ { "dt": "School:", "dd": "Abduration" }, { "dt": "Attunement:", "dd": "None" } ] }
+        "content": {
+          "type": "attributes",
+          "items": [
+            { "dt": "School:", "dd": "Abduration" },
+            { "dt": "Attunement:", "dd": "None" }
+          ]
+        }
       },
       {
         "title": "Effect",
-        "content": { "type": "paragraph", "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }
+        "content": {
+          "type": "paragraph",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        }
       },
       {
         "title": "Picture",
@@ -125,7 +151,10 @@
       },
       {
         "title": "Generell Notes",
-        "content": { "type": "paragraph", "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." },
+        "content": {
+          "type": "paragraph",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        },
         "wide": true
       }
     ]
@@ -139,11 +168,21 @@
     "cards": [
       {
         "title": "Short Description",
-        "content": { "type": "paragraph", "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }
+        "content": {
+          "type": "paragraph",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        }
       },
       {
         "title": "Related Places",
-        "content": { "type": "list", "items": [ { "label": "Garten" }, { "label": "Keller" }, { "label": "Küche" } ] }
+        "content": {
+          "type": "list",
+          "items": [
+            { "label": "Garten" },
+            { "label": "Keller" },
+            { "label": "Küche" }
+          ]
+        }
       },
       {
         "title": "Picture",
