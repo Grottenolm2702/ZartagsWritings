@@ -4,21 +4,26 @@ export default function EditableCardContent({
   content,
   onChange,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   content?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange?: (c: any) => void;
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [state, setState] = React.useState<any>(content || {});
 
   React.useEffect(() => setState(content || {}), [content]);
 
   if (!content) return null;
 
-  function update(path: string, value: any) {
+  function update(path: string, value: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setState((s: any) => {
       const copy = { ...s };
       copy[path] = value;
       // notify parent
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         onChange && onChange(copy);
       } catch {}
       return copy;

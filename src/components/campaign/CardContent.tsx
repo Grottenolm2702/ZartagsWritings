@@ -6,11 +6,14 @@ export default function CardContent({
   content,
   onChange,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   content?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange?: (c: any) => void;
 }) {
-  if (!content) return null;
   const auth = useAuthSafe();
+
+  if (!content) return null;
 
   const editableTypes = ["paragraph", "paragraphs", "list", "attributes"];
   if (auth.isEditor && editableTypes.includes(content.type)) {

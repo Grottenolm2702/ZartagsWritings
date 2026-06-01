@@ -15,6 +15,7 @@ function slugify(s: string) {
 export default function EditItemPage() {
   const { type, slug } = useParams();
   const navigate = useNavigate();
+  const auth = useAuth();
   const key = (type || "").toLowerCase();
 
   const dataset: any = (raw as any)[key];
@@ -89,15 +90,8 @@ export default function EditItemPage() {
               <button
                 onClick={() => {
                   try {
-                    const auth = (() => {
-                      try {
-                        return useAuth();
-                      } catch {
-                        return { setIsEditor: (_: boolean) => {} } as any;
-                      }
-                    })();
                     auth.setIsEditor(false);
-                  } catch (e) {}
+                  } catch {}
                   navigate(-1);
                 }}
               >

@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { useAuthSafe } from "../../context/AuthContext";
 
 export default function ItemCard({
@@ -12,18 +11,21 @@ export default function ItemCard({
   onUpdate,
   onRemove,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   card?: any;
   title: string;
   children?: React.ReactNode;
   pictureSrc?: string;
   pictureAlt?: string;
   wide?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onUpdate?: (updated: any) => void;
   onRemove?: () => void;
 }) {
   const auth = useAuthSafe();
 
   // local handlers for updating card fields
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateField = (patch: any) => {
     if (onUpdate) {
       const updated = {
@@ -77,6 +79,7 @@ export default function ItemCard({
                       `Delete field '${title}'? This cannot be undone.`,
                     )
                   ) {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                     onRemove && onRemove();
                   }
                 } catch {}

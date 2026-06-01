@@ -1,6 +1,7 @@
 {
   "name": "zartagswritings",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "homepage": "https://github.com/Grottenolm2702/ZartagsWritings#readme",
   "bugs": {
@@ -17,6 +18,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "postinstall": "simple-git-hooks"
   },
   "dependencies": {
@@ -30,11 +33,16 @@
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
     "@vitejs/plugin-react": "^6.0.2",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^6.0.3"
   },
   "simple-git-hooks": {
-    "pre-commit": "npm run format"
+    "pre-commit": "npm run lint:fix && npm run format"
   }
 }
