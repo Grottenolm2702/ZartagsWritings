@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { useAuthSafe } from "../context/AuthContext";
 import raw from "../data/exampleData.json";
+import { slugify } from "../utils/string";
 import type {
   RawData,
   CampaignData,
@@ -35,13 +36,6 @@ const TYPE_MAP: Record<string, string> = {
 
 export default function CampaignOverview() {
   const [query, setQuery] = React.useState<string>("");
-
-  // helper: slugify used for ids and urls
-  const slugify = (s: string) =>
-    s
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
 
   const rawInitial: Omit<Item, "id">[] = [
     {

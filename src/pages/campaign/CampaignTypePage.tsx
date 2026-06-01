@@ -10,31 +10,39 @@ import type {
   CardSpec,
   NavigationState,
   CampaignType,
+  CAMPAIGN_TYPE_LABELS,
 } from "../../types/campaign";
 
-const MAP: Record<
-  string,
-  { header: HeaderField[]; cards: CardSpec[]; title?: string }
-> = {
+interface CampaignTypeConfig {
+  header: HeaderField[];
+  cards: CardSpec[];
+  title?: string;
+}
+
+const MAP: Record<string, CampaignTypeConfig> = {
   pc: {
     header: (raw as RawData).pc.header,
     cards: (raw as RawData).pc.cards,
-    title: (raw as RawData).pc.header?.[0]?.value || "Player Character",
+    title: (raw as RawData).pc.header?.[0]?.value || CAMPAIGN_TYPE_LABELS.pc,
   },
   npc: {
     header: (raw as RawData).npc.header,
     cards: (raw as RawData).npc.cards,
-    title: (raw as RawData).npc.header?.[0]?.value || "Non Playable Character",
+    title: (raw as RawData).npc.header?.[0]?.value || CAMPAIGN_TYPE_LABELS.npc,
   },
   magicitem: {
     header: (raw as RawData).magicItem.header,
     cards: (raw as RawData).magicItem.cards,
-    title: (raw as RawData).magicItem.header?.[0]?.value || "Magic Item",
+    title:
+      (raw as RawData).magicItem.header?.[0]?.value ||
+      CAMPAIGN_TYPE_LABELS.magicitem,
   },
   location: {
     header: (raw as RawData).location.header,
     cards: (raw as RawData).location.cards,
-    title: (raw as RawData).location.header?.[0]?.value || "Location",
+    title:
+      (raw as RawData).location.header?.[0]?.value ||
+      CAMPAIGN_TYPE_LABELS.location,
   },
 };
 

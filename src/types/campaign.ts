@@ -59,17 +59,20 @@ export type CampaignData = {
 
 export type CampaignType = "pc" | "npc" | "magicitem" | "location";
 
+// Player management
+export type Player = {
+  id: string;
+  name: string;
+  isEditor?: boolean;
+};
+
 export type RawData = {
   pc: CampaignData;
   npc: CampaignData;
   magicItem: CampaignData;
   location: CampaignData;
   overview?: {
-    campaignPlayers?: Array<{
-      id: string;
-      name: string;
-      isEditor: boolean;
-    }>;
+    campaignPlayers?: Player[];
   };
 };
 
@@ -79,3 +82,28 @@ export type NavigationState = {
   header?: HeaderField[];
   cards?: CardSpec[];
 };
+
+// Storage keys
+export const STORAGE_KEYS = {
+  PLAYERS: "campaign:players",
+  DM_ID: "campaign:dm",
+  CURRENT_PLAYER_ID: "currentPlayerId",
+} as const;
+
+// Route paths
+export const ROUTES = {
+  CAMPAIGN_OVERVIEW: "/capaign1",
+  CAMPAIGN_MANAGE: "/capaign1/manage",
+  CAMPAIGN_PC: "/capaign1/pc",
+  CAMPAIGN_NPC: "/capaign1/npc",
+  CAMPAIGN_MAGIC_ITEM: "/capaign1/magicitem",
+  CAMPAIGN_LOCATION: "/capaign1/location",
+} as const;
+
+// Campaign type mappings
+export const CAMPAIGN_TYPE_LABELS: Record<CampaignType, string> = {
+  pc: "Player Character",
+  npc: "Non Playable Character",
+  magicitem: "Magic Item",
+  location: "Location",
+} as const;

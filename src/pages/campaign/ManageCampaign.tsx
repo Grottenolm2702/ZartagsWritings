@@ -2,13 +2,8 @@ import React from "react";
 import Layout from "../../components/Layout";
 import raw from "../../data/exampleData.json";
 import { useAuthSafe } from "../../context/AuthContext";
-import type { RawData } from "../../types/campaign";
-
-type Player = {
-  id: string;
-  name: string;
-  isEditor?: boolean;
-};
+import { storageUtils } from "../../utils/localStorage";
+import type { RawData, Player } from "../../types/campaign";
 
 export default function ManageCampaign() {
   const auth = useAuthSafe();
@@ -18,14 +13,11 @@ export default function ManageCampaign() {
     try {
       const examplePlayers: Player[] =
         (raw as RawData).overview?.campaignPlayers || [];
-      const stored = localStorage.getItem("campaign:players");
-      const loaded = stored ? JSON.parse(stored) : examplePlayers;
+      const loaded = storageUtils.getPlayers(examplePlayers);
 
-      const dmId =
-        localStorage.getItem("campaign:dm") ||
-        (loaded.length > 0 ? loaded[0].id : null);
-      if (dmId && !localStorage.getItem("campaign:dm")) {
-        localStorage.setItem("campaign:dm", dmId);
+      const dmId = storageUtils.getDmId() || (loaded.length > 0 ? loaded[0].id : null);
+      if (dmId && !storageUtils.getDmId()) {
+        storageUtils.setDmId(dmId);
       }
 
       // Ensure dm is editor
@@ -41,32 +33,21 @@ export default function ManageCampaign() {
     }
   });
 
-  const [currentId, setCurrentId] = React.useState<string | null>(() => {
-    try {
-      const stored = localStorage.getItem("currentPlayerId");
-      return stored;
-    } catch {
-      return null;
-    }
-  });
+  const [currentId, setCurrentId] = React.useState<string | null>(
+    () => storageUtils.getCurrentPlayerId()
+  );
 
-  const [dmId, setDmId] = React.useState<string | null>(() => {
-    try {
-      return localStorage.getItem("campaign:dm");
-    } catch {
-      return null;
-    }
-  });
+  const [dmId, setDmId] = React.useState<string | null>(
+    () => storageUtils.getDmId()
+  );
 
   function save(list: Player[]) {
-    try {
-      // enforce dm always editor
-      const enforced = dmId
-        ? list.map((p) => (p.id === dmId ? { ...p, isEditor: true } : p))
-        : list;
-      localStorage.setItem("campaign:players", JSON.stringify(enforced));
-      setPlayers(enforced);
-    } catch {}
+    // Enforce dm always editor
+    const enforced = dmId
+      ? list.map((p) => (p.id === dmId ? { ...p, isEditor: true } : p))
+      : list;
+    storageUtils.setPlayers(enforced);
+    setPlayers(enforced);
   }
 
   return (
