@@ -1,7 +1,7 @@
 import React from "react";
 import ItemCard from "./ItemCard";
 import CardContent from "./CardContent";
-import { useAuth } from "../../context/AuthContext";
+import { useAuthSafe } from "../../context/AuthContext";
 
 export type CardSpec = {
   title: string;
@@ -27,13 +27,7 @@ export default function ItemsGrid({
   type?: string;
   onUpdate?: (idx: number, updated: CardSpec) => void;
 }) {
-  const auth = (() => {
-    try {
-      return useAuth();
-    } catch {
-      return { setIsEditor: (_: boolean) => {}, isEditor: false } as any;
-    }
-  })();
+  const auth = useAuthSafe();
 
   if (!cards || cards.length === 0) return null;
   // filter out cards that have neither content nor picture

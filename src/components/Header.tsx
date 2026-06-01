@@ -1,20 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuthSafe } from "../context/AuthContext";
 
 export default function Header() {
-  const auth = (() => {
-    try {
-      return useAuth();
-    } catch {
-      return {
-        isEditor: false,
-        isDungeonMaster: false,
-        toggleEditor: () => {},
-        toggleDungeonMaster: () => {},
-      } as any;
-    }
-  })();
+  const auth = useAuthSafe();
 
   return (
     <header>

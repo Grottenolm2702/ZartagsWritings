@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuthSafe } from "../../context/AuthContext";
 
 export default function ItemCard({
   card,
@@ -19,13 +19,7 @@ export default function ItemCard({
   wide?: boolean;
   onUpdate?: (updated: any) => void;
 }) {
-  const auth = (() => {
-    try {
-      return useAuth();
-    } catch {
-      return { isEditor: false } as any;
-    }
-  })();
+  const auth = useAuthSafe();
 
   // local handlers for updating card fields
   const updateField = (patch: any) => {

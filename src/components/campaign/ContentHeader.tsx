@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuthSafe } from "../../context/AuthContext";
 
 export type HeaderField = { label: string; value: string };
 
@@ -10,13 +10,7 @@ export default function ContentHeader({
   fields: HeaderField[];
   onChange?: (idx: number, updated: HeaderField) => void;
 }) {
-  const auth = (() => {
-    try {
-      return useAuth();
-    } catch {
-      return { isEditor: false } as any;
-    }
-  })();
+  const auth = useAuthSafe();
 
   if (!fields || fields.length === 0) return null;
   return (

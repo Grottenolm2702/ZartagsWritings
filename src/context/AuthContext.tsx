@@ -75,3 +75,19 @@ export function useAuth() {
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 }
+
+// Safe fallback hook that returns sensible defaults when AuthProvider not present
+export function useAuthSafe(): AuthContextType {
+  const ctx = React.useContext(AuthContext);
+  if (!ctx) {
+    return {
+      isEditor: false,
+      setIsEditor: (_: boolean) => {},
+      toggleEditor: () => {},
+      isDungeonMaster: false,
+      setIsDungeonMaster: (_: boolean) => {},
+      toggleDungeonMaster: () => {},
+    } as AuthContextType;
+  }
+  return ctx;
+}

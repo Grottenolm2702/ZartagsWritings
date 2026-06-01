@@ -1,15 +1,22 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
-import { useAuth } from "../context/AuthContext";
+import { useAuthSafe } from "../context/AuthContext";
 import raw from "../data/exampleData.json";
 
-type Item = { category: string; title: string; to: string; visible?: boolean };
+type Item = { id: string; category: string; title: string; to: string; visible?: boolean };
 
 export default function CampaignOverview() {
   const [query, setQuery] = React.useState<string>("");
 
-  const initialItems: Item[] = [
+  // helper: slugify used for ids and urls
+  const slugify = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+  const rawInitial: Omit<Item, "id">[] = [
     {
       category: "Pcs",
       title: "Melissa - Fighter - Tiefling",
@@ -51,15 +58,15 @@ export default function CampaignOverview() {
     },
     { category: "Loc", title: "Der Brunnen", to: "#", visible: true },
   ];
+
+  const initialItems: Item[] = rawInitial.map((r) => ({
+    ...r,
+    id: slugify(r.title),
+  }));
+
   const [items, setItems] = React.useState<Item[]>(initialItems);
 
-  const auth = (() => {
-    try {
-      return useAuth();
-    } catch {
-      return { isEditor: false, isDungeonMaster: false } as any;
-    }
-  })();
+  const auth = useAuthSafe();
 
   const q = query.trim().toLowerCase();
   const filtered = React.useMemo(() => {
@@ -169,9 +176,9 @@ export default function CampaignOverview() {
                   ) : null}
                 </h2>
                 <ul className="element-list">
-                  {grouped[cat].map((it, idx) => (
+                  {grouped[cat].map((it) => (
                     <li
-                      key={idx}
+                      key={it.id}
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -205,20 +212,13 @@ export default function CampaignOverview() {
                             type="checkbox"
                             checked={it.visible !== false}
                             onChange={() => {
-                              setItems((s) => {
-                                const copy = [...s];
-                                const globalIdx = s.indexOf(it);
-                                if (globalIdx >= 0) {
-                                  copy[globalIdx] = {
-                                    ...copy[globalIdx],
-                                    visible:
-                                      copy[globalIdx].visible === false
-                                        ? true
-                                        : false,
-                                  };
-                                }
-                                return copy;
-                              });
+                              setItems((s) =>
+                                s.map((x) =>
+                                  x.id === it.id
+                                    ? { ...x, visible: !(x.visible === false) }
+                                    : x,
+                                ),
+                              );
                             }}
                           />
                           visible

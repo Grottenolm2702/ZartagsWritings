@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
 import raw from "../../data/exampleData.json";
-import { useAuth } from "../../context/AuthContext";
+import { useAuthSafe } from "../../context/AuthContext";
 
 const MAP: Record<string, { header: any; cards: any[]; title?: string }> = {
   pc: {
@@ -33,17 +33,7 @@ export default function CampaignTypePage() {
   const key = (type || "").toLowerCase();
   const location = useLocation();
   const state = (location && (location.state as any)) || {};
-  const auth = (() => {
-    try {
-      return useAuth();
-    } catch {
-      return {
-        isEditor: false,
-        setIsEditor: (_: boolean) => {},
-        toggleEditor: () => {},
-      } as any;
-    }
-  })();
+  const auth = useAuthSafe();
 
   const data = MAP[key];
   const headerFields = state?.header || data?.header;

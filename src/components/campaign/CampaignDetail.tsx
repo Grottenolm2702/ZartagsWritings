@@ -1,7 +1,7 @@
 import React from "react";
 import ContentHeader, { HeaderField } from "./ContentHeader";
 import ItemsGrid, { CardSpec } from "./ItemsGrid";
-import { useAuth } from "../../context/AuthContext";
+import { useAuthSafe } from "../../context/AuthContext";
 
 export default function CampaignDetail({
   title,
@@ -14,17 +14,7 @@ export default function CampaignDetail({
   cards?: CardSpec[];
   type?: string;
 }) {
-  const auth = (() => {
-    try {
-      return useAuth();
-    } catch {
-      return {
-        isEditor: false,
-        toggleEditor: () => {},
-        setIsEditor: (_: boolean) => {},
-      } as any;
-    }
-  })();
+  const auth = useAuthSafe();
 
   const [localHeader, setLocalHeader] = React.useState<
     HeaderField[] | undefined

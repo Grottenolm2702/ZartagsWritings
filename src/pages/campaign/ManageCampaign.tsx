@@ -1,16 +1,10 @@
 import React from "react";
 import Layout from "../../components/Layout";
 import raw from "../../data/exampleData.json";
-import { useAuth } from "../../context/AuthContext";
+import { useAuthSafe } from "../../context/AuthContext";
 
 export default function ManageCampaign() {
-  const auth = (() => {
-    try {
-      return useAuth();
-    } catch {
-      return { isDungeonMaster: false } as any;
-    }
-  })();
+  const auth = useAuthSafe();
 
   const examplePlayers: any[] = (raw as any).overview?.campaignPlayers || [];
   const [players, setPlayers] = React.useState<
