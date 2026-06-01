@@ -30,7 +30,7 @@ export const storageUtils = {
   /**
    * Get parsed JSON item from localStorage
    */
-  getJSON: <T,>(key: string, fallback: T): T => {
+  getJSON: <T>(key: string, fallback: T): T => {
     try {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : fallback;
@@ -51,7 +51,7 @@ export const storageUtils = {
   },
 
   // Convenience methods for campaign storage
-  getPlayers: <T,>(fallback: T): T =>
+  getPlayers: <T>(fallback: T): T =>
     storageUtils.getJSON(STORAGE_KEYS.PLAYERS, fallback),
 
   setPlayers: (value: unknown): void =>

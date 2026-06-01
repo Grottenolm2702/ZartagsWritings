@@ -15,7 +15,8 @@ export default function ManageCampaign() {
         (raw as RawData).overview?.campaignPlayers || [];
       const loaded = storageUtils.getPlayers(examplePlayers);
 
-      const dmId = storageUtils.getDmId() || (loaded.length > 0 ? loaded[0].id : null);
+      const dmId =
+        storageUtils.getDmId() || (loaded.length > 0 ? loaded[0].id : null);
       if (dmId && !storageUtils.getDmId()) {
         storageUtils.setDmId(dmId);
       }
@@ -33,12 +34,12 @@ export default function ManageCampaign() {
     }
   });
 
-  const [currentId, setCurrentId] = React.useState<string | null>(
-    () => storageUtils.getCurrentPlayerId()
+  const [currentId, setCurrentId] = React.useState<string | null>(() =>
+    storageUtils.getCurrentPlayerId(),
   );
 
-  const [dmId, setDmId] = React.useState<string | null>(
-    () => storageUtils.getDmId()
+  const [dmId, setDmId] = React.useState<string | null>(() =>
+    storageUtils.getDmId(),
   );
 
   function save(list: Player[]) {
