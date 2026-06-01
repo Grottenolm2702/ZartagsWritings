@@ -11,9 +11,9 @@ export type CardSpec = {
 
 export default function ItemsGrid({ cards }: { cards: CardSpec[] }) {
   if (!cards || cards.length === 0) return null;
-  // split wide cards from normal
-  const normal = cards.filter((c) => !c.wide);
-  const wide = cards.filter((c) => c.wide);
+  // filter out cards that have neither content nor picture
+  const normal = cards.filter((c) => !c.wide && (c.content || c.pictureSrc));
+  const wide = cards.filter((c) => c.wide && (c.content || c.pictureSrc));
   return (
     <div className="items-grid">
       <div className="items-masonry">
