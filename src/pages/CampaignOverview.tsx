@@ -2,6 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
 
+type Item = { category: string; title: string; to: string };
+
+
 export default function CampaignOverview() {
   return (
     <Layout>
@@ -15,11 +18,21 @@ export default function CampaignOverview() {
             aria-label="search"
           />
           <div className="filter-buttons">
-            <button className="filter-button active" data-category="all">All</button>
-            <button className="filter-button" data-category="Pcs">Player Caracter</button>
-            <button className="filter-button" data-category="Mi">Magic Items</button>
-            <button className="filter-button" data-category="Loc">Locations</button>
-            <button className="filter-button" data-category="Npcs">Npcs</button>
+            <button className="filter-button active" data-category="all">
+              All
+            </button>
+            <button className="filter-button" data-category="Pcs">
+              Player Caracter
+            </button>
+            <button className="filter-button" data-category="Mi">
+              Magic Items
+            </button>
+            <button className="filter-button" data-category="Loc">
+              Locations
+            </button>
+            <button className="filter-button" data-category="Npcs">
+              Npcs
+            </button>
           </div>
         </div>
 
