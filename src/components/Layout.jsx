@@ -1,59 +1,62 @@
-import React from 'react'
-import Header from './Header'
+import React from "react";
+import Header from "./Header";
 
 export default function Layout({ children }) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    const navbar = document.getElementById('navbar')
-    const openBtn = document.getElementById('open-sidebar-button')
-    const media = window.matchMedia('(width < 800px)')
+    const navbar = document.getElementById("navbar");
+    const openBtn = document.getElementById("open-sidebar-button");
+    const media = window.matchMedia("(width < 800px)");
 
     function updateNavbar(e) {
-      const isMobile = e.matches
-      if (!navbar) return
-      if (isMobile) navbar.setAttribute('inert', '')
-      else navbar.removeAttribute('inert')
+      const isMobile = e.matches;
+      if (!navbar) return;
+      if (isMobile) navbar.setAttribute("inert", "");
+      else navbar.removeAttribute("inert");
     }
 
     function onMediaChange(e) {
-      updateNavbar(e)
+      updateNavbar(e);
     }
 
-    media.addEventListener('change', onMediaChange)
-    updateNavbar({ matches: media.matches })
+    media.addEventListener("change", onMediaChange);
+    updateNavbar({ matches: media.matches });
 
     // close sidebar on nav link click
-    const navLinks = document.querySelectorAll('nav a')
+    const navLinks = document.querySelectorAll("nav a");
     const onNavClick = () => {
-      if (!navbar) return
-      navbar.classList.remove('show')
-      if (openBtn) openBtn.setAttribute('aria-expanded', 'false')
-      navbar.setAttribute('inert', '')
-      setOpen(false)
-    }
-    navLinks.forEach((l) => l.addEventListener('click', onNavClick))
+      if (!navbar) return;
+      navbar.classList.remove("show");
+      if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+      navbar.setAttribute("inert", "");
+      setOpen(false);
+    };
+    navLinks.forEach((l) => l.addEventListener("click", onNavClick));
 
     return () => {
-      media.removeEventListener('change', onMediaChange)
-      navLinks.forEach((l) => l.removeEventListener('click', onNavClick))
-    }
-  }, [])
+      media.removeEventListener("change", onMediaChange);
+      navLinks.forEach((l) => l.removeEventListener("click", onNavClick));
+    };
+  }, []);
 
   React.useEffect(() => {
-    const navbar = document.getElementById('navbar')
-    const openBtn = document.getElementById('open-sidebar-button')
-    if (!navbar) return
+    const navbar = document.getElementById("navbar");
+    const openBtn = document.getElementById("open-sidebar-button");
+    if (!navbar) return;
+    const header = document.querySelector('header')
     if (open) {
-      navbar.classList.add('show')
-      if (openBtn) openBtn.setAttribute('aria-expanded', 'true')
-      navbar.removeAttribute('inert')
+      navbar.classList.add("show");
+      if (header) header.classList.add('show')
+      if (openBtn) openBtn.setAttribute("aria-expanded", "true");
+      navbar.removeAttribute("inert");
     } else {
-      navbar.classList.remove('show')
-      if (openBtn) openBtn.setAttribute('aria-expanded', 'false')
-      navbar.setAttribute('inert', '')
+      navbar.classList.remove("show");
+      if (header) header.classList.remove('show')
+      if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+      navbar.setAttribute("inert", "");
     }
-  }, [open])
+  }, [open]);
 
   return (
     <>
@@ -64,7 +67,13 @@ export default function Layout({ children }) {
         aria-expanded={open}
         aria-controls="navbar"
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <rect y="4" width="24" height="2" fill="#666" />
           <rect y="11" width="24" height="2" fill="#666" />
           <rect y="18" width="24" height="2" fill="#666" />
@@ -73,9 +82,14 @@ export default function Layout({ children }) {
 
       <Header />
 
-      <div id="overlay" onClick={() => setOpen(false)} aria-hidden={!open} style={{ display: open ? 'block' : 'none' }}></div>
+      <div
+        id="overlay"
+        onClick={() => setOpen(false)}
+        aria-hidden={!open}
+        style={{ display: open ? "block" : "none" }}
+      ></div>
 
       {children}
     </>
-  )
+  );
 }
