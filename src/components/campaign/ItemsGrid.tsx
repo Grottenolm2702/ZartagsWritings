@@ -22,10 +22,12 @@ export default function ItemsGrid({
   cards,
   type,
   onUpdate,
+  onRemove,
 }: {
   cards: CardSpec[];
   type?: string;
   onUpdate?: (idx: number, updated: CardSpec) => void;
+  onRemove?: (idx: number) => void;
 }) {
   const auth = useAuthSafe();
 
@@ -68,6 +70,7 @@ export default function ItemsGrid({
             pictureSrc={c.pictureSrc}
             pictureAlt={c.pictureAlt}
             onUpdate={(updated) => onUpdate && onUpdate(i, updated)}
+            onRemove={() => onRemove && onRemove(i)}
           >
             {renderContent(c, i)}
           </ItemCard>
@@ -84,6 +87,7 @@ export default function ItemsGrid({
               pictureAlt={c.pictureAlt}
               wide
               onUpdate={(updated) => onUpdate && onUpdate(i, updated)}
+              onRemove={() => onRemove && onRemove(i)}
             >
               {renderContent(c, i)}
             </ItemCard>

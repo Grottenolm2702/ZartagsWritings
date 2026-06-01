@@ -10,6 +10,7 @@ export default function ItemCard({
   pictureAlt,
   wide,
   onUpdate,
+  onRemove,
 }: {
   card?: any;
   title: string;
@@ -18,6 +19,7 @@ export default function ItemCard({
   pictureAlt?: string;
   wide?: boolean;
   onUpdate?: (updated: any) => void;
+  onRemove?: () => void;
 }) {
   const auth = useAuthSafe();
 
@@ -42,23 +44,48 @@ export default function ItemCard({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: "8px",
         }}
       >
-        {auth.isEditor ? (
-          <input
-            className="item-title-input"
-            defaultValue={title}
-            onChange={(e) => updateField({ title: e.target.value })}
-            style={{
-              fontSize: "1.1rem",
-              fontWeight: 700,
-              border: "none",
-              background: "transparent",
-            }}
-          />
-        ) : (
-          <h2>{title}</h2>
-        )}
+        <div style={{ flex: 1 }}>
+          {auth.isEditor ? (
+            <input
+              className="item-title-input"
+              defaultValue={title}
+              onChange={(e) => updateField({ title: e.target.value })}
+              style={{
+                fontSize: "1.1rem",
+                fontWeight: 700,
+                border: "none",
+                background: "transparent",
+              }}
+            />
+          ) : (
+            <h2>{title}</h2>
+          )}
+        </div>
+
+        {auth.isEditor && onRemove ? (
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <button
+              className="action-button secondary"
+              onClick={() => {
+                try {
+                  // confirm destructive action
+                  if (
+                    window.confirm(
+                      `Delete field '${title}'? This cannot be undone.`,
+                    )
+                  ) {
+                    onRemove && onRemove();
+                  }
+                } catch {}
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {auth.isEditor &&

@@ -23,6 +23,7 @@ export default function CampaignDetail({
     cards,
   );
   const [showAddMenu, setShowAddMenu] = React.useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
   React.useEffect(() => setLocalHeader(headerFields), [headerFields]);
   React.useEffect(() => setLocalCards(cards), [cards]);
@@ -48,6 +49,22 @@ export default function CampaignDetail({
     setShowAddMenu(false);
   }
 
+  function removeCard(idx: number) {
+    setLocalCards((prev) => {
+      const copy = prev ? [...prev] : [];
+      if (idx >= 0 && idx < copy.length) copy.splice(idx, 1);
+      return copy;
+    });
+  }
+
+  function confirmDeleteItem() {
+    // destructive: just navigate back to manage and exit edit mode
+    try {
+      auth.setIsEditor(false);
+    } catch {}
+    window.location.href = "/capaign1/manage";
+  }
+
   const displayTitle =
     localHeader && localHeader[0] && localHeader[0].value
       ? localHeader[0].value
@@ -67,6 +84,14 @@ export default function CampaignDetail({
         >
           {auth.isEditor ? (
             <>
+              <button
+                className="action-button secondary"
+                onClick={() => setShowDeleteConfirm(true)}
+                title="Delete this item"
+              >
+                Delete
+              </button>
+
               <button
                 className="action-button"
                 onClick={() => {
@@ -171,8 +196,38 @@ export default function CampaignDetail({
               return copy;
             });
           }}
+          onRemove={(idx) => removeCard(idx)}
         />
       )}
+
+      {showDeleteConfirm ? (
+        <div className="modal-overlay">
+          <div className="modal" role="dialog" aria-modal="true">
+            <h3>Delete this item?</h3>
+            <p>
+              This will exit edit mode and navigate back to Manage. This action
+              cannot be undone here.
+            </p>
+            <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+              <button
+                className="action-button secondary"
+                onClick={() => {
+                  confirmDeleteItem();
+                  setShowDeleteConfirm(false);
+                }}
+              >
+                Confirm Delete
+              </button>
+              <button
+                className="action-button"
+                onClick={() => setShowDeleteConfirm(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
