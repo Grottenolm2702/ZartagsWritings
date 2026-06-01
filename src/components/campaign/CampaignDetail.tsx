@@ -34,7 +34,9 @@ export default function CampaignDetail({
   );
   const [showAddMenu, setShowAddMenu] = React.useState(false);
 
-  const [players, setPlayers] = React.useState<{ id: string; name: string }[]>([]);
+  const [players, setPlayers] = React.useState<{ id: string; name: string }[]>(
+    [],
+  );
   const [newPlayer, setNewPlayer] = React.useState("");
 
   const slugify = (s: string) =>
@@ -177,26 +179,27 @@ export default function CampaignDetail({
                 ) : null}
               </div>
             </>
-          ) : (
-            <button
-              className="action-button"
-              onClick={() => {
-                try {
-                  auth.setIsEditor(true);
-                } catch {}
-              }}
-            >
-              Edit
-            </button>
-          )}
+          ) : null }
         </div>
       </div>
 
       {auth.isDungeonMaster ? (
-        <div style={{ marginTop: "12px", padding: "8px", border: "1px solid var(--hover-color)", borderRadius: "6px", background: "var(--primary-color)" }}>
+        <div
+          style={{
+            marginTop: "12px",
+            padding: "8px",
+            border: "1px solid var(--hover-color)",
+            borderRadius: "6px",
+            background: "var(--primary-color)",
+          }}
+        >
           <h3 style={{ margin: "0 0 8px 0" }}>Players</h3>
           <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-            <input value={newPlayer} onChange={(e) => setNewPlayer(e.target.value)} placeholder="Player name" />
+            <input
+              value={newPlayer}
+              onChange={(e) => setNewPlayer(e.target.value)}
+              placeholder="Player name"
+            />
             <button
               className="action-button"
               onClick={() => {
@@ -216,7 +219,15 @@ export default function CampaignDetail({
 
           <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
             {players.map((p) => (
-              <li key={p.id} style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "6px" }}>
+              <li
+                key={p.id}
+                style={{
+                  display: "flex",
+                  gap: "8px",
+                  alignItems: "center",
+                  marginBottom: "6px",
+                }}
+              >
                 <span style={{ flex: 1 }}>{p.name}</span>
                 <button
                   className="action-button secondary"

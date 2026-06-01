@@ -21,19 +21,39 @@ export default function CampaignOverview() {
       to: "/capaign1/pc",
       visible: true,
     },
-    { category: "Pcs", title: "Ronny - Garten - Zwerg", to: "#", visible: true },
-    { category: "Pcs", title: "Human - Male - Fighter", to: "#", visible: true },
+    {
+      category: "Pcs",
+      title: "Ronny - Garten - Zwerg",
+      to: "#",
+      visible: true,
+    },
+    {
+      category: "Pcs",
+      title: "Human - Male - Fighter",
+      to: "#",
+      visible: true,
+    },
 
     { category: "Npcs", title: "Zartag", to: "/capaign1/npc", visible: true },
     { category: "Npcs", title: "Irenäus", to: "#", visible: true },
     { category: "Npcs", title: "Manuel", to: "#", visible: true },
 
-    { category: "Mi", title: "Das Buch", to: "/capaign1/magicitem", visible: true },
+    {
+      category: "Mi",
+      title: "Das Buch",
+      to: "/capaign1/magicitem",
+      visible: true,
+    },
     { category: "Mi", title: "Warschip", to: "#", visible: true },
     { category: "Mi", title: "haus", to: "#", visible: true },
 
     { category: "Loc", title: "Elarint", to: "#", visible: true },
-    { category: "Loc", title: "Das Herrenhaus", to: "/capaign1/location", visible: true },
+    {
+      category: "Loc",
+      title: "Das Herrenhaus",
+      to: "/capaign1/location",
+      visible: true,
+    },
     { category: "Loc", title: "Der Brunnen", to: "#", visible: true },
   ];
   const [items, setItems] = React.useState<Item[]>(initialItems);
@@ -48,7 +68,8 @@ export default function CampaignOverview() {
 
   const q = query.trim().toLowerCase();
   const filtered = React.useMemo(() => {
-    const base = q === "" ? items : items.filter((i) => i.title.toLowerCase().includes(q));
+    const base =
+      q === "" ? items : items.filter((i) => i.title.toLowerCase().includes(q));
     // if not editor or dm, hide invisible entries
     if (!auth.isEditor && !auth.isDungeonMaster) {
       return base.filter((i) => i.visible !== false);
@@ -140,12 +161,31 @@ export default function CampaignOverview() {
                     New
                   </button>
                 </h2>
-                  <ul className="element-list">
+                <ul className="element-list">
                   {grouped[cat].map((it, idx) => (
-                    <li key={idx} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <Link to={it.to} style={{ opacity: it.visible === false ? 0.4 : 1 }}>{it.title}</Link>
+                    <li
+                      key={idx}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <Link
+                        to={it.to}
+                        style={{ opacity: it.visible === false ? 0.4 : 1 }}
+                      >
+                        {it.title}
+                      </Link>
                       {auth.isDungeonMaster ? (
-                        <label style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <label
+                          style={{
+                            marginLeft: "auto",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
                           <input
                             type="checkbox"
                             checked={it.visible !== false}
@@ -154,7 +194,12 @@ export default function CampaignOverview() {
                                 const copy = [...s];
                                 const globalIdx = s.indexOf(it);
                                 if (globalIdx >= 0) {
-                                  copy[globalIdx] = { ...copy[globalIdx], visible: !(copy[globalIdx].visible === false) };
+                                  copy[globalIdx] = {
+                                    ...copy[globalIdx],
+                                    visible: !(
+                                      copy[globalIdx].visible === false
+                                    ),
+                                  };
                                 }
                                 return copy;
                               });

@@ -7,7 +7,12 @@ export default function Header() {
     try {
       return useAuth();
     } catch {
-      return { isEditor: false, isDungeonMaster: false, toggleEditor: () => {}, toggleDungeonMaster: () => {} } as any;
+      return {
+        isEditor: false,
+        isDungeonMaster: false,
+        toggleEditor: () => {},
+        toggleDungeonMaster: () => {},
+      } as any;
     }
   })();
 
@@ -28,12 +33,36 @@ export default function Header() {
           </li>
         </ul>
 
-        <div style={{ position: "absolute", right: 16, top: 12, display: "flex", gap: "8px", alignItems: "center" }}>
+        <div
+          style={{
+            position: "fixed",
+            right: 16,
+            bottom: 16,
+            display: "flex",
+            gap: "8px",
+            alignItems: "center",
+            zIndex: 1001,
+            background: "var(--primary-color)",
+            padding: "6px",
+            borderRadius: "8px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          }}
+        >
           <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <input type="checkbox" checked={auth.isEditor} onChange={auth.toggleEditor} /> Editor
+            <input
+              type="checkbox"
+              checked={auth.isEditor}
+              onChange={auth.toggleEditor}
+            />{' '}
+            Editor
           </label>
           <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <input type="checkbox" checked={auth.isDungeonMaster} onChange={auth.toggleDungeonMaster} /> DM
+            <input
+              type="checkbox"
+              checked={auth.isDungeonMaster}
+              onChange={auth.toggleDungeonMaster}
+            />{' '}
+            DM
           </label>
         </div>
       </nav>
