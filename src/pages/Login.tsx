@@ -8,7 +8,10 @@ export default function Login() {
       <main>
         <h1>Login</h1>
         <form className={formStyles.form}>
-          <label htmlFor="email" className={formStyles.formLabel}> E-mail-Adresse:</label>
+          <label htmlFor="email" className={formStyles.formLabel}>
+            {" "}
+            E-mail-Adresse:
+          </label>
           <input
             type="email"
             id="email"
@@ -18,7 +21,9 @@ export default function Login() {
             className={formStyles.formInput}
             required
           />
-          <label htmlFor="password" className={formStyles.formLabel}>Password:</label>
+          <label htmlFor="password" className={formStyles.formLabel}>
+            Password:
+          </label>
           <input
             type="password"
             name="password"
@@ -28,7 +33,9 @@ export default function Login() {
             minLength={8}
             maxLength={30}
           />
-          <button type="submit" className={formStyles.formButton}>Login</button>
+          <button type="submit" className={formStyles.formButton}>
+            Login
+          </button>
         </form>
       </main>
     </Layout>

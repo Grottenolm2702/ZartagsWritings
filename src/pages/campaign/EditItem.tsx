@@ -54,7 +54,10 @@ export default function EditItemPage() {
         </h1>
 
         {dataset.header && (
-          <div className={contentStyles.contentHeader} style={{ marginTop: "0.5rem" }}>
+          <div
+            className={contentStyles.contentHeader}
+            style={{ marginTop: "0.5rem" }}
+          >
             {dataset.header.map((h: HeaderField, i: number) => (
               <div className={contentStyles.contentHeaderItem} key={i}>
                 <span className={contentStyles.label}>{h.label}</span>

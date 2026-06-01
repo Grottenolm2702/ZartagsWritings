@@ -41,7 +41,10 @@ export default function ItemCard({
 
   return (
     <div className={"item-card" + (wide ? " wide" : "")}>
-      <div className={layoutStyles.flexRow} style={{ justifyContent: "space-between" }}>
+      <div
+        className={layoutStyles.flexRow}
+        style={{ justifyContent: "space-between" }}
+      >
         <div style={{ flex: 1 }}>
           {auth.isEditor ? (
             <input

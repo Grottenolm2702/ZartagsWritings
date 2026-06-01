@@ -240,7 +240,11 @@ export default function CampaignOverview() {
 
         {showNewFor ? (
           <div className={contentStyles.modalOverlay}>
-            <div className={contentStyles.modal} role="dialog" aria-modal="true">
+            <div
+              className={contentStyles.modal}
+              role="dialog"
+              aria-modal="true"
+            >
               <h3>Create new entry in {LABEL_MAP[showNewFor]}</h3>
               <label>Title</label>
               <input

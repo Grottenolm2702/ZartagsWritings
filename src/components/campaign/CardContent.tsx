@@ -1,6 +1,7 @@
 import React from "react";
 import EditableCardContent from "./EditableCardContent";
 import { useAuthSafe } from "../../context/AuthContext";
+import contentStyles from "../../styles/content.module.css";
 import type {
   CardContent as CardContentType,
   ListItem,
@@ -49,7 +50,7 @@ export default function CardContent({ content, onChange }: CardContentProps) {
 
   if (content.type === "attributes") {
     return (
-      <dl className={content.className || "attribute-list"}>
+      <dl className={content.className || contentStyles.atributeList}>
         {content.items.map((it, i: number) => (
           <React.Fragment key={i}>
             <dt>{it.dt}</dt>

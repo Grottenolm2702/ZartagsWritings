@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuthSafe } from "../../context/AuthContext";
+import contentStyles from "../../styles/content.module.css";
 import type { HeaderField } from "../../types/campaign";
 
 export type { HeaderField };
@@ -15,14 +16,14 @@ export default function ContentHeader({
 
   if (!fields || fields.length === 0) return null;
   return (
-    <div className="content-header">
+    <div className={contentStyles.contentHeader}>
       {fields.map((f, i) => (
-        <div className="content-header-item" key={i}>
-          <span className="label">{f.label}</span>
+        <div className={contentStyles.contentHeaderItem} key={i}>
+          <span className={contentStyles.label}>{f.label}</span>
           {auth.isEditor ? (
             <input
               value={f.value}
-              className="value"
+              className={contentStyles.value}
               style={{
                 border: "none",
                 background: "transparent",
@@ -34,7 +35,7 @@ export default function ContentHeader({
               }
             />
           ) : (
-            <span className="value">{f.value}</span>
+            <span className={contentStyles.value}>{f.value}</span>
           )}
         </div>
       ))}
