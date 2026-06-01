@@ -77,17 +77,6 @@ export default function CampaignDetail({
         >
           {auth.isEditor ? (
             <>
-              {auth.isDungeonMaster ? (
-                <button
-                  className="action-button"
-                  onClick={() => {
-                    window.location.href = "/capaign1/manage";
-                  }}
-                >
-                  Verwalten
-                </button>
-              ) : null}
-
               <button
                 className="action-button"
                 onClick={() => {
