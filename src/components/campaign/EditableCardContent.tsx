@@ -40,7 +40,8 @@ export default function EditableCardContent({
 
   if (content.type === "paragraphs") {
     const stateTyped = state as Partial<ParagraphsContent>;
-    const paragraphs: string[] = stateTyped.paragraphs || content.paragraphs || [""];
+    const paragraphs: string[] = stateTyped.paragraphs ||
+      content.paragraphs || [""];
     return (
       <div>
         {paragraphs.map((p: string, i: number) => (
@@ -157,5 +158,6 @@ export default function EditableCardContent({
     );
   }
 
-  return <div>Unsupported content type for editing: {content.type}</div>;
+  const _exhaustive: never = content;
+  return <div>Unsupported content type for editing: {_exhaustive}</div>;
 }
