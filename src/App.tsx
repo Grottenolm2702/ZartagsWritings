@@ -15,11 +15,8 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/index.html" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/about.html" element={<About />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/login.html" element={<Login />} />
           <Route path="/capaign1" element={<CampaignOverview />} />
           <Route path="/capaign1/overview" element={<CampaignOverview />} />
           <Route path="/capaign1/:type" element={<CampaignTypePage />} />
