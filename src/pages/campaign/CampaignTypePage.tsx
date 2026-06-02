@@ -10,8 +10,8 @@ import type {
   CardSpec,
   NavigationState,
   CampaignType,
-  CAMPAIGN_TYPE_LABELS,
 } from "../../types/campaign";
+import { CAMPAIGN_TYPE_LABELS } from "../../types/campaign";
 
 interface CampaignTypeConfig {
   header: HeaderField[];
