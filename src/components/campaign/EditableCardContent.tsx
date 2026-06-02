@@ -3,6 +3,10 @@ import type {
   CardContent as CardContentType,
   AttributeItem,
   ListItem,
+  ParagraphsContent,
+  ParagraphContent,
+  ListContent,
+  AttributesContent,
 } from "../../types/campaign";
 import styles from "../../styles/forms.module.css";
 import contentStyles from "../../styles/content.module.css";
@@ -35,7 +39,8 @@ export default function EditableCardContent({
   }
 
   if (content.type === "paragraphs") {
-    const paragraphs: string[] = state.paragraphs || content.paragraphs || [""];
+    const stateTyped = state as Partial<ParagraphsContent>;
+    const paragraphs: string[] = stateTyped.paragraphs || content.paragraphs || [""];
     return (
       <div>
         {paragraphs.map((p: string, i: number) => (
@@ -63,10 +68,11 @@ export default function EditableCardContent({
   }
 
   if (content.type === "paragraph") {
+    const stateTyped = state as Partial<ParagraphContent>;
     return (
       <div>
         <textarea
-          value={state.text ?? content.text ?? ""}
+          value={stateTyped.text ?? content.text ?? ""}
           onChange={(e) => update("text", e.target.value)}
           rows={6}
           className={styles.formTextarea}
@@ -76,7 +82,8 @@ export default function EditableCardContent({
   }
 
   if (content.type === "list") {
-    const items: ListItem[] = state.items || content.items || [];
+    const stateTyped = state as Partial<ListContent>;
+    const items: ListItem[] = stateTyped.items || content.items || [];
     return (
       <ul className={styles.listUnstyled}>
         {items.map((it: ListItem, i: number) => (
@@ -106,7 +113,8 @@ export default function EditableCardContent({
   }
 
   if (content.type === "attributes") {
-    const items: AttributeItem[] = state.items || content.items || [];
+    const stateTyped = state as Partial<AttributesContent>;
+    const items: AttributeItem[] = stateTyped.items || content.items || [];
     return (
       <dl className={contentStyles.atributeList}>
         {items.map((it: AttributeItem, i: number) => (
