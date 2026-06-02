@@ -12,6 +12,7 @@ import type {
   HeaderField,
   CardSpec,
   NavigationState,
+  AttributeItem,
 } from "../types/campaign";
 
 type Item = {
@@ -101,10 +102,6 @@ export default function CampaignOverview() {
     }
     return base;
   }, [items, q, auth.isEditor, auth.isDungeonMaster]);
-
-  React.useEffect(() => {
-    // keep effect for future analytics
-  }, [query, filtered.length]);
 
   const grouped = React.useMemo(() => {
     const g: Record<string, Item[]> = {} as Record<string, Item[]>;
@@ -333,22 +330,12 @@ export default function CampaignOverview() {
                                 items: [{ label: cardTitle }],
                               };
                             else if (ct === "attributes") {
-                              const dt =
-                                (rawContent as Record<string, unknown>).items &&
-                                Array.isArray(
-                                  (rawContent as Record<string, unknown>).items,
-                                ) &&
-                                (
-                                  (rawContent as Record<string, unknown>)
-                                    .items as unknown[]
-                                )[0]
-                                  ? (
-                                      (
-                                        (rawContent as Record<string, unknown>)
-                                          .items as unknown[]
-                                      )[0] as Record<string, unknown>
-                                    ).dt || ""
-                                  : "";
+                              const firstAttribute = (
+                                rawContent as {
+                                  items?: AttributeItem[];
+                                }
+                              ).items?.[0];
+                              const dt = firstAttribute?.dt ?? "";
                               base.content = {
                                 type: "attributes",
                                 items: [{ dt, dd: cardTitle }],
