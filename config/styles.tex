@@ -1,0 +1,60 @@
+% --- Farbdefinitionen ---
+\definecolor{codebg}{RGB}{247,247,247}
+\definecolor{terminalbg}{RGB}{235, 240, 245}
+\definecolor{terminalfg}{RGB}{45, 45, 45}
+\definecolor{commentgreen}{RGB}{0,128,0}
+\definecolor{keywordblue}{RGB}{0,0,255}
+\definecolor{stringstring}{RGB}{163,21,21}
+
+% --- Kopf- und Fußzeilen (fancyhdr) ---
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+\lhead{\leftmark}
+\rhead{\MyTitle} % Nutzt jetzt den automatischen Titel des Pakets
+\rfoot{Seite \thepage\ von \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% --- siunitx Setup ---
+\sisetup{locale = DE, per-mode = symbol}
+
+% --- Listings (Code Styles) ---
+% Standard-Style für echten Quellcode
+\lstset{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{commentgreen},
+    keywordstyle=\color{keywordblue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{stringstring},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    frame=single,
+    rulecolor=\color{lightgray}
+}
+
+% Style für Terminal-Ausgaben
+\lstdefinestyle{terminal}{
+    backgroundcolor=\color{terminalbg},
+    basicstyle=\ttfamily\small\color{terminalfg},
+    numbers=none,            
+    frame=single,
+    rulecolor=\color{gray},
+    breaklines=true,
+    keepspaces=true,
+    commentstyle=\color{terminalfg},
+    keywordstyle=\color{terminalfg},
+    stringstyle=\color{terminalfg}
+}
+
+% Eigener Kurzbefehl für Inline-Code
+\newcommand{\code}[1]{\colorbox{codebg}{\ttfamily\small #1}}
