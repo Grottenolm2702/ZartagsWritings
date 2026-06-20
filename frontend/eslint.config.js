@@ -41,6 +41,7 @@ export default [
         fetch: "readonly",
         atob: "readonly",
         confirm: "readonly",
+        global: "readonly",
       },
     },
     plugins: {
