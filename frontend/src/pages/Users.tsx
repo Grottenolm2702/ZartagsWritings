@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "../components/Layout";
 import contentStyles from "../styles/content.module.css";
 import { useNavigate } from "react-router-dom";
-import { useJWTAuth } from "../context/JWTAuthContext";
+import { useJWTAuth, getErrorMessage } from "../context/JWTAuthContext";
 
 export default function Users() {
   const navigate = useNavigate();
@@ -15,24 +15,28 @@ export default function Users() {
   async function handleDelete() {
     if (!confirm("Account wirklich löschen?")) return;
     try {
-      const token = localStorage.getItem("token");
       const res = await fetch("/api/user", {
         method: "DELETE",
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        credentials: "include",
       });
-      if (!res.ok) throw new Error(await res.text());
-      logout();
+      if (!res.ok) throw new Error(getErrorMessage(await res.text()));
+      await logout();
       navigate("/");
     } catch (err) {
       alert(err instanceof Error ? err.message : "Delete failed");
     }
   }
 
+  async function handleLogout() {
+    await logout();
+    navigate("/");
+  }
+
   return (
     <Layout>
       <main>
         <h1>Userverwaltung</h1>
-        {error ? <div style={{ color: "red" }}>{error}</div> : null}
+        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
         {loading ? <p>Lädt...</p> : null}
         {user ? (
           <div style={{ marginTop: 12 }}>
@@ -44,6 +48,13 @@ export default function Users() {
               onClick={handleDelete}
             >
               Account löschen
+            </button>
+            <button
+              className={contentStyles.actionButton}
+              onClick={handleLogout}
+              style={{ marginLeft: 8 }}
+            >
+              Abmelden
             </button>
           </div>
         ) : null}

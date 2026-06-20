@@ -4,29 +4,34 @@ export type AuthUser = { id: number; email: string; name?: string | null };
 
 type JWTAuthContextType = {
   isLoggedIn: boolean;
-  token: string | null;
   user: AuthUser | null;
   loading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   setError: (error: string | null) => void;
   loadUser: () => Promise<void>;
 };
+
+function extractErrorMessage(text: string): string {
+  try {
+    const json = JSON.parse(text);
+    return json.error || text;
+  } catch {
+    return text;
+  }
+}
+
+export function getErrorMessage(text: string): string {
+  return extractErrorMessage(text);
+}
 
 const JWTAuthContext = React.createContext<JWTAuthContextType | undefined>(
   undefined,
 );
 
 export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = React.useState<string | null>(() => {
-    try {
-      return localStorage.getItem("token");
-    } catch {
-      return null;
-    }
-  });
   const [user, setUser] = React.useState<AuthUser | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -40,19 +45,12 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
+          credentials: "include",
         });
         if (!res.ok) {
           const txt = await res.text();
-          throw new Error(txt || "Login failed");
+          throw new Error(extractErrorMessage(txt));
         }
-        const data = await res.json();
-        if (!data.token) throw new Error("No token in response");
-        try {
-          localStorage.setItem("token", data.token);
-        } catch {
-          // ignore
-        }
-        setToken(data.token);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Unknown error";
         setError(msg);
@@ -74,7 +72,7 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
         });
-        if (!res.ok) throw new Error(await res.text());
+        if (!res.ok) throw new Error(extractErrorMessage(await res.text()));
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Registration failed";
         setError(msg);
@@ -86,42 +84,39 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  const logout = React.useCallback(() => {
+  const logout = React.useCallback(async () => {
+    setLoading(true);
     try {
-      localStorage.removeItem("token");
+      await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",
+      });
     } catch {
       // ignore
+    } finally {
+      setUser(null);
+      setError(null);
+      setLoading(false);
     }
-    setToken(null);
-    setUser(null);
-    setError(null);
   }, []);
 
   React.useEffect(() => {
     let mounted = true;
     async function load() {
-      if (!token) {
-        setUser(null);
-        return;
-      }
       setLoading(true);
       setError(null);
       try {
         const res = await fetch("/api/user", {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
         });
         if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(errText || "Failed to load user");
+          // Don't set error on init if not logged in (401)
+          return;
         }
         const userData: AuthUser = await res.json();
         if (mounted) setUser(userData);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Error loading user";
-        if (mounted) {
-          setError(msg);
-          setUser(null);
-        }
+        // Silently ignore init errors
       } finally {
         if (mounted) setLoading(false);
       }
@@ -130,22 +125,18 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       mounted = false;
     };
-  }, [token]);
+  }, []);
 
   const loadUser = React.useCallback(async () => {
-    if (!token) {
-      setUser(null);
-      return;
-    }
     setLoading(true);
     setError(null);
     try {
       const res = await fetch("/api/user", {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       if (!res.ok) {
         const errText = await res.text();
-        throw new Error(errText || "Failed to load user");
+        throw new Error(extractErrorMessage(errText) || "Failed to load user");
       }
       const userData: AuthUser = await res.json();
       setUser(userData);
@@ -156,13 +147,12 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   return (
     <JWTAuthContext.Provider
       value={{
-        isLoggedIn: !!token,
-        token,
+        isLoggedIn: !!user,
         user,
         loading,
         error,

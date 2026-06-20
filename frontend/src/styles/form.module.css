@@ -45,3 +45,13 @@
 .formButton:hover {
   opacity: 0.85;
 }
+
+.errorMessage {
+  margin-top: 1em;
+  padding: 0.75em;
+  background-color: #2a1515;
+  border: 1px solid #8b3333;
+  border-radius: 0.25em;
+  color: #ff8888;
+  font-size: 0.95em;
+}

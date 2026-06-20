@@ -2,6 +2,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
@@ -12,8 +13,9 @@ dotenv.config();
 
 const app = express();
 const PORT = 3000;
-app.use(cors());
+app.use(cors({ credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -72,7 +74,13 @@ app.post("/api/login", async (req: Request, res: Response) => {
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET!, {
       expiresIn: "1h",
     });
-    res.json({ mossa: "Login erfolgreich", token });
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 3600000,
+    });
+    res.json({ message: "Login erfolgreich" });
   } catch (error) {
     res.status(500).json({ error: "Fehler bei der Anmeldung" });
   }
@@ -84,21 +92,24 @@ const authenticateToken = (
   res: Response,
   next: NextFunction,
 ) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({ error: "Token fehlt" });
+    return res.status(401).json({ error: "Bitte melden Sie sich an" });
   }
 
-  jwt.verify(token, JWT_SECRET!, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ error: "Ungültiger Token" });
-    }
+  jwt.verify(
+    token,
+    JWT_SECRET!,
+    (err: Error | null, decoded: unknown) => {
+      if (err) {
+        return res.status(403).json({ error: "Ungültiger Token" });
+      }
 
-    req.user = decoded as { id: number; email: string };
-    next();
-  });
+      req.user = decoded as { id: number; email: string };
+      next();
+    },
+  );
 };
 
 app.delete(
@@ -144,6 +155,15 @@ app.get(
     }
   },
 );
+
+app.post("/api/logout", (req: AuthRequest, res: Response) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  });
+  res.json({ message: "Logout erfolgreich" });
+});
 
 // Unsere erste Test-Route
 app.get("/api/health", (_req: Request, res: Response) => {

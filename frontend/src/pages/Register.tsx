@@ -63,7 +63,7 @@ export default function Register() {
           <button type="submit" className={formStyles.formButton} disabled={loading}>
             {loading ? "Registering..." : "Register"}
           </button>
-          {error ? <div style={{ color: "red", marginTop: 8 }}>{error}</div> : null}
+          {error ? <div className={formStyles.errorMessage}>{error}</div> : null}
         </form>
       </main>
     </Layout>
