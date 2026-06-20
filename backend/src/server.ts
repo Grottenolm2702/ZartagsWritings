@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "./generated/client.js";
 import type { Request, Response, NextFunction } from "express";
 
 dotenv.config();
