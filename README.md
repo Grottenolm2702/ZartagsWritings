@@ -90,8 +90,6 @@ For more Info see the about page.
 
 - **Interaktive SPA ideal**: React Router ermöglicht schnelle Client-seitige Navigation ohne Page-Reload
 - **Echte API-Integration**: Backend-API wird bewusst eingesetzt (nicht als Fallback), HttpOnly Cookies für sichere Auth
-- **SSR/SSG unnötig**: Keine statischen oder Server-gerendertem HTML nötig; alle Daten werden dynamisch via API geladen
-- **SEO kein Fokus**: D&D-Kampagnen-Manager ist keine öffentliche Website, sondern interne Anwendung für angemeldete User
 
 ## Setup
 
