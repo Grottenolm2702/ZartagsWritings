@@ -8,6 +8,8 @@ import CampaignTypePage from "./pages/campaign/CampaignTypePage";
 import EditItemPage from "./pages/campaign/EditItem";
 import ManageCampaign from "./pages/campaign/ManageCampaign";
 import { AuthProvider } from "./context/AuthContext";
+import Register from "./pages/Register";
+import Users from "./pages/Users";
 
 export default function App() {
   return (
@@ -17,6 +19,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/users" element={<Users />} />
           <Route path="/capaign1" element={<CampaignOverview />} />
           <Route path="/capaign1/overview" element={<CampaignOverview />} />
           <Route path="/capaign1/:type" element={<CampaignTypePage />} />
