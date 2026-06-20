@@ -2,48 +2,24 @@ import React from "react";
 import Layout from "../components/Layout";
 import formStyles from "../styles/form.module.css";
 import { useNavigate } from "react-router-dom";
-
-type LoginResponse ={token?: string};
+import { useJWTAuth } from "../context/JWTAuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [error, seterror] = React.useState<string | null>(null);
-  const [loading, setloading] = React.useState(false);
+  const { login, loading, error, setError } = useJWTAuth();
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
-    seterror(null);
-    setloading(true);
-
+    setError(null);
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const email = formData.get("email");
-    const password = formData.get("password");
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
     try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: {"Content-Type" : "application/json"},
-        body: JSON.stringify({email, password}),
-      });
-
-      if(!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || "login failed");
-      }
-      const data: LoginResponse = await res.json();
-      if(data.token) {
-        try {
-          localStorage.setItem("token", data.token);
-        } catch {
-
-        }
-      }
+      await login(email, password);
       navigate("/");
-    } catch(err) {
-      const message = err instanceof Error ? err.message : "Unknown error";
-      seterror(message);
-    } finally {
-      setloading(false);
+    } catch {
+      // Error already set in context
     }
   }
 
@@ -51,7 +27,7 @@ export default function Login() {
     <Layout>
       <main>
         <h1>Login</h1>
-        <form className={formStyles.form} onSubmit= {handleSubmit}>
+        <form className={formStyles.form} onSubmit={handleSubmit}>
           <label htmlFor="email" className={formStyles.formLabel}>
             {" "}
             E-mail-Adresse:
@@ -78,9 +54,9 @@ export default function Login() {
             maxLength={30}
           />
           <button type="submit" className={formStyles.formButton} disabled={loading}>
-            {loading ? "Logging in" : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </button>
-          {error ? <div style={{color: "red", marginTop: 8}}>{error}</div>: null}
+          {error ? <div style={{ color: "red", marginTop: 8 }}>{error}</div> : null}
         </form>
       </main>
     </Layout>

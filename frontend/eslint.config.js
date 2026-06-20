@@ -38,6 +38,9 @@ export default [
         MediaQueryListEvent: "readonly",
         navigator: "readonly",
         alert: "readonly",
+        fetch: "readonly",
+        atob: "readonly",
+        confirm: "readonly",
       },
     },
     plugins: {

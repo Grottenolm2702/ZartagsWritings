@@ -120,6 +120,31 @@ app.delete(
   },
 );
 
+app.get(
+  "/api/user",
+  authenticateToken,
+  async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+    }
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, email: true, name: true },
+      });
+      if (!user) {
+        return res.status(404).json({ error: "Benutzer nicht gefunden" });
+      }
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: "Fehler beim Abrufen des Benutzers" });
+    }
+  },
+);
+
 // Unsere erste Test-Route
 app.get("/api/health", (_req: Request, res: Response) => {
   res.json({ ok: true, message: "Hallo vom eigenen Backend!" });

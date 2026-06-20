@@ -2,34 +2,25 @@ import React from "react";
 import Layout from "../components/Layout";
 import formStyles from "../styles/form.module.css";
 import { useNavigate } from "react-router-dom";
+import { useJWTAuth } from "../context/JWTAuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const { register, loading, error, setError } = useJWTAuth();
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    setLoading(true);
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const password = formData.get("password");
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
-      if (!res.ok) throw new Error(await res.text());
+      await register(name, email, password);
       navigate("/login");
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Registration failed";
-      setError(message);
-    } finally {
-      setLoading(false);
+    } catch {
+      // Error already set in context
     }
   }
 
