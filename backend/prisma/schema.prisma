@@ -1,8 +1,5 @@
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client"
-  enginetype = "client"
   output   = "../src/generated"
 }
 
@@ -10,9 +7,152 @@ datasource db {
   provider = "sqlite"
 }
 
+enum CampaignRole {
+  DM
+  EDITOR
+  PLAYER
+}
+
+enum EntityType {
+  PC
+  NPC
+  MAGIC_ITEM
+  LOCATION
+}
+
+enum ContentBlockType {
+  PARAGRAPH
+  PARAGRAPHS
+  LIST
+  ATTRIBUTES
+  IMAGE
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String?
   password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships     CampaignMember[]
+  ownedCampaigns  Campaign[]       @relation("CampaignOwner")
+  createdEntities Entity[]         @relation("EntityCreator")
+}
+
+model Campaign {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  description String?
+  joinCode    String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ownerId Int?
+  owner   User? @relation("CampaignOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  members  CampaignMember[]
+  entities Entity[]
+
+  @@index([ownerId])
+}
+
+model CampaignMember {
+  id          Int          @id @default(autoincrement())
+  campaignId  Int
+  userId      Int
+  role        CampaignRole @default(PLAYER)
+  displayName String?
+  joinedAt    DateTime     @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, userId])
+  @@index([userId])
+  @@index([campaignId])
+}
+
+model Entity {
+  id         Int        @id @default(autoincrement())
+  campaignId Int
+  creatorId  Int?
+  type       EntityType
+  slug       String
+  name       String
+  summary    String?
+  isVisible  Boolean    @default(true)
+  sortOrder  Int        @default(0)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  campaign Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  creator  User?          @relation("EntityCreator", fields: [creatorId], references: [id], onDelete: SetNull)
+  fields   EntityField[]
+  blocks   ContentBlock[]
+
+  @@unique([campaignId, type, slug])
+  @@index([campaignId, type])
+  @@index([creatorId])
+}
+
+model EntityField {
+  id        Int      @id @default(autoincrement())
+  entityId  Int
+  label     String
+  value     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entity Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@index([entityId])
+}
+
+model ContentBlock {
+  id        Int              @id @default(autoincrement())
+  entityId  Int
+  type      ContentBlockType
+  title     String
+  sortOrder Int              @default(0)
+  isWide    Boolean          @default(false)
+  text      String?
+  imageUrl  String?
+  imageAlt  String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  entity     Entity             @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  listItems  ContentListItem[]
+  attributes ContentAttribute[]
+
+  @@index([entityId])
+  @@index([entityId, sortOrder])
+}
+
+model ContentListItem {
+  id        Int     @id @default(autoincrement())
+  blockId   Int
+  label     String
+  href      String?
+  sortOrder Int     @default(0)
+
+  block ContentBlock @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  @@index([blockId])
+}
+
+model ContentAttribute {
+  id        Int    @id @default(autoincrement())
+  blockId   Int
+  label     String
+  value     String
+  sortOrder Int    @default(0)
+
+  block ContentBlock @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  @@index([blockId])
 }
