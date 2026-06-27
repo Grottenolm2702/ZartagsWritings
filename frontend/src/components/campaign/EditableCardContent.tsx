@@ -1,163 +1,143 @@
 import React from "react";
-import type {
-  CardContent as CardContentType,
-  AttributeItem,
-  ListItem,
-  ParagraphsContent,
-  ParagraphContent,
-  ListContent,
-  AttributesContent,
-} from "../../types/campaign";
-import styles from "../../styles/forms.module.css";
-import contentStyles from "../../styles/content.module.css";
+import formStyles from "../../styles/forms.module.css";
+import type { ApiCardContent } from "../../types/campaign-api";
 
-interface EditableCardContentProps {
-  content?: CardContentType;
-  onChange?: (c: CardContentType) => void;
-}
+type EditableCardContentProps = {
+  content: ApiCardContent;
+  onChange?: (content: ApiCardContent) => void;
+};
 
-export default function EditableCardContent({
-  content,
-  onChange,
-}: EditableCardContentProps) {
-  const [state, setState] = React.useState<Partial<CardContentType>>(
-    content || {},
-  );
-
-  if (!content) return null;
-
-  function update(path: string, value: unknown) {
-    setState((s) => {
-      const copy = { ...s };
-      (copy as Record<string, unknown>)[path] = value;
-      // notify parent
-      try {
-        onChange?.(copy as CardContentType);
-      } catch {}
-      return copy;
-    });
+export default function EditableCardContent({ content, onChange }: EditableCardContentProps) {
+  if (content.type === "paragraph") {
+    return (
+      <textarea
+        className={formStyles.formTextarea}
+        rows={5}
+        value={content.text}
+        onChange={(e) => onChange?.({ type: "paragraph", text: e.target.value })}
+      />
+    );
   }
 
   if (content.type === "paragraphs") {
-    const stateTyped = state as Partial<ParagraphsContent>;
-    const paragraphs: string[] = stateTyped.paragraphs ||
-      content.paragraphs || [""];
     return (
       <div>
-        {paragraphs.map((p: string, i: number) => (
-          <div key={i} className={styles.formTextareaContainer}>
+        {content.paragraphs.map((paragraph, index) => (
+          <div key={index} className={formStyles.formTextareaContainer}>
             <textarea
-              value={paragraphs[i]}
-              onChange={(e) => {
-                const next = [...paragraphs];
-                next[i] = e.target.value;
-                update("paragraphs", next);
-              }}
+              className={formStyles.formTextarea}
               rows={4}
-              className={styles.formTextarea}
+              value={paragraph}
+              onChange={(e) => {
+                const next = [...content.paragraphs];
+                next[index] = e.target.value;
+                onChange?.({ type: "paragraphs", paragraphs: next });
+              }}
             />
           </div>
         ))}
         <button
-          onClick={() => update("paragraphs", [...paragraphs, ""])}
           type="button"
+          onClick={() =>
+            onChange?.({ type: "paragraphs", paragraphs: [...content.paragraphs, ""] })
+          }
         >
-          Add paragraph
+          Absatz hinzufügen
         </button>
       </div>
     );
   }
 
-  if (content.type === "paragraph") {
-    const stateTyped = state as Partial<ParagraphContent>;
-    return (
-      <div>
-        <textarea
-          value={stateTyped.text ?? content.text ?? ""}
-          onChange={(e) => update("text", e.target.value)}
-          rows={6}
-          className={styles.formTextarea}
-        />
-      </div>
-    );
-  }
-
   if (content.type === "list") {
-    const stateTyped = state as Partial<ListContent>;
-    const items: ListItem[] = stateTyped.items || content.items || [];
     return (
-      <ul className={styles.listUnstyled}>
-        {items.map((it: ListItem, i: number) => (
-          <li key={i} className={styles.listItemSpacer}>
-            <input
-              value={it.label || ""}
-              onChange={(e) => {
-                const next = items.map((x: ListItem, idx: number) =>
-                  idx === i ? { ...x, label: e.target.value } : x,
-                );
-                update("items", next);
-              }}
-              className={styles.formInputTransparent}
-            />
+      <ul className={formStyles.listUnstyled}>
+        {content.items.map((item, index) => (
+          <li key={index} className={formStyles.listItemSpacer}>
+            <div className={formStyles.listItemInputRow}>
+              <input
+                className={formStyles.formInputTransparent}
+                value={item.label}
+                onChange={(e) => {
+                  const next = content.items.map((entry, entryIndex) =>
+                    entryIndex === index ? { ...entry, label: e.target.value } : entry,
+                  );
+                  onChange?.({ type: "list", items: next });
+                }}
+              />
+              <input
+                className={formStyles.formInputTransparent}
+                value={item.href || ""}
+                placeholder="Link optional"
+                onChange={(e) => {
+                  const next = content.items.map((entry, entryIndex) =>
+                    entryIndex === index ? { ...entry, href: e.target.value || undefined } : entry,
+                  );
+                  onChange?.({ type: "list", items: next });
+                }}
+              />
+            </div>
           </li>
         ))}
         <li>
           <button
-            onClick={() => update("items", [...items, { label: "" }])}
             type="button"
+            onClick={() =>
+              onChange?.({
+                type: "list",
+                items: [...content.items, { label: "", href: undefined }],
+              })
+            }
           >
-            Add item
+            Eintrag hinzufügen
           </button>
         </li>
       </ul>
     );
   }
 
-  if (content.type === "attributes") {
-    const stateTyped = state as Partial<AttributesContent>;
-    const items: AttributeItem[] = stateTyped.items || content.items || [];
-    return (
-      <dl className={contentStyles.atributeList}>
-        {items.map((it: AttributeItem, i: number) => (
-          <React.Fragment key={i}>
-            <dt>
-              <input
-                value={it.dt || ""}
-                onChange={(e) => {
-                  const next = items.map((x: AttributeItem, idx: number) =>
-                    idx === i ? { ...x, dt: e.target.value } : x,
-                  );
-                  update("items", next);
-                }}
-                className={styles.formInputTransparent}
-              />
-            </dt>
-            <dd>
-              <input
-                value={it.dd || ""}
-                onChange={(e) => {
-                  const next = items.map((x: AttributeItem, idx: number) =>
-                    idx === i ? { ...x, dd: e.target.value } : x,
-                  );
-                  update("items", next);
-                }}
-                className={`${styles.formInputTransparent} ${styles.formInputFullWidth}`}
-              />
-            </dd>
-          </React.Fragment>
-        ))}
-        <div>
-          <button
-            onClick={() => update("items", [...items, { dt: "", dd: "" }])}
-            type="button"
-          >
-            Add attribute
-          </button>
-        </div>
-      </dl>
-    );
-  }
-
-  const _exhaustive: never = content;
-  return <div>Unsupported content type for editing: {_exhaustive}</div>;
+  return (
+    <dl>
+      {content.items.map((item, index) => (
+        <React.Fragment key={index}>
+          <dt>
+            <input
+              className={formStyles.formInputTransparent}
+              value={item.dt}
+              onChange={(e) => {
+                const next = content.items.map((entry, entryIndex) =>
+                  entryIndex === index ? { ...entry, dt: e.target.value } : entry,
+                );
+                onChange?.({ type: "attributes", items: next });
+              }}
+            />
+          </dt>
+          <dd>
+            <input
+              className={formStyles.formInputTransparent}
+              value={item.dd}
+              onChange={(e) => {
+                const next = content.items.map((entry, entryIndex) =>
+                  entryIndex === index ? { ...entry, dd: e.target.value } : entry,
+                );
+                onChange?.({ type: "attributes", items: next });
+              }}
+            />
+          </dd>
+        </React.Fragment>
+      ))}
+      <div>
+        <button
+          type="button"
+          onClick={() =>
+            onChange?.({
+              type: "attributes",
+              items: [...content.items, { dt: "", dd: "" }],
+            })
+          }
+        >
+          Attribut hinzufügen
+        </button>
+      </div>
+    </dl>
+  );
 }

@@ -20,13 +20,13 @@ export const buildCampaignUrl = (type: string, slug: string): string => {
     magicitem: ROUTES.CAMPAIGN_MAGIC_ITEM,
     location: ROUTES.CAMPAIGN_LOCATION,
   };
-  return `${typeMap[type] || ROUTES.CAMPAIGN_OVERVIEW}/${slug}`;
+  return (typeMap[type] || ROUTES.CAMPAIGN_OVERVIEW).replace(":slug", slug);
 };
 
 /**
  * Extract type from route path
  */
 export const getTypeFromRoute = (path: string): string | null => {
-  const match = path.match(/\/capaign1\/([a-z]+)/);
+  const match = path.match(/\/campaigns\/[^/]+\/([a-z]+)/);
   return match?.[1] || null;
 };

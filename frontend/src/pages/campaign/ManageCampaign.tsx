@@ -1,191 +1,140 @@
 import React from "react";
+import { useParams, Link } from "react-router-dom";
 import Layout from "../../components/Layout";
-import raw from "../../data/exampleData.json";
-import { useAuthSafe } from "../../context/AuthContext";
-import { storageUtils } from "../../utils/localStorage";
+import { useJWTAuth } from "../../context/JWTAuthContext";
+import { apiFetch } from "../../lib/api";
+import type { ApiCampaign } from "../../types/campaign-api";
 import contentStyles from "../../styles/content.module.css";
-import type { RawData, Player } from "../../types/campaign";
 
 export default function ManageCampaign() {
-  const auth = useAuthSafe();
+  const { slug } = useParams();
+  const campaignSlug = slug;
+  const { user } = useJWTAuth();
+  const [campaign, setCampaign] = React.useState<ApiCampaign | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  // Initialize players state with all logic in the initializer to avoid setState in effect
-  const [players, setPlayers] = React.useState<Player[]>(() => {
-    try {
-      const examplePlayers: Player[] =
-        (raw as RawData).overview?.campaignPlayers || [];
-      const loaded = storageUtils.getPlayers(examplePlayers);
+  React.useEffect(() => {
+    let mounted = true;
 
-      const dmId =
-        storageUtils.getDmId() || (loaded.length > 0 ? loaded[0].id : null);
-      if (dmId && !storageUtils.getDmId()) {
-        storageUtils.setDmId(dmId);
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        if (!campaignSlug) {
+          throw new Error("Campaign-Slug fehlt");
+        }
+        const data = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
+        if (mounted) setCampaign(data);
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : "Campaign konnte nicht geladen werden");
+        }
+      } finally {
+        if (mounted) setLoading(false);
       }
-
-      // Ensure dm is editor
-      return dmId
-        ? loaded.map((p: Player) =>
-            p.id === dmId ? { ...p, isEditor: true } : p,
-          )
-        : loaded;
-    } catch {
-      const examplePlayers: Player[] =
-        (raw as RawData).overview?.campaignPlayers || [];
-      return examplePlayers;
     }
-  });
 
-  const [currentId, setCurrentId] = React.useState<string | null>(() =>
-    storageUtils.getCurrentPlayerId(),
-  );
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [campaignSlug]);
 
-  const [dmId, setDmId] = React.useState<string | null>(() =>
-    storageUtils.getDmId(),
-  );
+  const currentMembership = campaign?.members.find((member) => member.userId === user?.id);
+  const canEdit =
+    campaign?.owner?.id === user?.id ||
+    currentMembership?.role === "DM" ||
+    currentMembership?.role === "EDITOR";
 
-  function save(list: Player[]) {
-    // Enforce dm always editor
-    const enforced = dmId
-      ? list.map((p) => (p.id === dmId ? { ...p, isEditor: true } : p))
-      : list;
-    storageUtils.setPlayers(enforced);
-    setPlayers(enforced);
+  async function updateRole(memberUserId: number, role: "DM" | "EDITOR" | "PLAYER") {
+    const updated = await apiFetch<{
+      role: "DM" | "EDITOR" | "PLAYER";
+      displayName?: string | null;
+    }>(`/api/campaigns/${campaignSlug}/members/${memberUserId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ role }),
+    });
+    setCampaign((prev) =>
+      prev
+        ? {
+            ...prev,
+            members: prev.members.map((member) =>
+              member.userId === memberUserId
+                ? { ...member, role: updated.role, displayName: updated.displayName }
+                : member,
+            ),
+          }
+        : prev,
+    );
   }
 
   return (
     <Layout>
       <main>
         <h1>Campaign verwalten</h1>
-        <p>Invite link (example):</p>
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            alignItems: "center",
-            marginBottom: "12px",
-          }}
-        >
-          <input
-            readOnly
-            value={`${window.location.origin}/capaign1/join?campaign=capaign1`}
-            style={{ width: "100%" }}
-          />
-          <button
-            className={contentStyles.actionButton}
-            onClick={() => {
-              try {
-                navigator.clipboard?.writeText(
-                  `${window.location.origin}/capaign1/join?campaign=capaign1`,
-                );
-              } catch {}
-              alert("Invite link copied");
-            }}
-          >
-            Copy
-          </button>
-        </div>
+        {loading ? <p>Lädt...</p> : null}
+        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
 
-        <h2>Players</h2>
+        {campaign ? (
+          <>
+            <p>
+              <strong>{campaign.name}</strong>
+            </p>
+            <p>
+              Invite Code: <code>{campaign.joinCode}</code>
+            </p>
+            <p>
+              Invite Link:{" "}
+              <code>{`${window.location.origin}/campaigns/${campaign.slug}/overview`}</code>
+            </p>
+            <p>
+              <Link className={contentStyles.actionButton} to={`/campaigns/${campaign.slug}/overview`}>
+                Zur Übersicht
+              </Link>
+            </p>
 
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {players.map((p) => (
-            <li
-              key={p.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "6px",
-              }}
-            >
-              <div
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <span>{p.name}</span>
-                {p.isEditor ? (
-                  <span style={{ color: "#666" }}>(Editor)</span>
-                ) : null}
-                {dmId && p.id === dmId ? (
-                  <span
-                    style={{
-                      background: "#333",
-                      color: "#fff",
-                      padding: "2px 6px",
-                      borderRadius: 6,
-                      fontSize: 12,
-                    }}
-                  >
-                    DM
-                  </span>
-                ) : null}
-              </div>
-
-              {auth.isDungeonMaster ? (
-                <>
-                  {dmId && p.id === dmId ? null : (
+            <h2>Mitglieder</h2>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {campaign.members.map((member) => (
+                <li key={member.id} style={{ marginBottom: 12 }}>
+                  <strong>{member.displayName || member.user.name || member.user.email}</strong>{" "}
+                  <span style={{ opacity: 0.75 }}>({member.role})</span>
+                  <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
                     <button
                       className={contentStyles.actionButton}
-                      onClick={() => {
-                        const next = players.map((x) =>
-                          x.id === p.id ? { ...x, isEditor: !x.isEditor } : x,
-                        );
-                        save(next);
-                      }}
+                      onClick={() => navigator.clipboard?.writeText(campaign.joinCode)}
                     >
-                      {p.isEditor ? "Revoke Editor" : "Make Editor"}
+                      Code kopieren
                     </button>
-                  )}
-
-                  <button
-                    className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                    onClick={() => {
-                      const next = players.filter((x) => x.id !== p.id);
-                      // if kicked player was dm, clear dm and pick new later
-                      const nextDm = dmId === p.id ? null : dmId;
-                      try {
-                        if (nextDm) localStorage.setItem("campaign:dm", nextDm);
-                        else localStorage.removeItem("campaign:dm");
-                      } catch {}
-                      setDmId(nextDm);
-                      save(next);
-                    }}
-                  >
-                    Kick
-                  </button>
-                </>
-              ) : null}
-
-              {currentId && p.id === currentId ? (
-                <button
-                  className={contentStyles.actionButton}
-                  onClick={() => {
-                    const next = players.filter((x) => x.id !== p.id);
-                    save(next);
-                    // if left, clear current user
-                    try {
-                      localStorage.removeItem("currentPlayerId");
-                      setCurrentId(null);
-                    } catch {}
-                    // if left player was dm, clear dm
-                    if (dmId === p.id) {
-                      try {
-                        localStorage.removeItem("campaign:dm");
-                      } catch {}
-                      setDmId(null);
-                    }
-                  }}
-                >
-                  Leave
-                </button>
-              ) : null}
-            </li>
-          ))}
-        </ul>
+                    {canEdit ? (
+                      <>
+                        <button
+                          className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                          onClick={() => updateRole(member.userId, "PLAYER")}
+                        >
+                          Player
+                        </button>
+                        <button
+                          className={contentStyles.actionButton}
+                          onClick={() => updateRole(member.userId, "EDITOR")}
+                        >
+                          Editor
+                        </button>
+                        <button
+                          className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                          onClick={() => updateRole(member.userId, "DM")}
+                        >
+                          DM
+                        </button>
+                      </>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
       </main>
     </Layout>
   );

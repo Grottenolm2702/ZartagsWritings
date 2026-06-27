@@ -1,135 +1,145 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Layout from "../components/Layout";
-import { useAuthSafe } from "../context/AuthContext";
-import raw from "../data/exampleData.json";
-import { slugify } from "../utils/string";
-import overviewStyles from "../styles/overview.module.css";
+import { useJWTAuth } from "../context/JWTAuthContext";
+import { apiFetch } from "../lib/api";
+import type { ApiCampaign, ApiEntity, ApiEntityType } from "../types/campaign-api";
 import contentStyles from "../styles/content.module.css";
-import type {
-  RawData,
-  CampaignData,
-  HeaderField,
-  CardSpec,
-  NavigationState,
-  AttributeItem,
-} from "../types/campaign";
+import overviewStyles from "../styles/overview.module.css";
 
-type Item = {
-  id: string;
-  category: string;
-  title: string;
-  to: string;
-  visible?: boolean;
+const TYPE_LABELS: Record<ApiEntityType, string> = {
+  pc: "Player Characters",
+  npc: "NPCs",
+  magicitem: "Magic Items",
+  location: "Locations",
 };
 
-const CATEGORIES = ["Pcs", "Npcs", "Mi", "Loc"] as const;
-const LABEL_MAP: Record<string, string> = {
-  Pcs: "Player Caracters",
-  Npcs: "Npcs",
-  Mi: "Magic Items",
-  Loc: "Locations",
-};
-const TYPE_MAP: Record<string, string> = {
-  Pcs: "pc",
-  Npcs: "npc",
-  Mi: "magicitem",
-  Loc: "location",
-};
+const TYPE_ORDER: ApiEntityType[] = ["pc", "npc", "magicitem", "location"];
+
+function getEntityPath(campaignSlug: string, entity: ApiEntity) {
+  return `/campaigns/${campaignSlug}/${entity.type}/${entity.slug}`;
+}
+
+function createEntityPayload(entity: ApiEntity) {
+  return {
+    slug: entity.slug,
+    name: entity.name,
+    summary: entity.summary ?? null,
+    isVisible: entity.isVisible,
+    sortOrder: entity.sortOrder,
+    headerFields: entity.headerFields,
+    cards: entity.cards,
+  };
+}
 
 export default function CampaignOverview() {
-  const [query, setQuery] = React.useState<string>("");
+  const { slug } = useParams();
+  const { user } = useJWTAuth();
+  const campaignSlug = slug;
+  const [campaign, setCampaign] = React.useState<ApiCampaign | null>(null);
+  const [query, setQuery] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const rawInitial: Omit<Item, "id">[] = [
-    {
-      category: "Pcs",
-      title: "Melissa - Fighter - Tiefling",
-      to: "/capaign1/pc",
-      visible: true,
-    },
-    {
-      category: "Pcs",
-      title: "Ronny - Garten - Zwerg",
-      to: "#",
-      visible: true,
-    },
-    {
-      category: "Pcs",
-      title: "Human - Male - Fighter",
-      to: "#",
-      visible: true,
-    },
+  React.useEffect(() => {
+    let mounted = true;
 
-    { category: "Npcs", title: "Zartag", to: "/capaign1/npc", visible: true },
-    { category: "Npcs", title: "Irenäus", to: "#", visible: true },
-    { category: "Npcs", title: "Manuel", to: "#", visible: true },
-
-    {
-      category: "Mi",
-      title: "Das Buch",
-      to: "/capaign1/magicitem",
-      visible: true,
-    },
-    { category: "Mi", title: "Warschip", to: "#", visible: true },
-    { category: "Mi", title: "haus", to: "#", visible: true },
-
-    { category: "Loc", title: "Elarint", to: "#", visible: true },
-    {
-      category: "Loc",
-      title: "Das Herrenhaus",
-      to: "/capaign1/location",
-      visible: true,
-    },
-    { category: "Loc", title: "Der Brunnen", to: "#", visible: true },
-  ];
-
-  const initialItems: Item[] = rawInitial.map((r) => ({
-    ...r,
-    id: slugify(r.title),
-  }));
-
-  const [items, setItems] = React.useState<Item[]>(initialItems);
-
-  const auth = useAuthSafe();
-
-  const q = query.trim().toLowerCase();
-  const filtered = React.useMemo(() => {
-    const base =
-      q === "" ? items : items.filter((i) => i.title.toLowerCase().includes(q));
-    // if not editor or dm, hide invisible entries
-    if (!auth.isEditor && !auth.isDungeonMaster) {
-      return base.filter((i) => i.visible !== false);
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        if (!campaignSlug) {
+          throw new Error("Campaign-Slug fehlt");
+        }
+        const data = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
+        if (mounted) setCampaign(data);
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : "Übersicht konnte nicht geladen werden");
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
     }
-    return base;
-  }, [items, q, auth.isEditor, auth.isDungeonMaster]);
 
-  const grouped = React.useMemo(() => {
-    const g: Record<string, Item[]> = {} as Record<string, Item[]>;
-    for (const c of CATEGORIES) g[c] = [];
-    for (const it of filtered) {
-      if (!g[it.category]) g[it.category] = [];
-      g[it.category].push(it);
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [campaignSlug]);
+
+  const currentMembership = campaign?.members.find((member) => member.userId === user?.id);
+  const editable =
+    campaign?.owner?.id === user?.id ||
+    currentMembership?.role === "DM" ||
+    currentMembership?.role === "EDITOR";
+
+  const filteredEntities = React.useMemo(() => {
+    const base = campaign?.entities ?? [];
+    const term = query.trim().toLowerCase();
+    const matches = term
+      ? base.filter(
+          (entity) =>
+            entity.name.toLowerCase().includes(term) ||
+            entity.summary?.toLowerCase().includes(term) ||
+            entity.slug.toLowerCase().includes(term),
+        )
+      : base;
+    if (editable) return matches;
+    return matches.filter((entity) => entity.isVisible);
+  }, [campaign?.entities, editable, query]);
+
+  const groupedEntities = React.useMemo(() => {
+    const groups: Record<ApiEntityType, ApiEntity[]> = {
+      pc: [],
+      npc: [],
+      magicitem: [],
+      location: [],
+    };
+
+    for (const entity of filteredEntities) {
+      groups[entity.type].push(entity);
     }
-    return g;
-  }, [filtered]);
 
-  // modal state for new item
-  const [showNewFor, setShowNewFor] = React.useState<string | null>(null);
-  const [newTitle, setNewTitle] = React.useState("");
-  const navigate = useNavigate();
+    return groups;
+  }, [filteredEntities]);
+
+  async function updateVisibility(entity: ApiEntity, isVisible: boolean) {
+    if (!campaignSlug) return;
+    const saved = await apiFetch<ApiEntity>(
+      `/api/campaigns/${campaignSlug}/entities/${entity.type}/${entity.slug}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          ...createEntityPayload(entity),
+          isVisible,
+        }),
+      },
+    );
+
+    setCampaign((current) =>
+      current
+        ? {
+            ...current,
+            entities: current.entities.map((entry) =>
+              entry.id === saved.id ? saved : entry,
+            ),
+          }
+        : current,
+    );
+  }
 
   return (
     <Layout>
       <main>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <h1 style={{ margin: 0 }}>Overview</h1>
+          <h1 style={{ margin: 0 }}>
+            Overview{campaign?.name ? `: ${campaign.name}` : ""}
+          </h1>
           <div style={{ marginLeft: "auto" }}>
-            <button
-              className={contentStyles.actionButton}
-              onClick={() => navigate("/capaign1/manage")}
-            >
+            <Link className={contentStyles.actionButton} to={`/campaigns/${campaignSlug}/manage`}>
               Campaign verwalten
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -144,232 +154,63 @@ export default function CampaignOverview() {
           />
         </div>
 
-        {filtered.length === 0 ? (
-          <p>No entries found.</p>
-        ) : (
-          CATEGORIES.map((cat) =>
-            grouped[cat] && grouped[cat].length > 0 ? (
-              <section
-                key={cat}
-                className={overviewStyles.elementSection}
-                data-category={cat}
-              >
-                <h2
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <span>{LABEL_MAP[cat]}</span>
-                  {auth.isEditor ? (
-                    <button
-                      className={contentStyles.newButton}
-                      onClick={() => {
-                        setShowNewFor(cat);
-                        setNewTitle("");
-                      }}
+        {loading ? <p>Lädt...</p> : null}
+        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+
+        {campaign && filteredEntities.length === 0 ? <p>No entries found.</p> : null}
+
+        {campaign ? (
+          TYPE_ORDER.map((type) => {
+            const entries = groupedEntities[type];
+            if (entries.length === 0 && !editable) return null;
+
+            return (
+              <section key={type} className={overviewStyles.elementSection} data-category={type}>
+                <h2 className={overviewStyles.sectionHeader}>
+                  <span>{TYPE_LABELS[type]}</span>
+                  {editable ? (
+                    <Link
+                      className={overviewStyles.smallNewButton}
+                      to={`/campaigns/${campaignSlug}/${type}/new`}
                     >
                       New
-                    </button>
+                    </Link>
                   ) : null}
                 </h2>
-                <ul className={overviewStyles.elementList}>
-                  {grouped[cat].map((it) => (
-                    <li
-                      key={it.id}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <Link
-                        to={it.to}
-                        style={{
-                          opacity: it.visible === false ? 0.4 : 1,
-                          flex: 1,
-                        }}
-                      >
-                        {it.title}
-                      </Link>
+                {entries.length > 0 ? (
+                  <ul className={overviewStyles.elementList}>
+                    {entries.map((entity) => (
+                      <li key={entity.id} className={overviewStyles.elementListItem}>
+                        <div className={overviewStyles.elementRow}>
+                          <Link
+                            to={getEntityPath(campaignSlug || "", entity)}
+                            className={overviewStyles.elementLink}
+                            style={{ opacity: entity.isVisible ? 1 : 0.45 }}
+                          >
+                            <strong>{entity.name}</strong>
+                            {entity.summary ? <span>{entity.summary}</span> : null}
+                          </Link>
 
-                      {auth.isDungeonMaster ? (
-                        <label
-                          style={{
-                            marginLeft: "auto",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "6px",
-                            paddingRight: "8px",
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={it.visible !== false}
-                            onChange={() => {
-                              setItems((s) =>
-                                s.map((x) =>
-                                  x.id === it.id
-                                    ? {
-                                        ...x,
-                                        visible:
-                                          x.visible === false ? true : false,
-                                      }
-                                    : x,
-                                ),
-                              );
-                            }}
-                          />
-                          visible
-                        </label>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
+                          {editable ? (
+                            <label className={overviewStyles.visibilityToggle}>
+                              <input
+                                type="checkbox"
+                                checked={entity.isVisible}
+                                onChange={() => updateVisibility(entity, !entity.isVisible)}
+                              />
+                              visible
+                            </label>
+                          ) : null}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No entries yet.</p>
+                )}
               </section>
-            ) : null,
-          )
-        )}
-
-        {showNewFor ? (
-          <div className={contentStyles.modalOverlay}>
-            <div
-              className={contentStyles.modal}
-              role="dialog"
-              aria-modal="true"
-            >
-              <h3>Create new entry in {LABEL_MAP[showNewFor]}</h3>
-              <label>Title</label>
-              <input
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-              />
-              <div style={{ marginTop: "12px", display: "flex", gap: "8px" }}>
-                <button
-                  className={contentStyles.actionButton}
-                  onClick={() => {
-                    const type = TYPE_MAP[showNewFor as string];
-                    const slug = slugify(newTitle || "new");
-                    const to = `/capaign1/${type}/${slug}`;
-                    const ni: Item = {
-                      id: slug,
-                      category: showNewFor as string,
-                      title: newTitle || "New Entry",
-                      to,
-                      visible: true,
-                    };
-                    setItems((s) => [ni, ...s]);
-
-                    // build empty draft from example data for selected category
-                    const titleFallback = newTitle || "New Entry";
-                    const exampleMap: Record<string, CampaignData | undefined> =
-                      {
-                        Pcs: (raw as RawData).pc,
-                        Npcs: (raw as RawData).npc,
-                        Mi: (raw as RawData).magicItem,
-                        Loc: (raw as RawData).location,
-                      };
-                    const example = exampleMap[showNewFor as string];
-
-                    if (example) {
-                      const emptyHeader: HeaderField[] = (
-                        example.header || []
-                      ).map((h) => ({ ...h, value: titleFallback }));
-                      const emptyCards: CardSpec[] = (example.cards || []).map(
-                        (c) => {
-                          const base: Partial<CardSpec> = {
-                            title: c.title,
-                            wide: c.wide,
-                          };
-                          const cardTitle =
-                            c && c.title ? c.title : titleFallback;
-                          if (c.pictureSrc !== undefined) {
-                            base.pictureSrc = "";
-                            base.pictureAlt = cardTitle;
-                          }
-
-                          // handle CardSpec where content might be React element or raw object
-                          const rawContent =
-                            c &&
-                            c.content &&
-                            (c.content as unknown as Record<string, unknown>)
-                              .props &&
-                            (
-                              (c.content as unknown as Record<string, unknown>)
-                                .props as Record<string, unknown>
-                            ).content
-                              ? (
-                                  (
-                                    c.content as unknown as Record<
-                                      string,
-                                      unknown
-                                    >
-                                  ).props as Record<string, unknown>
-                                ).content
-                              : c.content;
-                          if (rawContent) {
-                            const ct = (rawContent as Record<string, unknown>)
-                              .type;
-                            if (ct === "paragraph")
-                              base.content = {
-                                type: "paragraph",
-                                text: cardTitle,
-                              };
-                            else if (ct === "paragraphs")
-                              base.content = {
-                                type: "paragraphs",
-                                paragraphs: [cardTitle],
-                              };
-                            else if (ct === "list")
-                              base.content = {
-                                type: "list",
-                                items: [{ label: cardTitle }],
-                              };
-                            else if (ct === "attributes") {
-                              const firstAttribute = (
-                                rawContent as {
-                                  items?: AttributeItem[];
-                                }
-                              ).items?.[0];
-                              const dt = firstAttribute?.dt ?? "";
-                              base.content = {
-                                type: "attributes",
-                                items: [{ dt, dd: cardTitle }],
-                              };
-                            }
-                          }
-                          return base as CardSpec;
-                        },
-                      );
-                      navigate(to, {
-                        state: {
-                          newDraft: true,
-                          header: emptyHeader,
-                          cards: emptyCards,
-                        } as NavigationState,
-                      });
-                    } else {
-                      navigate(to);
-                    }
-
-                    setShowNewFor(null);
-                  }}
-                >
-                  Save
-                </button>
-                <button
-                  className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                  onClick={() => setShowNewFor(null)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
+            );
+          })
         ) : null}
       </main>
     </Layout>

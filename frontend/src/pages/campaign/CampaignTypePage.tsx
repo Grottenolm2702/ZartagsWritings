@@ -1,71 +1,74 @@
 import React from "react";
-import { useParams, useLocation, Location } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Layout from "../../components/Layout";
+import { useJWTAuth } from "../../context/JWTAuthContext";
+import { apiFetch } from "../../lib/api";
+import type { ApiCampaign, ApiEntity, ApiEntityType } from "../../types/campaign-api";
+import contentStyles from "../../styles/content.module.css";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
-import raw from "../../data/exampleData.json";
-import { useAuthSafe } from "../../context/AuthContext";
-import type {
-  RawData,
-  HeaderField,
-  CardSpec,
-  NavigationState,
-  CampaignType,
-} from "../../types/campaign";
-import { CAMPAIGN_TYPE_LABELS } from "../../types/campaign";
 
-interface CampaignTypeConfig {
-  header: HeaderField[];
-  cards: CardSpec[];
-  title?: string;
-}
-
-const MAP: Record<string, CampaignTypeConfig> = {
-  pc: {
-    header: (raw as RawData).pc.header,
-    cards: (raw as RawData).pc.cards,
-    title: (raw as RawData).pc.header?.[0]?.value || CAMPAIGN_TYPE_LABELS.pc,
-  },
-  npc: {
-    header: (raw as RawData).npc.header,
-    cards: (raw as RawData).npc.cards,
-    title: (raw as RawData).npc.header?.[0]?.value || CAMPAIGN_TYPE_LABELS.npc,
-  },
-  magicitem: {
-    header: (raw as RawData).magicItem.header,
-    cards: (raw as RawData).magicItem.cards,
-    title:
-      (raw as RawData).magicItem.header?.[0]?.value ||
-      CAMPAIGN_TYPE_LABELS.magicitem,
-  },
-  location: {
-    header: (raw as RawData).location.header,
-    cards: (raw as RawData).location.cards,
-    title:
-      (raw as RawData).location.header?.[0]?.value ||
-      CAMPAIGN_TYPE_LABELS.location,
-  },
+const TYPE_LABELS: Record<ApiEntityType, string> = {
+  pc: "Player Characters",
+  npc: "NPCs",
+  magicitem: "Magic Items",
+  location: "Locations",
 };
 
 export default function CampaignTypePage() {
-  const { type } = useParams();
-  const key = (type || "").toLowerCase();
-  const location = useLocation() as Location<NavigationState>;
-  const state = (location?.state as NavigationState) || {};
-  const auth = useAuthSafe();
-
-  const data = MAP[key];
-  const headerFields = state?.header || data?.header;
-  const cards = state?.cards || data?.cards;
+  const { slug, type, entitySlug } = useParams();
+  const { user } = useJWTAuth();
+  const campaignSlug = slug;
+  const apiType = (type || "pc").toLowerCase() as ApiEntityType;
+  const [campaign, setCampaign] = React.useState<ApiCampaign | null>(null);
+  const [entities, setEntities] = React.useState<ApiEntity[]>([]);
+  const [entity, setEntity] = React.useState<ApiEntity | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (state?.newDraft) {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      setError(null);
       try {
-        auth.setIsEditor(true);
-      } catch {}
+        if (!campaignSlug) {
+          throw new Error("Campaign-Slug fehlt");
+        }
+        const campaignData = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
+        if (mounted) setCampaign(campaignData);
+        if (entitySlug) {
+          const data = await apiFetch<ApiEntity>(
+            `/api/campaigns/${campaignSlug}/entities/${apiType}/${entitySlug}`,
+          );
+          if (mounted) setEntity(data);
+        } else {
+          const data = await apiFetch<ApiEntity[]>(
+            `/api/campaigns/${campaignSlug}/entities/${apiType}`,
+          );
+          if (mounted) setEntities(data);
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : "Daten konnten nicht geladen werden");
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
     }
-  }, [state?.newDraft, auth]);
 
-  if (!data) {
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [campaignSlug, apiType, entitySlug]);
+
+  const currentMembership = campaign?.members.find((member) => member.userId === user?.id);
+  const editable =
+    campaign?.owner?.id === user?.id ||
+    currentMembership?.role === "DM" ||
+    currentMembership?.role === "EDITOR";
+
+  if (!Object.prototype.hasOwnProperty.call(TYPE_LABELS, apiType)) {
     return (
       <Layout>
         <main>
@@ -78,12 +81,61 @@ export default function CampaignTypePage() {
 
   return (
     <Layout>
-      <CampaignDetail
-        title={data.title}
-        headerFields={headerFields}
-        cards={cards}
-        type={key as CampaignType}
-      />
+      <main>
+        {!entity ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <h1 style={{ margin: 0 }}>{TYPE_LABELS[apiType]}</h1>
+            <div style={{ marginLeft: "auto" }}>
+              {editable ? (
+                <Link
+                  className={contentStyles.actionButton}
+                  to={`/campaigns/${campaignSlug}/${apiType}/new`}
+                >
+                  Neue Entity
+                </Link>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
+        {loading ? <p>Lädt...</p> : null}
+        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+
+        {entity ? (
+          <section style={{ marginTop: 16 }}>
+            <CampaignDetail
+              campaignSlug={campaignSlug || ""}
+              entityType={apiType}
+              entity={entity}
+              editable={!!editable}
+            />
+          </section>
+        ) : (
+          <section style={{ marginTop: 16 }}>
+            <div className={contentStyles.itemsGrid}>
+              <div className={contentStyles.itemsMasonry}>
+                {entities.map((entry) => (
+                  <article key={entry.id} className={contentStyles.itemCard}>
+                    <h2>{entry.name}</h2>
+                    <p>{entry.summary || "Keine Beschreibung"}</p>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <Link to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}`}>
+                        Öffnen
+                      </Link>
+                      {editable ? (
+                        <Link to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}/edit`}>
+                          Bearbeiten
+                        </Link>
+                      ) : null}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+            {!loading && entities.length === 0 ? <p>Keine Einträge gefunden.</p> : null}
+          </section>
+        )}
+      </main>
     </Layout>
   );
 }

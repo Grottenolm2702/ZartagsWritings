@@ -666,7 +666,14 @@ app.post(
         },
       });
 
-      res.status(201).json({ message: "Campaign beigetreten" });
+      res.status(201).json({
+        message: "Campaign beigetreten",
+        campaign: {
+          id: campaign.id,
+          slug: campaign.slug,
+          name: campaign.name,
+        },
+      });
     } catch (error) {
       res.status(500).json({ error: "Fehler beim Beitritt zur Campaign" });
     }

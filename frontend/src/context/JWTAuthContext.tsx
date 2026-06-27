@@ -1,6 +1,20 @@
 import React from "react";
 
-export type AuthUser = { id: number; email: string; name?: string | null };
+export type AuthUser = {
+  id: number;
+  email: string;
+  name?: string | null;
+  memberships?: Array<{
+    id: number;
+    role: "DM" | "EDITOR" | "PLAYER";
+    campaign: {
+      id: number;
+      slug: string;
+      name: string;
+      description?: string | null;
+    };
+  }>;
+};
 
 type JWTAuthContextType = {
   isLoggedIn: boolean;
@@ -51,6 +65,15 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
           const txt = await res.text();
           throw new Error(extractErrorMessage(txt));
         }
+        const userRes = await fetch("/api/user", {
+          credentials: "include",
+        });
+        if (!userRes.ok) {
+          const txt = await userRes.text();
+          throw new Error(extractErrorMessage(txt) || "Failed to load user");
+        }
+        const userData: AuthUser = await userRes.json();
+        setUser(userData);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Unknown error";
         setError(msg);

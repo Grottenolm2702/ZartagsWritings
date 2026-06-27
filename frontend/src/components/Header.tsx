@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuthSafe } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useJWTAuth } from "../context/JWTAuthContext";
 
 export default function Header() {
-  const auth = useAuthSafe();
+  const { user, logout, isLoggedIn } = useJWTAuth();
+  const navigate = useNavigate();
 
   return (
     <header>
@@ -15,45 +17,36 @@ export default function Header() {
           <li>
             <Link to="/about">About</Link>
           </li>
-          <li>
-            <Link className="accent-link" to="/login">
-              Login
-            </Link>
-          </li>
+          {isLoggedIn ? (
+            <>
+              <li>
+                <Link to="/users">Users</Link>
+              </li>
+              <li>
+                <button
+                  className="nav-button"
+                  onClick={async () => {
+                    await logout();
+                    navigate("/");
+                  }}
+                >
+                  Logout{user?.name ? ` (${user.name})` : ""}
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link className="accent-link" to="/login">
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
+            </>
+          )}
         </ul>
-
-        <div
-          style={{
-            position: "fixed",
-            right: 16,
-            bottom: 16,
-            display: "flex",
-            gap: "8px",
-            alignItems: "center",
-            zIndex: 1001,
-            background: "var(--primary-color)",
-            padding: "6px",
-            borderRadius: "8px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-          }}
-        >
-          <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <input
-              type="checkbox"
-              checked={auth.isEditor}
-              onChange={auth.toggleEditor}
-            />{" "}
-            Editor
-          </label>
-          <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <input
-              type="checkbox"
-              checked={auth.isDungeonMaster}
-              onChange={auth.toggleDungeonMaster}
-            />{" "}
-            DM
-          </label>
-        </div>
       </nav>
     </header>
   );

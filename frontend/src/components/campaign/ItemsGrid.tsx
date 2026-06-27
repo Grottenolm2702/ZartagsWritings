@@ -1,87 +1,64 @@
 import React from "react";
-import ItemCard from "./ItemCard";
-import CardContent from "./CardContent";
 import contentStyles from "../../styles/content.module.css";
-import type {
-  CardSpec,
-  CardContent as CardContentType,
-} from "../../types/campaign";
+import type { ApiCardSpec } from "../../types/campaign-api";
+import CardContent from "./CardContent";
+import ItemCard from "./ItemCard";
 
-interface ItemsGridProps {
-  cards: CardSpec[];
-  type?: string;
-  onUpdate?: (idx: number, updated: CardSpec) => void;
-  onRemove?: (idx: number) => void;
-}
+type ItemsGridProps = {
+  cards: ApiCardSpec[];
+  editable?: boolean;
+  onUpdate?: (index: number, updated: ApiCardSpec) => void;
+  onRemove?: (index: number) => void;
+};
 
-export default function ItemsGrid({
-  cards,
-  onUpdate,
-  onRemove,
-}: ItemsGridProps) {
+export default function ItemsGrid({ cards, editable, onUpdate, onRemove }: ItemsGridProps) {
   if (!cards || cards.length === 0) return null;
-  // filter out cards that have neither content nor picture
-  const hasContent = (c: CardSpec) =>
-    (c.content !== undefined && c.content !== null) ||
-    c.pictureSrc !== undefined;
-  const normal = cards.filter((c) => !c.wide && hasContent(c));
-  const wide = cards.filter((c) => c.wide && hasContent(c));
-
-  function renderContent(c: CardSpec, idx: number) {
-    const contentValue = c.content;
-    if (!contentValue) return null;
-    // If content already a React element, return as-is
-    if (React.isValidElement(contentValue)) return contentValue;
-    // If plain object describing content, render CardContent with onChange
-    if (typeof contentValue === "object") {
-      return (
-        <CardContent
-          content={contentValue as CardContentType}
-          onChange={(nc: CardContentType) =>
-            onUpdate && onUpdate(idx, { ...c, content: nc })
-          }
-        />
-      );
-    }
-    // Otherwise content might be simple string/node
-    return contentValue;
-  }
+  const normalCards = cards
+    .map((card, index) => ({ card, index }))
+    .filter(({ card }) => !card.wide);
+  const wideCards = cards
+    .map((card, index) => ({ card, index }))
+    .filter(({ card }) => card.wide);
 
   return (
     <div className={contentStyles.itemsGrid}>
       <div className={contentStyles.itemsMasonry}>
-        {normal.map((c, i) => (
-          <ItemCard
-            key={i}
-            card={c}
-            title={c.title}
-            pictureSrc={c.pictureSrc}
-            pictureAlt={c.pictureAlt}
-            onUpdate={(updated) => onUpdate && onUpdate(i, updated)}
-            onRemove={() => onRemove && onRemove(i)}
-          >
-            {renderContent(c, i)}
-          </ItemCard>
-        ))}
-      </div>
-      {wide.length > 0 && (
-        <div className={`${contentStyles.itemCard} ${contentStyles.wide}`}>
-          {wide.map((c, i) => (
+        {normalCards.map(({ card, index }) => (
             <ItemCard
-              key={i}
-              card={c}
-              title={c.title}
-              pictureSrc={c.pictureSrc}
-              pictureAlt={c.pictureAlt}
-              wide
-              onUpdate={(updated) => onUpdate && onUpdate(i, updated)}
-              onRemove={() => onRemove && onRemove(i)}
+              key={index}
+              card={card}
+              editable={editable}
+              onUpdate={(updated) => onUpdate?.(index, updated)}
+              onRemove={() => onRemove?.(index)}
             >
-              {renderContent(c, i)}
+              <CardContent
+                content={card.content}
+                editable={editable}
+                onChange={(updated) => onUpdate?.(index, { ...card, content: updated })}
+              />
+            </ItemCard>
+          ))}
+      </div>
+
+      {wideCards.length > 0 ? (
+        <div style={{ marginTop: 12 }}>
+          {wideCards.map(({ card, index }) => (
+            <ItemCard
+              key={index}
+              card={card}
+              editable={editable}
+              onUpdate={(updated) => onUpdate?.(index, updated)}
+              onRemove={() => onRemove?.(index)}
+            >
+              <CardContent
+                content={card.content}
+                editable={editable}
+                onChange={(updated) => onUpdate?.(index, { ...card, content: updated })}
+              />
             </ItemCard>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

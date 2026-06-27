@@ -16,6 +16,11 @@ export default function Register() {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const repeatPassword = formData.get("repeatPassword") as string;
+    if (password !== repeatPassword) {
+      setError("Passwörter stimmen nicht überein");
+      return;
+    }
     try {
       await register(name, email, password);
       navigate("/login");
@@ -54,6 +59,19 @@ export default function Register() {
             type="password"
             name="password"
             id="password"
+            className={formStyles.formInput}
+            required
+            minLength={8}
+            maxLength={30}
+          />
+
+          <label htmlFor="repeatPassword" className={formStyles.formLabel}>
+            Password wiederholen:
+          </label>
+          <input
+            type="password"
+            name="repeatPassword"
+            id="repeatPassword"
             className={formStyles.formInput}
             required
             minLength={8}

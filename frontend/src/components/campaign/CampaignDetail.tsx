@@ -1,229 +1,389 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import contentStyles from "../../styles/content.module.css";
+import { apiFetch } from "../../lib/api";
+import type { ApiCardContent, ApiCardSpec, ApiEntity, ApiEntityType, ApiHeaderField } from "../../types/campaign-api";
 import ContentHeader from "./ContentHeader";
 import ItemsGrid from "./ItemsGrid";
-import { useAuthSafe } from "../../context/AuthContext";
-import contentStyles from "../../styles/content.module.css";
-import type { CardSpec, HeaderField } from "../../types/campaign";
 
-interface CampaignDetailProps {
-  title: string;
-  headerFields?: HeaderField[];
-  cards?: CardSpec[];
-  type?: string;
+type CampaignDetailProps = {
+  campaignSlug: string;
+  entityType: ApiEntityType;
+  entity?: ApiEntity | null;
+  editable?: boolean;
+  isNew?: boolean;
+};
+
+type Draft = {
+  name: string;
+  summary: string;
+  isVisible: boolean;
+  sortOrder: number;
+  headerFields: ApiHeaderField[];
+  cards: ApiCardSpec[];
+};
+
+const ENTITY_TYPE_LABELS: Record<ApiEntityType, string> = {
+  pc: "Player Character",
+  npc: "NPC",
+  magicitem: "Magic Item",
+  location: "Location",
+};
+
+function createEmptyDraft(entityType: ApiEntityType): Draft {
+  return {
+    name: "",
+    summary: "",
+    isVisible: true,
+    sortOrder: 0,
+    headerFields: [
+      { label: "Name:", value: "" },
+      { label: "Type:", value: ENTITY_TYPE_LABELS[entityType] },
+    ],
+    cards: [],
+  };
+}
+
+function cloneCardContent(content?: ApiCardContent): ApiCardContent | undefined {
+  return content ? JSON.parse(JSON.stringify(content)) : undefined;
+}
+
+function cloneDraft(entity: ApiEntity | null | undefined, entityType: ApiEntityType): Draft {
+  if (!entity) return createEmptyDraft(entityType);
+  return {
+    name: entity.name,
+    summary: entity.summary || "",
+    isVisible: entity.isVisible,
+    sortOrder: entity.sortOrder,
+    headerFields: entity.headerFields.length
+      ? entity.headerFields
+      : [
+          { label: "Name:", value: entity.name },
+          { label: "Type:", value: ENTITY_TYPE_LABELS[entityType] },
+        ],
+    cards: entity.cards.map((card) => ({
+      ...card,
+      content: cloneCardContent(card.content),
+    })),
+  };
+}
+
+function createCard(kind: "paragraph" | "paragraphs" | "list" | "attributes" | "picture"): ApiCardSpec {
+  if (kind === "picture") {
+    return { title: "Neues Bild", pictureSrc: "", pictureAlt: "", wide: false };
+  }
+
+  if (kind === "paragraph") {
+    return { title: "Neuer Text", content: { type: "paragraph", text: "" }, wide: false };
+  }
+
+  if (kind === "paragraphs") {
+    return {
+      title: "Mehrere Absätze",
+      content: { type: "paragraphs", paragraphs: [""] },
+      wide: false,
+    };
+  }
+
+  if (kind === "list") {
+    return {
+      title: "Liste",
+      content: { type: "list", items: [{ label: "", href: undefined }] },
+      wide: false,
+    };
+  }
+
+  return {
+    title: "Attribute",
+    content: { type: "attributes", items: [{ dt: "", dd: "" }] },
+    wide: false,
+  };
 }
 
 export default function CampaignDetail({
-  title,
-  headerFields,
-  cards,
-  type,
+  campaignSlug,
+  entityType,
+  entity,
+  editable = false,
+  isNew = false,
 }: CampaignDetailProps) {
-  const auth = useAuthSafe();
-
-  const [localHeader, setLocalHeader] = React.useState<
-    HeaderField[] | undefined
-  >(headerFields);
-  const [localCards, setLocalCards] = React.useState<CardSpec[] | undefined>(
-    cards,
-  );
+  const navigate = useNavigate();
+  const [draft, setDraft] = React.useState<Draft>(() => cloneDraft(entity, entityType));
+  const [saving, setSaving] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
   const [showAddMenu, setShowAddMenu] = React.useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+  const [deleteOpen, setDeleteOpen] = React.useState(false);
+  const [previewMode, setPreviewMode] = React.useState(false);
 
-  function addField(typeName: string) {
-    const newCard: CardSpec = { title: "New Field" };
-    if (typeName === "paragraph") {
-      newCard.content = { type: "paragraph", text: "" };
-    } else if (typeName === "paragraphs") {
-      newCard.content = { type: "paragraphs", paragraphs: [""] };
-    } else if (typeName === "list") {
-      newCard.content = { type: "list", items: [{ label: "" }] };
-    } else if (typeName === "attributes") {
-      newCard.content = {
-        type: "attributes",
-        items: [{ dt: "", dd: "" }],
-      };
-    } else if (typeName === "picture") {
-      newCard.pictureSrc = "";
-      newCard.pictureAlt = "";
-    }
-    setLocalCards((c) => (c ? [...c, newCard] : [newCard]));
+  React.useEffect(() => {
+    setDraft(cloneDraft(entity, entityType));
     setShowAddMenu(false);
-  }
+    setDeleteOpen(false);
+    setPreviewMode(false);
+  }, [entity, entityType]);
 
-  function removeCard(idx: number) {
-    setLocalCards((prev) => {
-      const copy = prev ? [...prev] : [];
-      if (idx >= 0 && idx < copy.length) copy.splice(idx, 1);
-      return copy;
+  const title = draft.name || draft.headerFields[0]?.value || "Entity";
+  const canEdit = editable && !previewMode;
+  const editableHeaderFields = draft.headerFields
+    .map((field, index) => ({ field, index }))
+    .filter(({ field }) => {
+      const label = field.label.trim().toLowerCase().replace(/:$/, "");
+      return label !== "type";
+    });
+
+  function updateCard(index: number, updated: ApiCardSpec) {
+    setDraft((current) => {
+      const next = [...current.cards];
+      next[index] = updated;
+      return { ...current, cards: next };
     });
   }
 
-  function confirmDeleteItem() {
-    // destructive: just navigate back to manage and exit edit mode
-    try {
-      auth.setIsEditor(false);
-    } catch {}
-    window.location.href = "/capaign1/manage";
+  function removeCard(index: number) {
+    setDraft((current) => ({
+      ...current,
+      cards: current.cards.filter((_, cardIndex) => cardIndex !== index),
+    }));
   }
 
-  const displayTitle =
-    localHeader && localHeader[0] && localHeader[0].value
-      ? localHeader[0].value
-      : title;
+  function addHeaderField() {
+    setDraft((current) => ({
+      ...current,
+      headerFields: [...current.headerFields, { label: "", value: "" }],
+    }));
+  }
+
+  function removeHeaderField(index: number) {
+    setDraft((current) => ({
+      ...current,
+      headerFields: current.headerFields.filter((_, fieldIndex) => fieldIndex !== index),
+    }));
+  }
+
+  async function handleSave() {
+    setSaving(true);
+    setError(null);
+    try {
+      const payload = {
+        name: draft.name,
+        summary: draft.summary || null,
+        isVisible: draft.isVisible,
+        sortOrder: draft.sortOrder,
+        headerFields: draft.headerFields,
+        cards: draft.cards,
+      };
+
+      const path = isNew
+        ? `/api/campaigns/${campaignSlug}/entities/${entityType}`
+        : `/api/campaigns/${campaignSlug}/entities/${entityType}/${entity?.slug}`;
+      const method = isNew ? "POST" : "PUT";
+      const saved = await apiFetch<ApiEntity>(path, {
+        method,
+        body: JSON.stringify(payload),
+      });
+      navigate(`/campaigns/${campaignSlug}/${entityType}/${saved.slug}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Entity konnte nicht gespeichert werden");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!entity) return;
+    setSaving(true);
+    setError(null);
+    try {
+      await apiFetch(`/api/campaigns/${campaignSlug}/entities/${entityType}/${entity.slug}`, {
+        method: "DELETE",
+      });
+      navigate(`/campaigns/${campaignSlug}/${entityType}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Entity konnte nicht gelöscht werden");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <main className={contentStyles.campaignDetail}>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <h1 style={{ margin: 0 }}>{displayTitle}</h1>
-        <div
-          style={{
-            marginLeft: "auto",
-            display: "flex",
-            gap: "8px",
-            alignItems: "center",
-          }}
-        >
-          {auth.isEditor ? (
-            <>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <h1 style={{ margin: 0 }}>{title}</h1>
+        {editable ? (
+          <div style={{ marginLeft: "auto", display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <button
+              type="button"
+              className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+              onClick={() => {
+                setShowAddMenu(false);
+                setDeleteOpen(false);
+                setPreviewMode((current) => !current);
+              }}
+            >
+              {previewMode ? "Bearbeiten" : "Vorschau"}
+            </button>
+            {!isNew && !previewMode ? (
               <button
+                type="button"
                 className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                onClick={() => setShowDeleteConfirm(true)}
-                title="Delete this item"
+                onClick={() => setDeleteOpen(true)}
               >
-                Delete
+                Löschen
               </button>
-
-              <button
-                className={contentStyles.actionButton}
-                onClick={() => {
-                  try {
-                    auth.setIsEditor(false);
-                  } catch {}
-                }}
-              >
-                Save
-              </button>
-              <button
-                className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                onClick={() => {
-                  // Cancel edits: revert by reloading page
-                  try {
-                    auth.setIsEditor(false);
-                  } catch {}
-                  window.location.reload();
-                }}
-              >
-                Cancel
-              </button>
-              <div style={{ position: "relative" }}>
+            ) : null}
+            {!previewMode ? (
+              <>
                 <button
+                  type="button"
                   className={contentStyles.actionButton}
-                  onClick={() => setShowAddMenu((s) => !s)}
+                  onClick={handleSave}
+                  disabled={saving}
                 >
-                  Add Field
+                  {saving ? "Speichern..." : "Speichern"}
                 </button>
-                {showAddMenu ? (
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: 0,
-                      marginTop: "6px",
-                      background: "var(--hover-color)",
-                      padding: "8px",
-                      borderRadius: "6px",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                    }}
+                <button
+                  type="button"
+                  className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                  onClick={() => navigate(-1)}
+                >
+                  Abbrechen
+                </button>
+                <div style={{ position: "relative" }}>
+                  <button
+                    type="button"
+                    className={contentStyles.actionButton}
+                    onClick={() => setShowAddMenu((value) => !value)}
                   >
-                    <button
-                      className={contentStyles.actionButton}
-                      onClick={() => addField("paragraph")}
+                    Feld hinzufügen
+                  </button>
+                  {showAddMenu ? (
+                    <div
+                      className={contentStyles.modal}
+                      style={{ position: "absolute", right: 0, marginTop: 6, zIndex: 5 }}
                     >
-                      Paragraph
-                    </button>
-                    <button
-                      className={contentStyles.actionButton}
-                      onClick={() => addField("paragraphs")}
-                    >
-                      Paragraphs
-                    </button>
-                    <button
-                      className={contentStyles.actionButton}
-                      onClick={() => addField("list")}
-                    >
-                      List
-                    </button>
-                    <button
-                      className={contentStyles.actionButton}
-                      onClick={() => addField("attributes")}
-                    >
-                      Attributes
-                    </button>
-                    <button
-                      className={contentStyles.actionButton}
-                      onClick={() => addField("picture")}
-                    >
-                      Picture
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-            </>
-          ) : null}
-        </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {[
+                          ["paragraph", "Absatz"],
+                          ["paragraphs", "Mehrere Absätze"],
+                          ["list", "Liste"],
+                          ["attributes", "Attribute"],
+                          ["picture", "Bild"],
+                        ].map(([kind, label]) => (
+                          <button
+                            key={kind}
+                            type="button"
+                            className={contentStyles.actionButton}
+                            onClick={() => {
+                              setDraft((current) => ({
+                                ...current,
+                                cards: [
+                                  ...current.cards,
+                                  createCard(
+                                    kind as
+                                      | "paragraph"
+                                      | "paragraphs"
+                                      | "list"
+                                      | "attributes"
+                                      | "picture",
+                                  ),
+                                ],
+                              }));
+                              setShowAddMenu(false);
+                            }}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
-      {localHeader && (
+      {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+
+      {canEdit ? (
+        <section className={contentStyles.cardSection}>
+          <div className={contentStyles.cardSectionTitle}>Basisdaten</div>
+          <div className={contentStyles.cardSectionContent}>
+            <div style={{ display: "grid", gap: 10 }}>
+              <div>
+                <strong>Type:</strong> {ENTITY_TYPE_LABELS[entityType]}
+              </div>
+              <label>
+                Name
+                <input
+                  className={contentStyles.editInputTransparent}
+                  value={draft.name}
+                  onChange={(e) => setDraft((current) => ({ ...current, name: e.target.value }))}
+                />
+              </label>
+              <label>
+                Summary
+                <textarea
+                  className={contentStyles.editInputTransparent}
+                  rows={4}
+                  value={draft.summary}
+                  onChange={(e) => setDraft((current) => ({ ...current, summary: e.target.value }))}
+                />
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={draft.isVisible}
+                  onChange={(e) =>
+                    setDraft((current) => ({ ...current, isVisible: e.target.checked }))
+                  }
+                />{" "}
+                sichtbar
+              </label>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {editableHeaderFields.length > 0 ? (
         <ContentHeader
-          fields={localHeader}
-          onChange={(idx, updated) =>
-            setLocalHeader((prev) => {
-              const copy = prev ? [...prev] : [];
-              copy[idx] = updated;
-              return copy;
+          fields={editableHeaderFields.map(({ field }) => field)}
+          editable={canEdit}
+          onChange={(index, updated) =>
+            setDraft((current) => {
+              const next = [...current.headerFields];
+              next[editableHeaderFields[index].index] = updated;
+              return { ...current, headerFields: next };
             })
           }
+          onAdd={canEdit ? addHeaderField : undefined}
+          onRemove={canEdit ? (index) => removeHeaderField(editableHeaderFields[index].index) : undefined}
         />
-      )}
-      {localCards && (
-        <ItemsGrid
-          cards={localCards}
-          type={type}
-          onUpdate={(idx, updated) => {
-            setLocalCards((prev) => {
-              const copy = prev ? [...prev] : [];
-              copy[idx] = updated;
-              return copy;
-            });
-          }}
-          onRemove={(idx) => removeCard(idx)}
-        />
-      )}
+      ) : null}
 
-      {showDeleteConfirm ? (
+      <ItemsGrid
+        cards={draft.cards}
+        editable={canEdit}
+        onUpdate={updateCard}
+        onRemove={removeCard}
+      />
+
+      {deleteOpen ? (
         <div className={contentStyles.modalOverlay}>
           <div className={contentStyles.modal} role="dialog" aria-modal="true">
-            <h3>Delete this item?</h3>
-            <p>
-              This will exit edit mode and navigate back to Manage. This action
-              cannot be undone here.
-            </p>
-            <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+            <h3>Entity löschen?</h3>
+            <p>Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <div style={{ display: "flex", gap: 8 }}>
               <button
+                type="button"
                 className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                onClick={() => {
-                  confirmDeleteItem();
-                  setShowDeleteConfirm(false);
-                }}
+                onClick={() => setDeleteOpen(false)}
               >
-                Confirm Delete
+                Abbrechen
               </button>
-              <button
-                className={contentStyles.actionButton}
-                onClick={() => setShowDeleteConfirm(false)}
-              >
-                Cancel
+              <button type="button" className={contentStyles.actionButton} onClick={handleDelete}>
+                Löschen
               </button>
             </div>
           </div>

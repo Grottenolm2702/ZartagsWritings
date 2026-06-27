@@ -1,7 +1,7 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import contentStyles from "../styles/content.module.css";
-import { useNavigate } from "react-router-dom";
 import { useJWTAuth, getErrorMessage } from "../context/JWTAuthContext";
 
 export default function Users() {
@@ -43,6 +43,21 @@ export default function Users() {
             <div style={{ marginBottom: 8 }}>ID: {user.id}</div>
             <div style={{ marginBottom: 8 }}>Email: {user.email}</div>
             <div style={{ marginBottom: 12 }}>Name: {user.name || "-"}</div>
+            {user.memberships?.length ? (
+              <div style={{ marginBottom: 12 }}>
+                <strong>Campaigns</strong>
+                <ul>
+                  {user.memberships.map((membership) => (
+                    <li key={membership.id}>
+                      <Link to={`/campaigns/${membership.campaign.slug}/overview`}>
+                        {membership.campaign.name}
+                      </Link>{" "}
+                      — {membership.role}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <button
               className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
               onClick={handleDelete}

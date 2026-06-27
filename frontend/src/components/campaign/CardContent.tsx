@@ -1,65 +1,55 @@
 import React from "react";
-import EditableCardContent from "./EditableCardContent";
-import { useAuthSafe } from "../../context/AuthContext";
 import contentStyles from "../../styles/content.module.css";
-import type {
-  CardContent as CardContentType,
-  ListItem,
-} from "../../types/campaign";
+import type { ApiCardContent } from "../../types/campaign-api";
+import EditableCardContent from "./EditableCardContent";
 
-interface CardContentProps {
-  content?: CardContentType;
-  onChange?: (c: CardContentType) => void;
-}
+type CardContentProps = {
+  content?: ApiCardContent;
+  editable?: boolean;
+  onChange?: (content: ApiCardContent) => void;
+};
 
-export default function CardContent({ content, onChange }: CardContentProps) {
-  const auth = useAuthSafe();
-
+export default function CardContent({ content, editable, onChange }: CardContentProps) {
   if (!content) return null;
 
-  const editableTypes = ["paragraph", "paragraphs", "list", "attributes"];
-  if (auth.isEditor && editableTypes.includes(content.type)) {
+  if (editable) {
     return <EditableCardContent content={content} onChange={onChange} />;
-  }
-
-  if (content.type === "paragraphs") {
-    return (
-      <>
-        {content.paragraphs.map((p: string, i: number) => (
-          <p key={i}>{p}</p>
-        ))}
-      </>
-    );
   }
 
   if (content.type === "paragraph") {
     return <p>{content.text}</p>;
   }
 
+  if (content.type === "paragraphs") {
+    return (
+      <>
+        {content.paragraphs.map((paragraph, index) => (
+          <p key={`${index}-${paragraph}`}>{paragraph}</p>
+        ))}
+      </>
+    );
+  }
+
   if (content.type === "list") {
     return (
       <ul>
-        {content.items.map((it: ListItem, i: number) => (
-          <li key={i}>
-            {it.href ? <a href={it.href}>{it.label}</a> : it.label}
+        {content.items.map((item, index) => (
+          <li key={`${index}-${item.label}`}>
+            {item.href ? <a href={item.href}>{item.label}</a> : item.label}
           </li>
         ))}
       </ul>
     );
   }
 
-  if (content.type === "attributes") {
-    return (
-      <dl className={content.className || contentStyles.atributeList}>
-        {content.items.map((it, i: number) => (
-          <React.Fragment key={i}>
-            <dt>{it.dt}</dt>
-            <dd>{it.dd}</dd>
-          </React.Fragment>
-        ))}
-      </dl>
-    );
-  }
-
-  return null;
+  return (
+    <dl className={contentStyles.atributeList}>
+      {content.items.map((item, index) => (
+        <React.Fragment key={`${index}-${item.dt}`}>
+          <dt>{item.dt}</dt>
+          <dd>{item.dd}</dd>
+        </React.Fragment>
+      ))}
+    </dl>
+  );
 }

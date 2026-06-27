@@ -1,129 +1,98 @@
 import React from "react";
-import { useAuthSafe } from "../../context/AuthContext";
 import contentStyles from "../../styles/content.module.css";
-import layoutStyles from "../../styles/layout.module.css";
-import type { CardSpec } from "../../types/campaign";
+import formStyles from "../../styles/forms.module.css";
+import type { ApiCardSpec } from "../../types/campaign-api";
 
-interface ItemCardProps {
-  card?: CardSpec;
-  title: string;
+type ItemCardProps = {
+  card: ApiCardSpec;
+  editable?: boolean;
   children?: React.ReactNode;
-  pictureSrc?: string;
-  pictureAlt?: string;
-  wide?: boolean;
-  onUpdate?: (updated: CardSpec) => void;
+  onUpdate?: (updated: ApiCardSpec) => void;
   onRemove?: () => void;
-}
+};
 
 export default function ItemCard({
   card,
-  title,
+  editable,
   children,
-  pictureSrc,
-  pictureAlt,
-  wide,
   onUpdate,
   onRemove,
 }: ItemCardProps) {
-  const auth = useAuthSafe();
-
-  // local handlers for updating card fields
-  const updateField = (patch: Partial<CardSpec>) => {
-    if (!onUpdate) return;
-    const updated: CardSpec = {
-      ...(card || { title: "" }),
-      title,
-      pictureSrc,
-      pictureAlt,
+  const updateCard = (patch: Partial<ApiCardSpec>) => {
+    onUpdate?.({
+      ...card,
       ...patch,
-    };
-    onUpdate(updated);
+    });
   };
 
   return (
-    <div
-      className={`${contentStyles.itemCard}${wide ? ` ${contentStyles.wide}` : ""}`}
-    >
-      <div
-        className={layoutStyles.flexRow}
-        style={{ justifyContent: "space-between" }}
-      >
+    <div className={`${contentStyles.itemCard}${card.wide ? ` ${contentStyles.wide}` : ""}`}>
+      <div style={{ display: "flex", gap: 12, justifyContent: "space-between" }}>
         <div style={{ flex: 1 }}>
-          {auth.isEditor ? (
+          {editable ? (
             <input
-              className={contentStyles.itemTitleInput}
-              defaultValue={title}
-              onChange={(e) => updateField({ title: e.target.value })}
-              style={{
-                fontSize: "1.1rem",
-                fontWeight: 700,
-                border: "none",
-                background: "transparent",
-              }}
+              className={contentStyles.cardTitleInput}
+              value={card.title}
+              onChange={(e) => updateCard({ title: e.target.value })}
             />
           ) : (
-            <h2>{title}</h2>
+            <h2>{card.title}</h2>
           )}
         </div>
 
-        {auth.isEditor && onRemove ? (
-          <div className={layoutStyles.flexRow}>
+        {editable ? (
+          <div style={{ display: "flex", gap: 8 }}>
             <button
+              type="button"
               className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-              onClick={() => {
-                try {
-                  // confirm destructive action
-                  if (
-                    window.confirm(
-                      `Delete field '${title}'? This cannot be undone.`,
-                    )
-                  ) {
-                    onRemove?.();
-                  }
-                } catch {}
-              }}
+              onClick={() => onRemove?.()}
             >
-              Delete
+              Löschen
             </button>
           </div>
         ) : null}
       </div>
 
-      {auth.isEditor &&
-      onUpdate &&
-      (card?.pictureSrc !== undefined ||
-        (card &&
-          card.content &&
-          (card.content as unknown as Record<string, unknown>).type ===
-            "picture") ||
-        pictureSrc) ? (
+      {editable ? (
         <div className={contentStyles.pictureUrlField}>
-          <label className={contentStyles.pictureUrlInput}>Picture URL</label>
+          <label className={contentStyles.pictureUrlInput}>Bild URL</label>
           <input
-            value={pictureSrc || (card && (card.pictureSrc || ""))}
-            onChange={(e) => updateField({ pictureSrc: e.target.value })}
+            className={formStyles.formInputTransparent}
+            value={card.pictureSrc || ""}
+            onChange={(e) => updateCard({ pictureSrc: e.target.value || undefined })}
             placeholder="https://..."
-            style={{ width: "100%", border: "none", background: "transparent" }}
+          />
+          <label className={contentStyles.pictureUrlInput}>Alt Text</label>
+          <input
+            className={formStyles.formInputTransparent}
+            value={card.pictureAlt || ""}
+            onChange={(e) => updateCard({ pictureAlt: e.target.value || undefined })}
           />
           <label
             className={contentStyles.pictureUrlInput}
-            style={{ marginTop: "0.5rem" }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr auto",
+              alignItems: "center",
+              gap: 12,
+              whiteSpace: "nowrap",
+            }}
           >
-            Alt text
+            <span>Breite Karte</span>
+            <input
+              type="checkbox"
+              checked={!!card.wide}
+              onChange={(e) => updateCard({ wide: e.target.checked })}
+            />{" "}
           </label>
-          <input
-            value={pictureAlt || (card && (card.pictureAlt || ""))}
-            onChange={(e) => updateField({ pictureAlt: e.target.value })}
-            placeholder="Image description"
-            style={{ width: "100%", border: "none", background: "transparent" }}
-          />
         </div>
       ) : null}
 
       {children}
-      {pictureSrc ? (
+
+      {!editable && card.pictureSrc ? (
         <div className={contentStyles.itemPicture}>
-          <img src={pictureSrc} alt={pictureAlt || title} />
+          <img src={card.pictureSrc} alt={card.pictureAlt || card.title} />
         </div>
       ) : null}
     </div>
