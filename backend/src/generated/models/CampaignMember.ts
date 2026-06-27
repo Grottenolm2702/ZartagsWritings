@@ -45,6 +45,7 @@ export type CampaignMemberMinAggregateOutputType = {
   role: $Enums.CampaignRole | null
   displayName: string | null
   joinedAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CampaignMemberMaxAggregateOutputType = {
@@ -54,6 +55,7 @@ export type CampaignMemberMaxAggregateOutputType = {
   role: $Enums.CampaignRole | null
   displayName: string | null
   joinedAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CampaignMemberCountAggregateOutputType = {
@@ -63,6 +65,7 @@ export type CampaignMemberCountAggregateOutputType = {
   role: number
   displayName: number
   joinedAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -86,6 +89,7 @@ export type CampaignMemberMinAggregateInputType = {
   role?: true
   displayName?: true
   joinedAt?: true
+  updatedAt?: true
 }
 
 export type CampaignMemberMaxAggregateInputType = {
@@ -95,6 +99,7 @@ export type CampaignMemberMaxAggregateInputType = {
   role?: true
   displayName?: true
   joinedAt?: true
+  updatedAt?: true
 }
 
 export type CampaignMemberCountAggregateInputType = {
@@ -104,6 +109,7 @@ export type CampaignMemberCountAggregateInputType = {
   role?: true
   displayName?: true
   joinedAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -200,6 +206,7 @@ export type CampaignMemberGroupByOutputType = {
   role: $Enums.CampaignRole
   displayName: string | null
   joinedAt: Date
+  updatedAt: Date
   _count: CampaignMemberCountAggregateOutputType | null
   _avg: CampaignMemberAvgAggregateOutputType | null
   _sum: CampaignMemberSumAggregateOutputType | null
@@ -232,6 +239,7 @@ export type CampaignMemberWhereInput = {
   role?: Prisma.EnumCampaignRoleFilter<"CampaignMember"> | $Enums.CampaignRole
   displayName?: Prisma.StringNullableFilter<"CampaignMember"> | string | null
   joinedAt?: Prisma.DateTimeFilter<"CampaignMember"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CampaignMember"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   campaign?: Prisma.XOR<Prisma.CampaignScalarRelationFilter, Prisma.CampaignWhereInput>
 }
@@ -243,6 +251,7 @@ export type CampaignMemberOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   campaign?: Prisma.CampaignOrderByWithRelationInput
 }
@@ -258,6 +267,7 @@ export type CampaignMemberWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumCampaignRoleFilter<"CampaignMember"> | $Enums.CampaignRole
   displayName?: Prisma.StringNullableFilter<"CampaignMember"> | string | null
   joinedAt?: Prisma.DateTimeFilter<"CampaignMember"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CampaignMember"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   campaign?: Prisma.XOR<Prisma.CampaignScalarRelationFilter, Prisma.CampaignWhereInput>
 }, "id" | "campaignId_userId">
@@ -269,6 +279,7 @@ export type CampaignMemberOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.CampaignMemberCountOrderByAggregateInput
   _avg?: Prisma.CampaignMemberAvgOrderByAggregateInput
   _max?: Prisma.CampaignMemberMaxOrderByAggregateInput
@@ -286,12 +297,14 @@ export type CampaignMemberScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumCampaignRoleWithAggregatesFilter<"CampaignMember"> | $Enums.CampaignRole
   displayName?: Prisma.StringNullableWithAggregatesFilter<"CampaignMember"> | string | null
   joinedAt?: Prisma.DateTimeWithAggregatesFilter<"CampaignMember"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CampaignMember"> | Date | string
 }
 
 export type CampaignMemberCreateInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   campaign: Prisma.CampaignCreateNestedOneWithoutMembersInput
 }
@@ -303,12 +316,14 @@ export type CampaignMemberUncheckedCreateInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CampaignMemberUpdateInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutMembersNestedInput
 }
@@ -320,6 +335,7 @@ export type CampaignMemberUncheckedUpdateInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignMemberCreateManyInput = {
@@ -329,12 +345,14 @@ export type CampaignMemberCreateManyInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CampaignMemberUpdateManyMutationInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignMemberUncheckedUpdateManyInput = {
@@ -344,6 +362,7 @@ export type CampaignMemberUncheckedUpdateManyInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignMemberListRelationFilter = {
@@ -368,6 +387,7 @@ export type CampaignMemberCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CampaignMemberAvgOrderByAggregateInput = {
@@ -383,6 +403,7 @@ export type CampaignMemberMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CampaignMemberMinOrderByAggregateInput = {
@@ -392,6 +413,7 @@ export type CampaignMemberMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CampaignMemberSumOrderByAggregateInput = {
@@ -492,6 +514,7 @@ export type CampaignMemberCreateWithoutUserInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
   campaign: Prisma.CampaignCreateNestedOneWithoutMembersInput
 }
 
@@ -501,6 +524,7 @@ export type CampaignMemberUncheckedCreateWithoutUserInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CampaignMemberCreateOrConnectWithoutUserInput = {
@@ -538,12 +562,14 @@ export type CampaignMemberScalarWhereInput = {
   role?: Prisma.EnumCampaignRoleFilter<"CampaignMember"> | $Enums.CampaignRole
   displayName?: Prisma.StringNullableFilter<"CampaignMember"> | string | null
   joinedAt?: Prisma.DateTimeFilter<"CampaignMember"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CampaignMember"> | Date | string
 }
 
 export type CampaignMemberCreateWithoutCampaignInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
 }
 
@@ -553,6 +579,7 @@ export type CampaignMemberUncheckedCreateWithoutCampaignInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CampaignMemberCreateOrConnectWithoutCampaignInput = {
@@ -586,12 +613,14 @@ export type CampaignMemberCreateManyUserInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CampaignMemberUpdateWithoutUserInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutMembersNestedInput
 }
 
@@ -601,6 +630,7 @@ export type CampaignMemberUncheckedUpdateWithoutUserInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignMemberUncheckedUpdateManyWithoutUserInput = {
@@ -609,6 +639,7 @@ export type CampaignMemberUncheckedUpdateManyWithoutUserInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignMemberCreateManyCampaignInput = {
@@ -617,12 +648,14 @@ export type CampaignMemberCreateManyCampaignInput = {
   role?: $Enums.CampaignRole
   displayName?: string | null
   joinedAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CampaignMemberUpdateWithoutCampaignInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
 }
 
@@ -632,6 +665,7 @@ export type CampaignMemberUncheckedUpdateWithoutCampaignInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignMemberUncheckedUpdateManyWithoutCampaignInput = {
@@ -640,6 +674,7 @@ export type CampaignMemberUncheckedUpdateManyWithoutCampaignInput = {
   role?: Prisma.EnumCampaignRoleFieldUpdateOperationsInput | $Enums.CampaignRole
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -651,6 +686,7 @@ export type CampaignMemberSelect<ExtArgs extends runtime.Types.Extensions.Intern
   role?: boolean
   displayName?: boolean
   joinedAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["campaignMember"]>
@@ -662,6 +698,7 @@ export type CampaignMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   role?: boolean
   displayName?: boolean
   joinedAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["campaignMember"]>
@@ -673,6 +710,7 @@ export type CampaignMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   role?: boolean
   displayName?: boolean
   joinedAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["campaignMember"]>
@@ -684,9 +722,10 @@ export type CampaignMemberSelectScalar = {
   role?: boolean
   displayName?: boolean
   joinedAt?: boolean
+  updatedAt?: boolean
 }
 
-export type CampaignMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "userId" | "role" | "displayName" | "joinedAt", ExtArgs["result"]["campaignMember"]>
+export type CampaignMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "userId" | "role" | "displayName" | "joinedAt" | "updatedAt", ExtArgs["result"]["campaignMember"]>
 export type CampaignMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
@@ -713,6 +752,7 @@ export type $CampaignMemberPayload<ExtArgs extends runtime.Types.Extensions.Inte
     role: $Enums.CampaignRole
     displayName: string | null
     joinedAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["campaignMember"]>
   composites: {}
 }
@@ -1144,6 +1184,7 @@ export interface CampaignMemberFieldRefs {
   readonly role: Prisma.FieldRef<"CampaignMember", 'CampaignRole'>
   readonly displayName: Prisma.FieldRef<"CampaignMember", 'String'>
   readonly joinedAt: Prisma.FieldRef<"CampaignMember", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"CampaignMember", 'DateTime'>
 }
     
 

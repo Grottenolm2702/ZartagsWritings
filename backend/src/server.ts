@@ -13,7 +13,17 @@ dotenv.config();
 
 const app = express();
 const PORT = 3000;
-app.use(cors({ credentials: true }));
+const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: corsOrigins.length === 1 ? corsOrigins[0] : corsOrigins,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 
@@ -373,6 +383,10 @@ function canEditCampaign(
 app.post("/api/register", async (req: Request, res: Response) => {
   const { email, name, password } = req.body;
 
+  if (!email || !password) {
+    return res.status(400).json({ error: "E-Mail und Passwort sind erforderlich" });
+  }
+
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -387,6 +401,15 @@ app.post("/api/register", async (req: Request, res: Response) => {
       .status(201)
       .json({ message: "Benutzer erfolgreich registriert", userId: user.id });
   } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Unbekannter Fehler beim Registrieren";
+
+    if (message.includes("UNIQUE constraint failed: User.email")) {
+      return res.status(409).json({ error: "Diese E-Mail ist bereits registriert" });
+    }
+
     res.status(400).json({ error: "User konnte nicht erstellt werden" });
   }
 });

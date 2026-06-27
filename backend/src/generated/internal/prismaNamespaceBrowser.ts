@@ -106,7 +106,8 @@ export const CampaignMemberScalarFieldEnum = {
   userId: 'userId',
   role: 'role',
   displayName: 'displayName',
-  joinedAt: 'joinedAt'
+  joinedAt: 'joinedAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CampaignMemberScalarFieldEnum = (typeof CampaignMemberScalarFieldEnum)[keyof typeof CampaignMemberScalarFieldEnum]
