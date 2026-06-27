@@ -9,4 +9,11 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User.js'
+export type * from './models/Campaign.js'
+export type * from './models/CampaignMember.js'
+export type * from './models/Entity.js'
+export type * from './models/EntityField.js'
+export type * from './models/ContentBlock.js'
+export type * from './models/ContentListItem.js'
+export type * from './models/ContentAttribute.js'
 export type * from './commonInputTypes.js'

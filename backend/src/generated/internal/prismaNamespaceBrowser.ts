@@ -51,7 +51,14 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  Campaign: 'Campaign',
+  CampaignMember: 'CampaignMember',
+  Entity: 'Entity',
+  EntityField: 'EntityField',
+  ContentBlock: 'ContentBlock',
+  ContentListItem: 'ContentListItem',
+  ContentAttribute: 'ContentAttribute'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -71,10 +78,107 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   name: 'name',
-  password: 'password'
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const CampaignScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  joinCode: 'joinCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ownerId: 'ownerId'
+} as const
+
+export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
+
+
+export const CampaignMemberScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  userId: 'userId',
+  role: 'role',
+  displayName: 'displayName',
+  joinedAt: 'joinedAt'
+} as const
+
+export type CampaignMemberScalarFieldEnum = (typeof CampaignMemberScalarFieldEnum)[keyof typeof CampaignMemberScalarFieldEnum]
+
+
+export const EntityScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  creatorId: 'creatorId',
+  type: 'type',
+  slug: 'slug',
+  name: 'name',
+  summary: 'summary',
+  isVisible: 'isVisible',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EntityScalarFieldEnum = (typeof EntityScalarFieldEnum)[keyof typeof EntityScalarFieldEnum]
+
+
+export const EntityFieldScalarFieldEnum = {
+  id: 'id',
+  entityId: 'entityId',
+  label: 'label',
+  value: 'value',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EntityFieldScalarFieldEnum = (typeof EntityFieldScalarFieldEnum)[keyof typeof EntityFieldScalarFieldEnum]
+
+
+export const ContentBlockScalarFieldEnum = {
+  id: 'id',
+  entityId: 'entityId',
+  type: 'type',
+  title: 'title',
+  sortOrder: 'sortOrder',
+  isWide: 'isWide',
+  text: 'text',
+  imageUrl: 'imageUrl',
+  imageAlt: 'imageAlt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContentBlockScalarFieldEnum = (typeof ContentBlockScalarFieldEnum)[keyof typeof ContentBlockScalarFieldEnum]
+
+
+export const ContentListItemScalarFieldEnum = {
+  id: 'id',
+  blockId: 'blockId',
+  label: 'label',
+  href: 'href',
+  sortOrder: 'sortOrder'
+} as const
+
+export type ContentListItemScalarFieldEnum = (typeof ContentListItemScalarFieldEnum)[keyof typeof ContentListItemScalarFieldEnum]
+
+
+export const ContentAttributeScalarFieldEnum = {
+  id: 'id',
+  blockId: 'blockId',
+  label: 'label',
+  value: 'value',
+  sortOrder: 'sortOrder'
+} as const
+
+export type ContentAttributeScalarFieldEnum = (typeof ContentAttributeScalarFieldEnum)[keyof typeof ContentAttributeScalarFieldEnum]
 
 
 export const SortOrder = {

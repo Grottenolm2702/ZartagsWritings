@@ -9,7 +9,31 @@
 * 🟢 You can import this file directly.
 */
 
+export const CampaignRole = {
+  DM: 'DM',
+  EDITOR: 'EDITOR',
+  PLAYER: 'PLAYER'
+} as const
+
+export type CampaignRole = (typeof CampaignRole)[keyof typeof CampaignRole]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const EntityType = {
+  PC: 'PC',
+  NPC: 'NPC',
+  MAGIC_ITEM: 'MAGIC_ITEM',
+  LOCATION: 'LOCATION'
+} as const
+
+export type EntityType = (typeof EntityType)[keyof typeof EntityType]
+
+
+export const ContentBlockType = {
+  PARAGRAPH: 'PARAGRAPH',
+  PARAGRAPHS: 'PARAGRAPHS',
+  LIST: 'LIST',
+  ATTRIBUTES: 'ATTRIBUTES',
+  IMAGE: 'IMAGE'
+} as const
+
+export type ContentBlockType = (typeof ContentBlockType)[keyof typeof ContentBlockType]

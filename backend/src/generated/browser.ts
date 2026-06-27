@@ -22,3 +22,38 @@ export * from './enums.js';
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Campaign
+ * 
+ */
+export type Campaign = Prisma.CampaignModel
+/**
+ * Model CampaignMember
+ * 
+ */
+export type CampaignMember = Prisma.CampaignMemberModel
+/**
+ * Model Entity
+ * 
+ */
+export type Entity = Prisma.EntityModel
+/**
+ * Model EntityField
+ * 
+ */
+export type EntityField = Prisma.EntityFieldModel
+/**
+ * Model ContentBlock
+ * 
+ */
+export type ContentBlock = Prisma.ContentBlockModel
+/**
+ * Model ContentListItem
+ * 
+ */
+export type ContentListItem = Prisma.ContentListItemModel
+/**
+ * Model ContentAttribute
+ * 
+ */
+export type ContentAttribute = Prisma.ContentAttributeModel
