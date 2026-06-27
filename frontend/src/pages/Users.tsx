@@ -34,43 +34,63 @@ export default function Users() {
 
   return (
     <Layout>
-      <main>
+      <main className={contentStyles.userPage}>
         <h1>Userverwaltung</h1>
+        <p className={contentStyles.userIntro}>
+          Hier findest du deine Kontodaten, deine Campaign-Mitgliedschaften und
+          die wichtigsten Kontoeinstellungen.
+        </p>
         {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
         {loading ? <p>Lädt...</p> : null}
         {user ? (
-          <div style={{ marginTop: 12 }}>
-            <div style={{ marginBottom: 8 }}>ID: {user.id}</div>
-            <div style={{ marginBottom: 8 }}>Email: {user.email}</div>
-            <div style={{ marginBottom: 12 }}>Name: {user.name || "-"}</div>
+          <div className={contentStyles.userCard}>
+            <div className={contentStyles.userMetaGrid}>
+              <div className={contentStyles.userMetaItem}>
+                <span className={contentStyles.userMetaLabel}>ID</span>
+                <span className={contentStyles.userMetaValue}>{user.id}</span>
+              </div>
+              <div className={contentStyles.userMetaItem}>
+                <span className={contentStyles.userMetaLabel}>E-Mail</span>
+                <span className={contentStyles.userMetaValue}>{user.email}</span>
+              </div>
+              <div className={contentStyles.userMetaItem}>
+                <span className={contentStyles.userMetaLabel}>Name</span>
+                <span className={contentStyles.userMetaValue}>{user.name || "-"}</span>
+              </div>
+            </div>
+
             {user.memberships?.length ? (
-              <div style={{ marginBottom: 12 }}>
-                <strong>Campaigns</strong>
-                <ul>
+              <div className={contentStyles.userSection}>
+                <h2 className={contentStyles.userSectionTitle}>Campaigns</h2>
+                <ul className={contentStyles.userCampaignList}>
                   {user.memberships.map((membership) => (
-                    <li key={membership.id}>
+                    <li key={membership.id} className={contentStyles.userCampaignItem}>
                       <Link to={`/campaigns/${membership.campaign.slug}/overview`}>
                         {membership.campaign.name}
-                      </Link>{" "}
-                      — {membership.role}
+                      </Link>
+                      <span className={contentStyles.userCampaignRole}>{membership.role}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-            ) : null}
-            <button
-              className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-              onClick={handleDelete}
-            >
-              Account löschen
-            </button>
-            <button
-              className={contentStyles.actionButton}
-              onClick={handleLogout}
-              style={{ marginLeft: 8 }}
-            >
-              Abmelden
-            </button>
+            ) : (
+              <div className={contentStyles.userSection}>
+                <h2 className={contentStyles.userSectionTitle}>Campaigns</h2>
+                <p className={contentStyles.userEmptyState}>Du bist aktuell keiner Campaign zugeordnet.</p>
+              </div>
+            )}
+
+            <div className={contentStyles.userActions}>
+              <button
+                className={`${contentStyles.actionButton} ${contentStyles.dangerButton}`}
+                onClick={handleDelete}
+              >
+                Account löschen
+              </button>
+              <button className={contentStyles.actionButton} onClick={handleLogout}>
+                Abmelden
+              </button>
+            </div>
           </div>
         ) : null}
       </main>

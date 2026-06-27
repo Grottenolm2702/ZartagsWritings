@@ -32,6 +32,14 @@ export type ApiEntity = {
   cards: ApiCardSpec[];
 };
 
+export type ApiEntityTemplate = {
+  type: ApiEntityType;
+  name: string;
+  summary: string;
+  headerFields: ApiHeaderField[];
+  cards: ApiCardSpec[];
+};
+
 export type ApiCampaignOverview = {
   title: string;
   sections: {

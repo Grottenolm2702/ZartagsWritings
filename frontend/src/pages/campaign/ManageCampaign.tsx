@@ -71,69 +71,79 @@ export default function ManageCampaign() {
 
   return (
     <Layout>
-      <main>
+      <main className={contentStyles.managePage}>
         <h1>Campaign verwalten</h1>
+        <p className={contentStyles.manageIntro}>
+          Hier verwaltest du Mitglieder und Zugriffsrollen für diese Campaign.
+        </p>
         {loading ? <p>Lädt...</p> : null}
         {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
 
         {campaign ? (
-          <>
-            <p>
-              <strong>{campaign.name}</strong>
-            </p>
-            <p>
-              Invite Code: <code>{campaign.joinCode}</code>
-            </p>
-            <p>
-              Invite Link:{" "}
-              <code>{`${window.location.origin}/campaigns/${campaign.slug}/overview`}</code>
-            </p>
-            <p>
-              <Link className={contentStyles.actionButton} to={`/campaigns/${campaign.slug}/overview`}>
-                Zur Übersicht
-              </Link>
-            </p>
+          <div className={contentStyles.manageCard}>
+            <div className={contentStyles.manageSummary}>
+              <div>
+                <span className={contentStyles.manageLabel}>Campaign</span>
+                <strong className={contentStyles.manageValue}>{campaign.name}</strong>
+              </div>
+              <div>
+                <span className={contentStyles.manageLabel}>Code</span>
+                <div className={contentStyles.manageCodeRow}>
+                  <code className={contentStyles.manageCode}>{campaign.joinCode}</code>
+                  <button
+                    className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                    onClick={() => navigator.clipboard?.writeText(campaign.joinCode)}
+                  >
+                    Code kopieren
+                  </button>
+                </div>
+              </div>
+              <div className={contentStyles.manageActions}>
+                <Link
+                  className={contentStyles.actionButton}
+                  to={`/campaigns/${campaign.slug}/overview`}
+                >
+                  Zur Übersicht
+                </Link>
+              </div>
+            </div>
 
-            <h2>Mitglieder</h2>
-            <ul style={{ listStyle: "none", padding: 0 }}>
+            <div className={contentStyles.userSection}>
+              <h2 className={contentStyles.userSectionTitle}>Mitglieder</h2>
+              <ul className={contentStyles.manageMemberList}>
               {campaign.members.map((member) => (
-                <li key={member.id} style={{ marginBottom: 12 }}>
-                  <strong>{member.displayName || member.user.name || member.user.email}</strong>{" "}
-                  <span style={{ opacity: 0.75 }}>({member.role})</span>
-                  <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
-                    <button
-                      className={contentStyles.actionButton}
-                      onClick={() => navigator.clipboard?.writeText(campaign.joinCode)}
-                    >
-                      Code kopieren
-                    </button>
-                    {canEdit ? (
-                      <>
-                        <button
-                          className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                          onClick={() => updateRole(member.userId, "PLAYER")}
-                        >
-                          Player
-                        </button>
-                        <button
-                          className={contentStyles.actionButton}
-                          onClick={() => updateRole(member.userId, "EDITOR")}
-                        >
-                          Editor
-                        </button>
-                        <button
-                          className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                          onClick={() => updateRole(member.userId, "DM")}
-                        >
-                          DM
-                        </button>
-                      </>
-                    ) : null}
+                <li key={member.id} className={contentStyles.manageMemberItem}>
+                  <div className={contentStyles.manageMemberHeader}>
+                    <strong>{member.displayName || member.user.name || member.user.email}</strong>
+                    <span className={contentStyles.manageMemberRole}>{member.role}</span>
                   </div>
+                  {canEdit ? (
+                    <div className={contentStyles.manageRoleButtons}>
+                      <button
+                        className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                        onClick={() => updateRole(member.userId, "PLAYER")}
+                      >
+                        Player
+                      </button>
+                      <button
+                        className={contentStyles.actionButton}
+                        onClick={() => updateRole(member.userId, "EDITOR")}
+                      >
+                        Editor
+                      </button>
+                      <button
+                        className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                        onClick={() => updateRole(member.userId, "DM")}
+                      >
+                        DM
+                      </button>
+                    </div>
+                  ) : null}
                 </li>
               ))}
-            </ul>
-          </>
+              </ul>
+            </div>
+          </div>
         ) : null}
       </main>
     </Layout>

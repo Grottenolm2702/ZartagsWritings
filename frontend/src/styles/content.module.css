@@ -354,3 +354,200 @@
   color: #ff8888;
   font-size: 0.95em;
 }
+
+.userPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.userIntro {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--text-color);
+  opacity: 0.9;
+}
+
+.userCard {
+  background: var(--hover-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.userMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.userMetaItem {
+  padding: 0.75rem;
+  border-radius: 0.4rem;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.userMetaLabel {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.userMetaValue {
+  word-break: break-word;
+}
+
+.userSection {
+  margin-top: 1.25rem;
+}
+
+.userSectionTitle {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  color: var(--accent-color);
+}
+
+.userCampaignList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.userCampaignItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.4rem;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.userCampaignItem a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.userCampaignRole {
+  color: var(--text-color);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.userEmptyState {
+  margin: 0;
+  opacity: 0.85;
+}
+
+.userActions {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.dangerButton {
+  background: #8b3333;
+  color: #fff;
+}
+
+.dangerButton:hover {
+  opacity: 0.9;
+}
+
+.managePage {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.manageIntro {
+  margin: 0;
+  max-width: 60ch;
+  opacity: 0.9;
+}
+
+.manageCard {
+  background: var(--hover-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.manageSummary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+}
+
+.manageLabel {
+  display: block;
+  color: var(--accent-color);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.manageValue {
+  display: block;
+  font-size: 1.1rem;
+}
+
+.manageCode {
+  display: inline-block;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.35rem;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.manageCodeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.manageActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.manageMemberList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.manageMemberItem {
+  padding: 0.9rem;
+  border-radius: 0.4rem;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.manageMemberHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.manageMemberRole {
+  color: var(--text-color);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.manageRoleButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

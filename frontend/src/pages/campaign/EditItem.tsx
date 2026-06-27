@@ -3,7 +3,12 @@ import { useParams } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { useJWTAuth } from "../../context/JWTAuthContext";
 import { apiFetch } from "../../lib/api";
-import type { ApiCampaign, ApiEntity, ApiEntityType } from "../../types/campaign-api";
+import type {
+  ApiCampaign,
+  ApiEntity,
+  ApiEntityTemplate,
+  ApiEntityType,
+} from "../../types/campaign-api";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
 
 export default function EditItemPage() {
@@ -15,6 +20,7 @@ export default function EditItemPage() {
 
   const [campaign, setCampaign] = React.useState<ApiCampaign | null>(null);
   const [entity, setEntity] = React.useState<ApiEntity | null>(null);
+  const [template, setTemplate] = React.useState<ApiEntityTemplate | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -30,17 +36,24 @@ export default function EditItemPage() {
       setLoading(true);
       setError(null);
       try {
-        const [campaignData, entityData] = await Promise.all([
+        const requests = [
           apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`),
           isNew
             ? Promise.resolve(null)
             : apiFetch<ApiEntity>(
                 `/api/campaigns/${campaignSlug}/entities/${apiType}/${entitySlug}`,
               ),
-        ]);
+          isNew
+            ? apiFetch<ApiEntityTemplate>(
+                `/api/campaigns/${campaignSlug}/entities/${apiType}/template`,
+              )
+            : Promise.resolve(null),
+        ] as const;
+        const [campaignData, entityData, templateData] = await Promise.all(requests);
         if (mounted) {
           setCampaign(campaignData);
           setEntity(entityData);
+          setTemplate(templateData);
         }
       } catch (err) {
         if (mounted) {
@@ -74,6 +87,7 @@ export default function EditItemPage() {
             campaignSlug={campaignSlug}
             entityType={apiType}
             entity={entity}
+            template={template}
             editable={hasEditAccess}
             isNew={isNew}
           />

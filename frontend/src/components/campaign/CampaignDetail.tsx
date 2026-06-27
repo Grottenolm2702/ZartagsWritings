@@ -2,7 +2,14 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import contentStyles from "../../styles/content.module.css";
 import { apiFetch } from "../../lib/api";
-import type { ApiCardContent, ApiCardSpec, ApiEntity, ApiEntityType, ApiHeaderField } from "../../types/campaign-api";
+import type {
+  ApiCardContent,
+  ApiCardSpec,
+  ApiEntity,
+  ApiEntityTemplate,
+  ApiEntityType,
+  ApiHeaderField,
+} from "../../types/campaign-api";
 import ContentHeader from "./ContentHeader";
 import ItemsGrid from "./ItemsGrid";
 
@@ -10,6 +17,7 @@ type CampaignDetailProps = {
   campaignSlug: string;
   entityType: ApiEntityType;
   entity?: ApiEntity | null;
+  template?: ApiEntityTemplate | null;
   editable?: boolean;
   isNew?: boolean;
 };
@@ -30,7 +38,21 @@ const ENTITY_TYPE_LABELS: Record<ApiEntityType, string> = {
   location: "Location",
 };
 
-function createEmptyDraft(entityType: ApiEntityType): Draft {
+function createEmptyDraft(entityType: ApiEntityType, template?: ApiEntityTemplate | null): Draft {
+  if (template) {
+    return {
+      name: template.name,
+      summary: template.summary,
+      isVisible: true,
+      sortOrder: 0,
+      headerFields: template.headerFields.map((field) => ({ ...field })),
+      cards: template.cards.map((card) => ({
+        ...card,
+        content: card.content ? JSON.parse(JSON.stringify(card.content)) : undefined,
+      })),
+    };
+  }
+
   return {
     name: "",
     summary: "",
@@ -104,11 +126,14 @@ export default function CampaignDetail({
   campaignSlug,
   entityType,
   entity,
+  template,
   editable = false,
   isNew = false,
 }: CampaignDetailProps) {
   const navigate = useNavigate();
-  const [draft, setDraft] = React.useState<Draft>(() => cloneDraft(entity, entityType));
+  const [draft, setDraft] = React.useState<Draft>(() =>
+    entity ? cloneDraft(entity, entityType) : createEmptyDraft(entityType, template),
+  );
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [showAddMenu, setShowAddMenu] = React.useState(false);
@@ -116,11 +141,11 @@ export default function CampaignDetail({
   const [previewMode, setPreviewMode] = React.useState(false);
 
   React.useEffect(() => {
-    setDraft(cloneDraft(entity, entityType));
+    setDraft(entity ? cloneDraft(entity, entityType) : createEmptyDraft(entityType, template));
     setShowAddMenu(false);
     setDeleteOpen(false);
     setPreviewMode(false);
-  }, [entity, entityType]);
+  }, [entity, entityType, template]);
 
   const title = draft.name || draft.headerFields[0]?.value || "Entity";
   const canEdit = editable && !previewMode;
