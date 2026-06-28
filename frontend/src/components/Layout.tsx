@@ -105,7 +105,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         id="overlay"
         onClick={() => setOpen(false)}
         aria-hidden={!open}
-        style={{ display: open ? "block" : "none" }}
       ></div>
 
       {children}

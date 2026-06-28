@@ -40,15 +40,6 @@ export type ApiEntityTemplate = {
   cards: ApiCardSpec[];
 };
 
-export type ApiCampaignOverview = {
-  title: string;
-  sections: {
-    category: ApiEntityType;
-    title: string;
-    items: { label: string; href: string }[];
-  }[];
-};
-
 export type ApiCampaignMember = {
   id: number;
   userId: number;

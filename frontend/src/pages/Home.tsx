@@ -72,7 +72,7 @@ export default function Home() {
             <Link to="/register">registrieren</Link>, um deine Campaigns zu sehen.
           </p>
         ) : (
-          <p style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <p className={contentStyles.homeJoinActions}>
             <Link className={contentStyles.actionButton} to="/campaigns/new">
               Campaign erstellen
             </Link>
@@ -99,7 +99,7 @@ export default function Home() {
                   required
                   autoComplete="off"
                 />
-                <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+                <div className={contentStyles.homeJoinButtonRow}>
                   <button type="submit" className={contentStyles.actionButton} disabled={joinLoading}>
                     {joinLoading ? "Beitreten..." : "Beitreten"}
                   </button>

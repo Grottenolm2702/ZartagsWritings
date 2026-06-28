@@ -27,8 +27,8 @@ export default function ItemCard({
 
   return (
     <div className={`${contentStyles.itemCard}${card.wide ? ` ${contentStyles.wide}` : ""}`}>
-      <div style={{ display: "flex", gap: 12, justifyContent: "space-between" }}>
-        <div style={{ flex: 1 }}>
+      <div className={contentStyles.itemCardHeader}>
+        <div className={contentStyles.itemCardTitleWrap}>
           {editable ? (
             <input
               className={contentStyles.cardTitleInput}
@@ -41,7 +41,7 @@ export default function ItemCard({
         </div>
 
         {editable ? (
-          <div style={{ display: "flex", gap: 8 }}>
+          <div className={contentStyles.itemCardActions}>
             <button
               type="button"
               className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
@@ -68,16 +68,7 @@ export default function ItemCard({
             value={card.pictureAlt || ""}
             onChange={(e) => updateCard({ pictureAlt: e.target.value || undefined })}
           />
-          <label
-            className={contentStyles.pictureUrlInput}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto",
-              alignItems: "center",
-              gap: 12,
-              whiteSpace: "nowrap",
-            }}
-          >
+          <label className={`${contentStyles.pictureUrlInput} ${contentStyles.itemCardWideToggle}`}>
             <span>Breite Karte</span>
             <input
               type="checkbox"

@@ -132,11 +132,11 @@ export default function CampaignOverview() {
   return (
     <Layout>
       <main>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <h1 style={{ margin: 0 }}>
+        <div className={contentStyles.campaignOverviewHeader}>
+          <h1 className={contentStyles.campaignOverviewTitle}>
             Overview{campaign?.name ? `: ${campaign.name}` : ""}
           </h1>
-          <div style={{ marginLeft: "auto" }}>
+          <div className={contentStyles.campaignOverviewHeaderActions}>
             <Link className={contentStyles.actionButton} to={`/campaigns/${campaignSlug}/manage`}>
               Campaign verwalten
             </Link>
@@ -184,8 +184,7 @@ export default function CampaignOverview() {
                         <div className={overviewStyles.elementRow}>
                           <Link
                             to={getEntityPath(campaignSlug || "", entity)}
-                            className={overviewStyles.elementLink}
-                            style={{ opacity: entity.isVisible ? 1 : 0.45 }}
+                            className={`${overviewStyles.elementLink}${entity.isVisible ? "" : ` ${contentStyles.campaignOverviewEntityLinkHidden}`}`}
                           >
                             <strong>{entity.name}</strong>
                             {entity.summary ? <span>{entity.summary}</span> : null}

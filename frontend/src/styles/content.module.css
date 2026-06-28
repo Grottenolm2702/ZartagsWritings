@@ -6,6 +6,10 @@
   gap: 0.75em;
 }
 
+.itemsGridWideSection {
+  margin-top: 12px;
+}
+
 .itemsMasonry {
   column-count: 2;
   column-gap: 0.75em;
@@ -78,6 +82,29 @@
   margin-bottom: 0.75em;
 }
 
+.itemCardHeader {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.itemCardTitleWrap {
+  flex: 1;
+}
+
+.itemCardActions {
+  display: flex;
+  gap: 8px;
+}
+
+.itemCardWideToggle {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
 .campaignCard {
   background-color: var(--hover-color);
   color: var(--text-color);
@@ -148,6 +175,10 @@
   color: var(--accent-color);
 }
 
+.contentHeaderActions {
+  margin: 0.75rem 0.5rem 0;
+}
+
 /* Inputs styled to match rendered text when editing */
 .contentHeader input.value,
 .contentHeader .value input,
@@ -180,6 +211,50 @@
   color: var(--accent-color);
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin: 0;
+}
+
+.campaignDetailHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.campaignDetailTitle {
+  margin: 0;
+}
+
+.campaignDetailActions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.campaignDetailAddMenu {
+  position: relative;
+}
+
+.campaignDetailAddMenuPopover {
+  position: absolute;
+  right: 0;
+  margin-top: 6px;
+  z-index: 5;
+}
+
+.campaignDetailAddMenuList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campaignDetailBasisGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.campaignDetailDeleteActions {
+  display: flex;
+  gap: 8px;
 }
 
 /* add menu buttons vertical stack */
@@ -550,4 +625,58 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.homeJoinActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.homeJoinButtonRow {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.campaignOverviewHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.campaignOverviewTitle {
+  margin: 0;
+}
+
+.campaignOverviewHeaderActions {
+  margin-left: auto;
+}
+
+.campaignOverviewEntityLinkHidden {
+  opacity: 0.45;
+}
+
+.campaignTypeHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.campaignTypeTitle {
+  margin: 0;
+}
+
+.campaignTypeHeaderActions {
+  margin-left: auto;
+}
+
+.campaignTypeSection {
+  margin-top: 16px;
+}
+
+.campaignTypeEntityActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }

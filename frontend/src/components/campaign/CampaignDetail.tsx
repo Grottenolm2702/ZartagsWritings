@@ -48,7 +48,7 @@ function createEmptyDraft(entityType: ApiEntityType, template?: ApiEntityTemplat
       headerFields: template.headerFields.map((field) => ({ ...field })),
       cards: template.cards.map((card) => ({
         ...card,
-        content: card.content ? JSON.parse(JSON.stringify(card.content)) : undefined,
+        content: cloneCardContent(card.content),
       })),
     };
   }
@@ -140,13 +140,6 @@ export default function CampaignDetail({
   const [deleteOpen, setDeleteOpen] = React.useState(false);
   const [previewMode, setPreviewMode] = React.useState(false);
 
-  React.useEffect(() => {
-    setDraft(entity ? cloneDraft(entity, entityType) : createEmptyDraft(entityType, template));
-    setShowAddMenu(false);
-    setDeleteOpen(false);
-    setPreviewMode(false);
-  }, [entity, entityType, template]);
-
   const title = draft.name || draft.headerFields[0]?.value || "Entity";
   const canEdit = editable && !previewMode;
   const editableHeaderFields = draft.headerFields
@@ -232,10 +225,10 @@ export default function CampaignDetail({
 
   return (
     <main className={contentStyles.campaignDetail}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <h1 style={{ margin: 0 }}>{title}</h1>
+      <div className={contentStyles.campaignDetailHeader}>
+        <h1 className={contentStyles.campaignDetailTitle}>{title}</h1>
         {editable ? (
-          <div style={{ marginLeft: "auto", display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div className={contentStyles.campaignDetailActions}>
             <button
               type="button"
               className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
@@ -273,7 +266,7 @@ export default function CampaignDetail({
                 >
                   Abbrechen
                 </button>
-                <div style={{ position: "relative" }}>
+                <div className={contentStyles.campaignDetailAddMenu}>
                   <button
                     type="button"
                     className={contentStyles.actionButton}
@@ -282,11 +275,8 @@ export default function CampaignDetail({
                     Feld hinzufügen
                   </button>
                   {showAddMenu ? (
-                    <div
-                      className={contentStyles.modal}
-                      style={{ position: "absolute", right: 0, marginTop: 6, zIndex: 5 }}
-                    >
-                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    <div className={`${contentStyles.modal} ${contentStyles.campaignDetailAddMenuPopover}`}>
+                      <div className={contentStyles.campaignDetailAddMenuList}>
                         {[
                           ["paragraph", "Absatz"],
                           ["paragraphs", "Mehrere Absätze"],
@@ -335,7 +325,7 @@ export default function CampaignDetail({
         <section className={contentStyles.cardSection}>
           <div className={contentStyles.cardSectionTitle}>Basisdaten</div>
           <div className={contentStyles.cardSectionContent}>
-            <div style={{ display: "grid", gap: 10 }}>
+            <div className={contentStyles.campaignDetailBasisGrid}>
               <div>
                 <strong>Type:</strong> {ENTITY_TYPE_LABELS[entityType]}
               </div>
@@ -399,7 +389,7 @@ export default function CampaignDetail({
           <div className={contentStyles.modal} role="dialog" aria-modal="true">
             <h3>Entity löschen?</h3>
             <p>Diese Aktion kann nicht rückgängig gemacht werden.</p>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className={contentStyles.campaignDetailDeleteActions}>
               <button
                 type="button"
                 className={`${contentStyles.actionButton} ${contentStyles.secondary}`}

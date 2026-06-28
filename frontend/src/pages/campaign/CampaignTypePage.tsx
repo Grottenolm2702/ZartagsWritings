@@ -83,9 +83,9 @@ export default function CampaignTypePage() {
     <Layout>
       <main>
         {!entity ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <h1 style={{ margin: 0 }}>{TYPE_LABELS[apiType]}</h1>
-            <div style={{ marginLeft: "auto" }}>
+          <div className={contentStyles.campaignTypeHeader}>
+            <h1 className={contentStyles.campaignTypeTitle}>{TYPE_LABELS[apiType]}</h1>
+            <div className={contentStyles.campaignTypeHeaderActions}>
               {editable ? (
                 <Link
                   className={contentStyles.actionButton}
@@ -102,8 +102,9 @@ export default function CampaignTypePage() {
         {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
 
         {entity ? (
-          <section style={{ marginTop: 16 }}>
+          <section className={contentStyles.campaignTypeSection}>
             <CampaignDetail
+              key={`${campaignSlug}:${apiType}:${entity.id}`}
               campaignSlug={campaignSlug || ""}
               entityType={apiType}
               entity={entity}
@@ -111,14 +112,14 @@ export default function CampaignTypePage() {
             />
           </section>
         ) : (
-          <section style={{ marginTop: 16 }}>
+          <section className={contentStyles.campaignTypeSection}>
             <div className={contentStyles.itemsGrid}>
               <div className={contentStyles.itemsMasonry}>
                 {entities.map((entry) => (
                   <article key={entry.id} className={contentStyles.itemCard}>
                     <h2>{entry.name}</h2>
                     <p>{entry.summary || "Keine Beschreibung"}</p>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    <div className={contentStyles.campaignTypeEntityActions}>
                       <Link to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}`}>
                         Öffnen
                       </Link>

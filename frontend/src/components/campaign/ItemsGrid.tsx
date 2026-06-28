@@ -41,7 +41,7 @@ export default function ItemsGrid({ cards, editable, onUpdate, onRemove }: Items
       </div>
 
       {wideCards.length > 0 ? (
-        <div style={{ marginTop: 12 }}>
+        <div className={contentStyles.itemsGridWideSection}>
           {wideCards.map(({ card, index }) => (
             <ItemCard
               key={index}

@@ -66,7 +66,7 @@ export default function ContentHeader({
         ))}
       </div>
       {editable && onAdd ? (
-        <div style={{ margin: "0.75rem 0.5rem 0" }}>
+        <div className={contentStyles.contentHeaderActions}>
           <button type="button" className={contentStyles.newButton} onClick={onAdd}>
             Feld hinzufügen
           </button>
