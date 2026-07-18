@@ -93,43 +93,92 @@ For more Info see the about page.
 
 ## Setup
 
-### Frontend
+### Docker Compose (empfohlen für Development)
 
 ```bash
-cd frontend
-npm install
+# optional: eigene Werte setzen
+cp .env.example .env
+
+docker compose up
 ```
 
-### Backend
+- Frontend: <http://localhost:5173>
+- Backend API: <http://localhost:3000>
+- Backend-Healthcheck: <http://localhost:3000/api/health>
+
+Die Compose-Umgebung richtet alle Abhängigkeiten selbst ein:
+- `npm ci` beim Image-Build für Frontend und Backend
+- Prisma-Migrationen im Backend (`npx prisma migrate deploy`)
+- persistente SQLite-Datei in Docker-Volume (`backend_data`)
+- automatische API-Proxy-Konfiguration im Frontend über `VITE_API_PROXY_TARGET`
+
+Wenn sich `package.json` oder `package-lock.json` ändern, danach `docker compose up --build` ausführen.
+
+### Lokales Setup ohne Docker
+
+1. `.env` für das Backend anlegen:
+
+```bash
+cp .env.example backend/.env
+```
+
+2. Backend-Abhängigkeiten installieren und Migrationen ausführen:
 
 ```bash
 cd backend
-npm install
+npm ci
+npx prisma migrate deploy
 ```
+
+3. Frontend-Abhängigkeiten installieren:
+
+```bash
+cd ../frontend
+npm ci
+```
+
+4. Dev-Server starten (2 Terminals):
+
+```bash
+# Terminal 1
+cd backend && npm run dev
+
+# Terminal 2
+cd frontend && npm run dev
+```
+
+Backend API: `http://localhost:3000`  
+Frontend: `http://localhost:5173`
 
 ## Development
 
-Start both the backend and frontend dev servers:
+### Mit Docker Compose
 
-### Backend (Terminal 1)
+```bash
+docker compose up
+```
+
+### Ohne Docker (2 Terminals)
+
+#### Backend (Terminal 1)
 
 ```bash
 cd backend
 npm run dev
 ```
 
-The backend API will be available at `http://localhost:3000`
+Backend API: `http://localhost:3000`
 
-### Frontend (Terminal 2)
+#### Frontend (Terminal 2)
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`
+Frontend: `http://localhost:5173`
 
-**Note:** Frontend has a Vite proxy configured to `/api` → `http://localhost:3000` for development.
+Hinweis: Der Vite-Proxy nutzt standardmäßig `/api` → `http://localhost:3000` und kann in Compose über `VITE_API_PROXY_TARGET` gesetzt werden.
 
 ## Build
 
