@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { randomInt } from "node:crypto";
 import type { ApiEntityType } from "./types.js";
 
 export const ENTITY_TYPE_MAP: Record<ApiEntityType, "PC" | "NPC" | "MAGIC_ITEM" | "LOCATION"> = {
@@ -21,8 +21,13 @@ export function toSingleValue(value: string | string[]): string {
   return Array.isArray(value) ? value[0] : value;
 }
 
-export function createJoinCode(): string {
-  return randomBytes(3).toString("hex").toUpperCase();
+const JOIN_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const JOIN_CODE_LENGTH = 10;
+
+export function createJoinCode(length = JOIN_CODE_LENGTH): string {
+  return Array.from({ length }, () =>
+    JOIN_CODE_ALPHABET[randomInt(JOIN_CODE_ALPHABET.length)],
+  ).join("");
 }
 
 export function getEntityType(type: string): "PC" | "NPC" | "MAGIC_ITEM" | "LOCATION" | null {

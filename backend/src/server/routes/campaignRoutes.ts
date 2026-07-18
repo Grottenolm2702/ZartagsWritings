@@ -10,6 +10,14 @@ import {
 } from "../entities.js";
 import { createJoinCode, createSlug, toSingleValue } from "../utils.js";
 
+const MAX_JOIN_CODE_GENERATION_ATTEMPTS = 5;
+
+function isJoinCodeUniqueConflict(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  const message = error.message.toLowerCase();
+  return message.includes("joincode") && message.includes("unique");
+}
+
 export function registerCampaignRoutes(app: Express) {
   app.get("/api/campaigns", authenticateToken, async (req: AuthRequest, res: Response) => {
     const userId = req.user?.id;
@@ -81,30 +89,41 @@ export function registerCampaignRoutes(app: Express) {
           throw new Error("Benutzer nicht gefunden");
         }
 
-        return tx.campaign.create({
-          data: {
-            slug: createSlug(slug || campaignName),
-            name: campaignName,
-            description: description ?? null,
-            joinCode: createJoinCode(),
-            ownerId: userId,
-            members: {
-              create: {
-                userId,
-                role: "DM",
-                displayName: owner.name ?? owner.email,
+        for (let attempt = 1; attempt <= MAX_JOIN_CODE_GENERATION_ATTEMPTS; attempt += 1) {
+          try {
+            return await tx.campaign.create({
+              data: {
+                slug: createSlug(slug || campaignName),
+                name: campaignName,
+                description: description ?? null,
+                joinCode: createJoinCode(),
+                ownerId: userId,
+                members: {
+                  create: {
+                    userId,
+                    role: "DM",
+                    displayName: owner.name ?? owner.email,
+                  },
+                },
               },
-            },
-          },
-          include: {
-            owner: { select: { id: true, email: true, name: true } },
-            members: {
               include: {
-                user: { select: { id: true, email: true, name: true } },
+                owner: { select: { id: true, email: true, name: true } },
+                members: {
+                  include: {
+                    user: { select: { id: true, email: true, name: true } },
+                  },
+                },
               },
-            },
-          },
-        });
+            });
+          } catch (error) {
+            if (isJoinCodeUniqueConflict(error) && attempt < MAX_JOIN_CODE_GENERATION_ATTEMPTS) {
+              continue;
+            }
+            throw error;
+          }
+        }
+
+        throw new Error("Join-Code konnte nicht eindeutig generiert werden");
       });
 
       res.status(201).json(created);
