@@ -4,24 +4,18 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 
-// Mocks for prisma and JWT secret used by the routes
-const campaignCreateMock = vi.fn();
-const userFindUniqueMock = vi.fn().mockResolvedValue({ id: 1, email: "test@example.com", name: "Test User" });
-
-const txMock = {
-  campaign: { create: campaignCreateMock },
-  user: { findUnique: userFindUniqueMock },
-};
-
-const prismaMock = {
-  $transaction: vi.fn(async (cb: any) => cb(txMock)),
-};
-
-vi.mock("../config.js", () => ({ prisma: prismaMock, JWT_SECRET: "test-secret" }));
+vi.mock("./server/config.js", () => {
+  const campaignCreateMock = vi.fn();
+  const userFindUniqueMock = vi.fn().mockResolvedValue({ id: 1, email: "test@example.com", name: "Test User" });
+  const txMock = { campaign: { create: campaignCreateMock }, user: { findUnique: userFindUniqueMock } };
+  const prisma = { $transaction: vi.fn(async (cb: any) => cb(txMock)) };
+  return { prisma, JWT_SECRET: "test-secret", __mocks: { campaignCreateMock, userFindUniqueMock, txMock, prisma } };
+});
 
 // Import after mocking
 import { registerCampaignRoutes } from "./server/routes/campaignRoutes.js";
 import { createJoinCode } from "./server/utils.js";
+import * as config from "./server/config.js";
 
 describe("Join code utilities", () => {
   it("createJoinCode produces codes of expected length and alphabet", () => {
@@ -39,6 +33,7 @@ describe("Join code utilities", () => {
 describe("Campaign creation retry behavior", () => {
   it("retries on joinCode unique constraint and succeeds", async () => {
     // First call throws unique constraint, second resolves
+    const campaignCreateMock = (config as any).__mocks.campaignCreateMock;
     campaignCreateMock.mockImplementationOnce(() => {
       throw new Error("Unique constraint failed: joinCode");
     }).mockResolvedValueOnce({ id: 123, slug: "test-campaign", name: "TestCampaign" });
