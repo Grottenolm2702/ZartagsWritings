@@ -138,7 +138,7 @@ export default function CampaignDetail({
   const [error, setError] = React.useState<string | null>(null);
   const [showAddMenu, setShowAddMenu] = React.useState(false);
   const [deleteOpen, setDeleteOpen] = React.useState(false);
-  const [previewMode, setPreviewMode] = React.useState(false);
+  const [previewMode, setPreviewMode] = React.useState(true);
 
   const title = draft.name || draft.headerFields[0]?.value || "Entity";
   const canEdit = editable && !previewMode;
