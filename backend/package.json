@@ -9,7 +9,7 @@
     "dev": "tsx watch src/server.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Melissa Armbruster Ronny Wittmer",
   "license": "ISC",
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",
