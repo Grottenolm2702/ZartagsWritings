@@ -150,7 +150,10 @@ export default function ManageCampaign() {
               {campaign.members.map((member) => (
                 <li key={member.id} className={contentStyles.manageMemberItem}>
                   <div className={contentStyles.manageMemberHeader}>
-                    <strong>{member.displayName || member.user.name || member.user.email}</strong>
+                    <strong>
+                      {member.displayName || member.user.name || member.user.email}
+                      {campaign.owner?.id === member.userId ? " (Owner)" : ""}
+                    </strong>
                     <span className={contentStyles.manageMemberRole}>{member.role}</span>
                   </div>
                   {canEdit ? (
