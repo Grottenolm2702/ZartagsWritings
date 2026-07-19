@@ -53,6 +53,7 @@ nav a:hover {
 
 nav button.nav-button:hover {
   background-color: var(--hover-color);
+  color: var(--accent-color);
   border-radius: 0.25rem; /* match active radius */
 }
 
@@ -128,6 +129,12 @@ nav a.accent-link {
 
   nav a {
     width: 100%;
+    padding-left: 2.5em;
+  }
+
+  nav button.nav-button {
+    width: 100%;
+    justify-content: flex-start;
     padding-left: 2.5em;
   }
 

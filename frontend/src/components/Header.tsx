@@ -26,7 +26,12 @@ export default function Header() {
           {isLoggedIn ? (
             <>
               <li>
-                <Link to="/users">Users</Link>
+                <Link
+                  className={isActive("/users") ? contentStyles.navLinkActive : contentStyles.navLink}
+                  to="/users"
+                >
+                  Users
+                </Link>
               </li>
               <li>
                 <button
