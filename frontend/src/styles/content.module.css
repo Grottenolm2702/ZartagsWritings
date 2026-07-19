@@ -285,6 +285,19 @@
 }
 
 /* Buttons matching site style */
+
+/* inline links that should use theme accent color */
+.inlineLink {
+  color: var(--accent-color);
+  text-decoration: underline;
+  font-weight: 600;
+}
+.inlineLink:hover {
+  /* keep background unchanged; change text color to site's text color */
+  color: var(--text-color);
+  text-decoration: underline;
+  opacity: 0.95;
+}
 .actionButton,
 .editButton,
 .newButton {

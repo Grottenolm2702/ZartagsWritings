@@ -68,8 +68,7 @@ export default function Home() {
 
         {!isLoggedIn ? (
           <p>
-            Bitte <Link to="/login">einloggen</Link> oder{" "}
-            <Link to="/register">registrieren</Link>, um deine Campaigns zu sehen.
+            Bitte <Link className={contentStyles.inlineLink} to="/login">einloggen</Link> oder <Link className={contentStyles.inlineLink} to="/register">registrieren</Link>, um deine Campaigns zu sehen.
           </p>
         ) : (
           <p className={contentStyles.homeJoinActions}>
