@@ -51,7 +51,7 @@ describe("Server auth routes", () => {
     const res = await request(app).post("/api/register").send({
       email: "alice@example.com",
       name: "Alice",
-      password: "secret123",
+      password: "Secret123",
     });
 
     expect(res.status).toBe(201);
@@ -74,7 +74,7 @@ describe("Server auth routes", () => {
     const app = createApp();
     const res = await request(app).post("/api/register").send({
       email: "alice@example.com",
-      password: "secret123",
+      password: "Secret123",
     });
 
     expect(res.status).toBe(409);
@@ -91,7 +91,7 @@ describe("Server auth routes", () => {
     const app = createApp();
     const res = await request(app).post("/api/login").send({
       email: "alice@example.com",
-      password: "secret123",
+      password: "Secret123",
     });
 
     expect(res.status).toBe(200);
@@ -129,7 +129,7 @@ describe("Server auth routes", () => {
     const app = createApp();
     const loginRes = await request(app).post("/api/login").send({
       email: "alice@example.com",
-      password: "secret123",
+      password: "Secret123",
     });
 
     const userRes = await request(app)

@@ -6,7 +6,7 @@ import "@testing-library/jest-dom";
 
 test("defaults to preview mode when editable (shows 'Bearbeiten' button)", () => {
   render(
-    <MemoryRouter>
+    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <CampaignDetail campaignSlug="test" entityType="npc" editable={true} />
     </MemoryRouter>,
   );
