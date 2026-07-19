@@ -96,6 +96,42 @@ export default function ManageCampaign() {
                   >
                     Code kopieren
                   </button>
+                  <button
+                    className={contentStyles.iconButton}
+                    title="Neuen Beitrittscode generieren"
+                    onClick={async () => {
+                      try {
+                        // optimistic UI: disable via attribute
+                        const resp = await apiFetch<{ joinCode: string }>(
+                          `/api/campaigns/${campaign.slug}/regenerate-join-code`,
+                          { method: "POST" },
+                        );
+                        setCampaign((prev) => (prev ? { ...prev, joinCode: resp.joinCode } : prev));
+                        // copy new code to clipboard
+                        navigator.clipboard?.writeText(resp.joinCode);
+                      } catch (err) {
+                        // show simple error
+                        setError(err instanceof Error ? err.message : "Fehler beim Generieren des Codes");
+                      }
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                      <path
+                        d="M19 6V10H15"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M5 18V14H9M6 9A7.5 7.5 0 0 1 18.3 6.6M18 15A7.5 7.5 0 0 1 5.7 17.4"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
               <div className={contentStyles.manageActions}>

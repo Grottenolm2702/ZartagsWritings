@@ -343,6 +343,29 @@
   border: 1px solid var(--hover-color);
 }
 
+/* small icon button for compact actions like regenerate */
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  line-height: 0;
+  background: transparent;
+  border: 1px solid var(--hover-color);
+  color: var(--text-color);
+  border-radius: 0.35em;
+}
+.iconButton svg {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+}
+.iconButton:hover {
+  color: var(--accent-color);
+}
+
 /* modal */
 .modalOverlay {
   position: fixed;

@@ -238,6 +238,49 @@ export function registerCampaignRoutes(app: Express) {
     });
   });
 
+  // regenerate join code (invalidate old code)
+  app.post(
+    "/api/campaigns/:slug/regenerate-join-code",
+    authenticateToken,
+    async (req: AuthRequest, res: Response) => {
+      const userId = req.user?.id;
+      const slug = toSingleValue(req.params.slug);
+
+      if (!userId) {
+        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+      }
+
+      const access = await loadCampaignForUser(userId, slug);
+      if (!access.campaign) {
+        return res.status(404).json({ error: "Campaign nicht gefunden" });
+      }
+      if (!canEditCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
+        return res.status(403).json({ error: "Keine Berechtigung zum Bearbeiten" });
+      }
+
+      try {
+        // attempt to update joinCode, retry on unique constraint
+        for (let attempt = 1; attempt <= MAX_JOIN_CODE_GENERATION_ATTEMPTS; attempt += 1) {
+          try {
+            const newCode = createJoinCode();
+            const updated = await prisma.campaign.update({
+              where: { id: access.campaign.id },
+              data: { joinCode: newCode },
+            });
+            return res.json({ joinCode: updated.joinCode });
+          } catch (error) {
+            if (isJoinCodeUniqueConflict(error) && attempt < MAX_JOIN_CODE_GENERATION_ATTEMPTS) continue;
+            throw error;
+          }
+        }
+
+        res.status(500).json({ error: "Join-Code konnte nicht generiert werden" });
+      } catch (error) {
+        res.status(400).json({ error: error instanceof Error ? error.message : "Fehler beim Generieren des Codes" });
+      }
+    },
+  );
+
   app.get("/api/campaigns/:slug/overview", authenticateToken, async (req: AuthRequest, res: Response) => {
     const userId = req.user?.id;
     const slug = toSingleValue(req.params.slug);
