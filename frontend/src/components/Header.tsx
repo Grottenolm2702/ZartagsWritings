@@ -1,21 +1,27 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useJWTAuth } from "../context/JWTAuthContext";
+import contentStyles from "../styles/content.module.css";
 
 export default function Header() {
   const { user, logout, isLoggedIn } = useJWTAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  function isActive(path: string) {
+    return location.pathname === path;
+  }
 
   return (
     <header>
       <nav id="navbar">
         <ul>
           <li className="home-li">
-            <Link to="/">Home</Link>
+            <Link className={isActive('/') ? contentStyles.navLinkActive : contentStyles.navLink} to="/">Home</Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link className={isActive('/about') ? contentStyles.navLinkActive : contentStyles.navLink} to="/about">About</Link>
           </li>
           {isLoggedIn ? (
             <>
@@ -37,12 +43,12 @@ export default function Header() {
           ) : (
             <>
               <li>
-                <Link className="accent-link" to="/login">
+                <Link className={isActive('/login') ? contentStyles.navLinkActive : contentStyles.navLink} to="/login">
                   Login
                 </Link>
               </li>
               <li>
-                <Link to="/register">Register</Link>
+                <Link className={isActive('/register') ? contentStyles.navLinkActive : contentStyles.navLink} to="/register">Register</Link>
               </li>
             </>
           )}

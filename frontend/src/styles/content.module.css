@@ -298,6 +298,24 @@
   text-decoration: underline;
   opacity: 0.95;
 }
+
+/* navbar link defaults and active state */
+.navLink {
+  color: var(--text-color);
+  text-decoration: none;
+  /* rely on nav a padding from navigation.css to keep layout consistent */
+}
+.navLink:hover {
+  color: var(--accent-color);
+}
+.navLinkActive {
+  /* active nav: highlight background using theme hover color and ensure readable text */
+  background-color: var(--hover-color);
+  color: var(--text-color);
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
 .actionButton,
 .editButton,
 .newButton {

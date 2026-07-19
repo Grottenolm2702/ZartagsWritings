@@ -48,10 +48,17 @@ nav button.nav-button {
 
 nav a:hover {
   background-color: var(--hover-color);
+  border-radius: 0.25rem; /* match active radius */
 }
 
 nav button.nav-button:hover {
   background-color: var(--hover-color);
+  border-radius: 0.25rem; /* match active radius */
+}
+
+nav a.accent-link {
+  background-color: var(--accent-color);
+  border-radius: 0.25rem; /* ensure accent links match rounding */
 }
 
 nav a.active-link {
