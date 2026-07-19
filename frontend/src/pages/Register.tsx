@@ -73,7 +73,7 @@ export default function Register() {
             type="email"
             id="email"
             name="email"
-            placeholder="youre@email.com"
+            placeholder="your@email.com"
             autoComplete="email"
             className={formStyles.formInput}
             required
