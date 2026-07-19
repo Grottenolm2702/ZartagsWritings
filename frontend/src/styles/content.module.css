@@ -183,12 +183,14 @@
 .contentHeader input.value,
 .contentHeader .value input,
 .contentHeader input {
-  border: none;
-  background: transparent;
+  border: 1px solid var(--highlight-color);
+  background: var(--primary-color);
+  border-radius: 0.25em;
   color: var(--text-color);
   text-align: center;
   font: inherit;
   width: 100%;
+  padding: 0.45em 0.6em;
 }
 
 .itemCard h2 {
@@ -201,9 +203,11 @@
   font-size: clamp(1.1rem, 2vw, 1.5rem);
   color: var(--accent-color);
   font-weight: 700;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--highlight-color);
+  background: var(--primary-color);
+  border-radius: 0.25em;
   width: 100%;
+  padding: 0.35em 0.5em;
 }
 
 /* campaign title color */
@@ -273,21 +277,24 @@
 .itemCard input[type="text"],
 .itemCard input:not([type]),
 .itemCard textarea {
-  border: none;
-  background: transparent;
+  border: 1px solid var(--highlight-color);
+  background: var(--primary-color);
+  border-radius: 0.25em;
   color: inherit;
   font: inherit;
   width: 100%;
-  padding: 0;
+  padding: 0.45em 0.6em;
   margin: 0;
 }
 
 .atributeList input {
-  border: none;
-  background: transparent;
+  border: 1px solid var(--highlight-color);
+  background: var(--primary-color);
+  border-radius: 0.25em;
   color: inherit;
   font: inherit;
   width: 100%;
+  padding: 0.45em 0.6em;
 }
 
 /* Buttons matching site style */
@@ -447,37 +454,59 @@
 
 .pictureUrlField input {
   width: 100%;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--highlight-color);
+  background: var(--primary-color);
+  border-radius: 0.25em;
   color: inherit;
   font: inherit;
-  padding: 0;
+  padding: 0.45em 0.6em;
 }
 
 .editInputTransparent {
-  border: none;
-  background: transparent;
+  border: 1px solid var(--highlight-color);
+  background: var(--primary-color);
+  border-radius: 0.25em;
   color: inherit;
   font: inherit;
   width: 100%;
-  padding: 0;
+  padding: 0.45em 0.6em;
 }
 
 .cardTitleInput {
   font-size: 1.25rem;
   font-weight: 700;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--highlight-color);
+  background: var(--primary-color);
+  border-radius: 0.25em;
   width: 100%;
+  padding: 0.35em 0.5em;
 }
 
 .headerInput {
-  border: none;
-  background: transparent;
+  border: 1px solid var(--highlight-color);
+  background: var(--primary-color);
+  border-radius: 0.25em;
   text-align: center;
   width: 100%;
   color: var(--text-color);
   font: inherit;
+  padding: 0.45em 0.6em;
+}
+
+.contentHeader input.value:focus,
+.contentHeader .value input:focus,
+.contentHeader input:focus,
+.itemCard .itemTitleInput:focus,
+.itemCard input[type="text"]:focus,
+.itemCard input:not([type]):focus,
+.itemCard textarea:focus,
+.atributeList input:focus,
+.pictureUrlField input:focus,
+.editInputTransparent:focus,
+.cardTitleInput:focus,
+.headerInput:focus {
+  outline: none;
+  border-color: var(--accent-color);
 }
 
 .errorMessage {
