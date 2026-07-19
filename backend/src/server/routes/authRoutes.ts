@@ -11,6 +11,15 @@ export function registerAuthRoutes(app: Express) {
       return res.status(400).json({ error: "E-Mail und Passwort sind erforderlich" });
     }
 
+    // Password policy: at least one lower, one upper, one digit, only letters+digits, length 8-30
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,30}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        error:
+          "Passwort muss 8–30 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Zahl enthalten (nur Buchstaben und Zahlen).",
+      });
+    }
+
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
 
