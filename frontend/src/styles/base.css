@@ -6,6 +6,34 @@
   --highlight-color: #3a3a4f;
 }
 
+/* Catppuccin Latte light mode */
+@media (prefers-color-scheme: light) {
+  :root {
+    --primary-color: #eff1f5; /* base */
+    --text-color: #4c4f69; /* text */
+    --accent-color: #8839ef; /* mauve */
+    --hover-color: #ccd0da; /* surface0 */
+    --highlight-color: #bcc0cc; /* surface1 */
+  }
+}
+
+/* explicit theme overrides via navbar toggle */
+:root[data-theme="dark"] {
+  --primary-color: #1e1e2e;
+  --text-color: #cdd6f4;
+  --accent-color: #f38ba8;
+  --hover-color: #313244;
+  --highlight-color: #3a3a4f;
+}
+
+:root[data-theme="light"] {
+  --primary-color: #eff1f5; /* base */
+  --text-color: #4c4f69; /* text */
+  --accent-color: #8839ef; /* mauve */
+  --hover-color: #ccd0da; /* surface0 */
+  --highlight-color: #bcc0cc; /* surface1 */
+}
+
 * {
   margin: 0;
   padding: 0;

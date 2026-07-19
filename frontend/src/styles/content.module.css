@@ -720,6 +720,13 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  padding-left: 0.5em;
+  margin-top: 0.35em;
+}
+
+.homeJoinActions + .itemsGrid {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
 
 .homeJoinButtonRow {
