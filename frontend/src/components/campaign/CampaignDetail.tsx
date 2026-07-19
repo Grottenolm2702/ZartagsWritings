@@ -225,6 +225,15 @@ export default function CampaignDetail({
 
   return (
     <main className={contentStyles.campaignDetail}>
+      <div className={contentStyles.campaignDetailTopActions}>
+        <button
+          type="button"
+          className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+          onClick={() => navigate(`/campaigns/${campaignSlug}/overview`)}
+        >
+          ← Zur Übersicht
+        </button>
+      </div>
       <div className={contentStyles.campaignDetailHeader}>
         <h1 className={contentStyles.campaignDetailTitle}>{title}</h1>
         {editable ? (

@@ -219,6 +219,12 @@
   gap: 12px;
 }
 
+.campaignDetailTopActions {
+  /* align button text start with the H1 text column */
+  margin-left: 0.75em;
+  margin-bottom: 0.75rem;
+}
+
 .campaignDetailTitle {
   margin: 0;
 }
