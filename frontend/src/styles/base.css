@@ -1,7 +1,7 @@
 :root {
   --primary-color: #1e1e2e;
   --text-color: #cdd6f4;
-  --accent-color: #f38ba8;
+  --accent-color: #cba6f7;
   --hover-color: #313244;
   --highlight-color: #3a3a4f;
 }
@@ -21,7 +21,7 @@
 :root[data-theme="dark"] {
   --primary-color: #1e1e2e;
   --text-color: #cdd6f4;
-  --accent-color: #f38ba8;
+  --accent-color: #cba6f7;
   --hover-color: #313244;
   --highlight-color: #3a3a4f;
 }
