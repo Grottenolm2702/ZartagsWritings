@@ -8,6 +8,24 @@ export default function Register() {
   const navigate = useNavigate();
   const { register, loading, error, setError } = useJWTAuth();
 
+  const [password, setPassword] = React.useState("");
+  const [repeatPassword, setRepeatPassword] = React.useState("");
+
+  const passwordRules = React.useMemo(() => {
+    return [
+      { id: "lower", label: "mindestens einen Kleinbuchstaben", test: /[a-z]/ },
+      { id: "upper", label: "mindestens einen Großbuchstaben", test: /[A-Z]/ },
+      { id: "digit", label: "mindestens eine Zahl", test: /\d/ },
+      { id: "length", label: "8–30 Zeichen lang", test: /^.{8,30}$/ },
+    ];
+  }, []);
+
+  const passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,30}$";
+
+  const satisfied = passwordRules.map((r) => r.test.test(password));
+  const satisfiedCount = satisfied.filter(Boolean).length;
+  const progress = Math.round((satisfiedCount / passwordRules.length) * 100);
+
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -15,14 +33,23 @@ export default function Register() {
     const formData = new FormData(form);
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const repeatPassword = formData.get("repeatPassword") as string;
-    if (password !== repeatPassword) {
+    const pwd = formData.get("password") as string;
+    const rpt = formData.get("repeatPassword") as string;
+
+    if (pwd !== rpt) {
       setError("Passwörter stimmen nicht überein");
       return;
     }
+
+    // Validate password against stricter client-side rules
+    const fullRegex = new RegExp(passwordRegex);
+    if (!fullRegex.test(pwd)) {
+      setError("Passwort erfüllt nicht alle Anforderungen. Siehe Hinweise unter dem Feld.");
+      return;
+    }
+
     try {
-      await register(name, email, password);
+      await register(name, email, pwd);
       navigate("/login");
     } catch {
       // Error already set in context
@@ -63,7 +90,28 @@ export default function Register() {
             required
             minLength={8}
             maxLength={30}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
           />
+
+          <div className={formStyles.passwordRules}>
+            <div>Passwort-Anforderungen</div>
+            <div className={formStyles.progressBar}>
+              <div
+                className={progress === 100 ? formStyles.progressFill : formStyles.progressFillIncomplete}
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <ul className={formStyles.ruleList}>
+              {passwordRules.map((r, idx) => (
+                <li key={r.id} className={`${formStyles.ruleItem} ${satisfied[idx] ? formStyles.satisfied : ""}`}>
+                  <span className={formStyles.ruleIcon}>{satisfied[idx] ? "✓" : "○"}</span>
+                  {r.label}
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <label htmlFor="repeatPassword" className={formStyles.formLabel}>
             Password wiederholen:
@@ -76,6 +124,9 @@ export default function Register() {
             required
             minLength={8}
             maxLength={30}
+            value={repeatPassword}
+            onChange={(e) => setRepeatPassword(e.target.value)}
+            autoComplete="new-password"
           />
 
           <button type="submit" className={formStyles.formButton} disabled={loading}>

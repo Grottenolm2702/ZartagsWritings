@@ -55,3 +55,51 @@
   color: #ff8888;
   font-size: 0.95em;
 }
+
+.passwordRules {
+  margin-top: 8px;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+.progressBar {
+  height: 8px;
+  background: var(--hover-color);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--accent-color);
+  transition: width 200ms ease;
+}
+
+.progressFillIncomplete {
+  height: 100%;
+  background: var(--accent-color);
+  opacity: 0.6;
+  transition: width 200ms ease;
+}
+
+.ruleList {
+  margin: 6px 0 0 16px;
+  padding: 0;
+}
+
+.ruleItem {
+  list-style: none;
+  margin: 4px 0;
+  color: var(--text-color);
+}
+
+.ruleItem.satisfied {
+  color: var(--accent-color);
+}
+
+.ruleIcon {
+  margin-right: 6px;
+  font-weight: 700;
+}
