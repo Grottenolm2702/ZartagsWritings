@@ -13,14 +13,14 @@ export default function Register() {
 
   const passwordRules = React.useMemo(() => {
     return [
-      { id: "lower", label: "mindestens einen Kleinbuchstaben", test: /[a-z]/ },
-      { id: "upper", label: "mindestens einen Großbuchstaben", test: /[A-Z]/ },
+      { id: "lower", label: "mindestens einen Kleinbuchstaben", test: /\p{Ll}/u },
+      { id: "upper", label: "mindestens einen Großbuchstaben", test: /\p{Lu}/u },
       { id: "digit", label: "mindestens eine Zahl", test: /\d/ },
       { id: "length", label: "8–30 Zeichen lang", test: /^.{8,30}$/ },
     ];
   }, []);
 
-  const passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,30}$";
+  const passwordRegex = /^(?=.*\p{Ll})(?=.*\p{Lu})(?=.*\d)[\p{L}\d]{8,30}$/u;
 
   const satisfied = passwordRules.map((r) => r.test.test(password));
   const satisfiedCount = satisfied.filter(Boolean).length;
@@ -42,8 +42,7 @@ export default function Register() {
     }
 
     // Validate password against stricter client-side rules
-    const fullRegex = new RegExp(passwordRegex);
-    if (!fullRegex.test(pwd)) {
+    if (!passwordRegex.test(pwd)) {
       setError("Passwort erfüllt nicht alle Anforderungen. Siehe Hinweise unter dem Feld.");
       return;
     }

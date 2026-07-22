@@ -12,7 +12,7 @@ export function registerAuthRoutes(app: Express) {
     }
 
     // Password policy: at least one lower, one upper, one digit, only letters+digits, length 8-30
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,30}$/;
+    const passwordRegex = /^(?=.*\p{Ll})(?=.*\p{Lu})(?=.*\d)[\p{L}\d]{8,30}$/u;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
         error:

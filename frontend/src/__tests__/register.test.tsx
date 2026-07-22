@@ -81,4 +81,39 @@ describe("Register page", () => {
       );
     });
   });
+
+  it("allows unicode letters in strong passwords on client-side", async () => {
+    const fetchMock = vi.fn((url: string) => {
+      if (url === "/api/register") {
+        return Promise.resolve({ ok: true, text: () => Promise.resolve("") } as any);
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as any);
+    });
+    vi.stubGlobal("fetch", fetchMock as any);
+
+    render(
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <JWTAuthProvider>
+          <Register />
+        </JWTAuthProvider>
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      const button = screen.getByRole("button", { name: /register/i }) as HTMLButtonElement;
+      expect(button.disabled).toBe(false);
+    });
+
+    fireEvent.change(screen.getByLabelText(/Name:/i), { target: { value: "Umlaut" } });
+    fireEvent.change(screen.getByLabelText(/E-mail-Adresse:/i), { target: { value: "umlaut@example.com" } });
+    fireEvent.change(screen.getByLabelText(/^Password:/i), { target: { value: "123Nüsse" } });
+    fireEvent.change(screen.getByLabelText(/Password wiederholen:/i), { target: { value: "123Nüsse" } });
+
+    fireEvent.click(screen.getByRole("button", { name: /register/i }));
+
+    await waitFor(() => {
+      const registerCalls = (fetch as any).mock.calls.filter((c: any[]) => c[0] === "/api/register");
+      expect(registerCalls.length).toBe(1);
+    });
+  });
 });
