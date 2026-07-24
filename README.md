@@ -1,8 +1,15 @@
 # ZartagsWritings
 
-A web application for creating and managing notes for Dungeons & Dragons campaigns, designed for both Dungeon Masters and players.
-Using Templates to navigate beetween all sorts of items, Caracters and places.
-For more Info see the about page.
+Web-App zum Verwalten von D\&D-Kampagnennotizen mit Rollen- und Rechtekonzept für DM, Editor und Player.
+
+## Beschreibung
+
+ZartagsWritings bietet pro Campaign eine eigene Arbeitsumgebung mit:
+
+- PC-, NPC-, Location- und Magic-Item-Entities
+- strukturierten Karten (Text, Listen, Attribute, Bilder per URL)
+- Campaign-Mitgliedern und Rollen (DM, EDITOR, PLAYER)
+- Login/Registrierung mit JWT in HttpOnly-Cookies
 
 ## Kriterien-Zuordnung M1
 
@@ -64,165 +71,155 @@ For more Info see the about page.
 
 ## Architektur
 
-**SPA + Backend-API Modell:**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Frontend (React SPA)                                         │
-│ - Vite Dev Server (Port 3000)                               │
-│ - React Router Navigation                                    │
-│ - JWTAuthContext für Auth-State                              │
-│ - Komponenten: Login, Register, Users, Layout               │
-└────────────────────┬────────────────────────────────────────┘
-                     │ fetch() + HttpOnly Cookies
-                     │ (credentials: "include")
-                     ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Backend (Node.js/Express + SQLite)                           │
-│ - API Endpoints: POST/GET/DELETE                             │
-│ - authenticateToken Middleware                              │
-│ - JWT Token in HttpOnly Cookie                               │
-│ - Prisma ORM ↔ SQLite DB                                     │
-└─────────────────────────────────────────────────────────────┘
+```text
+Frontend (React + Vite + React Router)
+  ├─ Seiten: Overview, Campaign-Detail, Manage, Auth
+  ├─ API-Aufrufe über /api (Vite Proxy)
+  └─ Auth-State via JWTAuthContext
+          │
+          ▼
+Backend (Express + Prisma + SQLite)
+  ├─ Auth-Routen: /api/register, /api/login, /api/logout
+  ├─ User-Route: /api/user
+  ├─ Campaign-/Entity-/Member-Routen
+  └─ Rollenlogik:
+      - DM/Owner: Campaign verwalten (Mitgliederrollen, Join-Code regenerieren)
+      - DM/Owner/Editor: Entities bearbeiten
+      - Player: lesen (sichtbare Inhalte)
 ```
 
-**Warum kein SSR/SSG:**
+### Frontend-Struktur
 
-- **Interaktive SPA ideal**: React Router ermöglicht schnelle Client-seitige Navigation ohne Page-Reload
-- **Echte API-Integration**: Backend-API wird bewusst eingesetzt (nicht als Fallback), HttpOnly Cookies für sichere Auth
+- `frontend/src/App.tsx`: Routing und Seitenzuordnung.
+- `frontend/src/context/JWTAuthContext.tsx`: Login/Logout, User-Session, Fehler-/Ladezustände.
+- `frontend/src/pages/*`: Feature-Seiten (Campaign Overview, Type-Detail, Manage, Auth).
+- `frontend/src/components/*`: wiederverwendbare UI-Bausteine.
+- `frontend/src/lib/api.ts`: zentraler Fetch-Wrapper für `/api` mit Fehlerbehandlung.
+
+### Backend-Struktur
+
+- `backend/src/server/app.ts`: Express-App, Middleware, Registrierung der Routen.
+- `backend/src/server/routes/authRoutes.ts`: Registrierung, Login, Logout.
+- `backend/src/server/routes/userRoutes.ts`: eingeloggten User lesen/löschen.
+- `backend/src/server/routes/campaignRoutes.ts`: Campaign erstellen/laden/joinen/Join-Code erneuern.
+- `backend/src/server/routes/entityRoutes.ts`: CRUD für Entities je Campaign und Typ.
+- `backend/src/server/routes/memberRoutes.ts`: Rollenverwaltung von Mitgliedern.
+- `backend/src/server/auth.ts`: JWT-Cookie-Prüfung (`authenticateToken`).
+
+### Datenmodell (Prisma + SQLite)
+
+Kernbeziehungen:
+
+- `User` 1:n `CampaignMember`
+- `Campaign` 1:n `CampaignMember`
+- `Campaign` 1:n `Entity`
+- `Entity` 1:n `EntityField`
+- `Entity` 1:n `ContentBlock`
+- `ContentBlock` 1:n `ContentListItem` und 1:n `ContentAttribute`
+
+Damit werden sowohl Membership/Rollen als auch flexible Entity-Inhalte abgebildet.
+
+### Rechte- und Sicherheitsmodell
+
+| Bereich                 | PLAYER | EDITOR | DM / Owner |
+| ----------------------- | ------ | ------ | ---------- |
+| Campaign lesen          | ✅     | ✅     | ✅         |
+| Entities bearbeiten     | ❌     | ✅     | ✅         |
+| Mitgliederrollen ändern | ❌     | ❌     | ✅         |
+| Join-Code regenerieren  | ❌     | ❌     | ✅         |
+
+Sicherheit:
+
+- JWT im **HttpOnly Cookie** (kein Zugriff aus JS).
+- geschützte API-Routen über Middleware.
+- Passwort-Hashing mit `bcrypt`.
+- CORS auf konfigurierte Origins begrenzt.
+
+### Request-Flow (vereinfacht)
+
+1. Nutzer meldet sich über `/api/login` an.
+2. Backend setzt JWT-Cookie.
+3. Frontend lädt `/api/user` und hält Session im Context.
+4. Fachseiten rufen Campaign-/Entity-Endpunkte auf.
+5. Backend prüft bei Schreibzugriffen Rollen und verweigert unzulässige Aktionen mit `403`.
 
 ## Setup
 
-### Docker Compose (empfohlen für Development)
+### 1. Mit Docker Compose (empfohlen)
 
 ```bash
-# optional: eigene Werte setzen
 cp .env.example .env
-
 docker compose up
 ```
 
 - Frontend: <http://localhost:5173>
-- Backend API: <http://localhost:3000>
-- Backend-Healthcheck: <http://localhost:3000/api/health>
+- Backend: <http://localhost:3000>
+- Health: <http://localhost:3000/api/health>
 
-Die Compose-Umgebung richtet alle Abhängigkeiten selbst ein:
-- `npm ci` beim Image-Build für Frontend und Backend
-- Prisma-Migrationen im Backend (`npx prisma migrate deploy`)
-- persistente SQLite-Datei in Docker-Volume (`backend_data`)
-- automatische API-Proxy-Konfiguration im Frontend über `VITE_API_PROXY_TARGET`
+### 2. Lokal ohne Docker
 
-Wenn sich `package.json` oder `package-lock.json` ändern, danach `docker compose up --build` ausführen.
+1. Backend `.env` anlegen (`backend/.env`), z. B.:
 
-### Lokales Setup ohne Docker
-
-1. `.env` für das Backend anlegen:
-
-```bash
-cp .env.example backend/.env
+```env
+DATABASE_URL="file:./dev.db"
+JWT_SECRET="dev-secret-change-me"
+CORS_ORIGIN="http://localhost:5173"
 ```
 
-2. Backend-Abhängigkeiten installieren und Migrationen ausführen:
+1. Backend starten:
 
 ```bash
 cd backend
 npm ci
 npx prisma migrate deploy
+npm run dev
 ```
 
-3. Frontend-Abhängigkeiten installieren:
+1. Frontend starten (zweites Terminal):
 
 ```bash
-cd ../frontend
+cd frontend
 npm ci
-```
-
-4. Dev-Server starten (2 Terminals):
-
-```bash
-# Terminal 1
-cd backend && npm run dev
-
-# Terminal 2
-cd frontend && npm run dev
-```
-
-Backend API: `http://localhost:3000`  
-Frontend: `http://localhost:5173`
-
-## Development
-
-### Mit Docker Compose
-
-```bash
-docker compose up
-```
-
-### Ohne Docker (2 Terminals)
-
-#### Backend (Terminal 1)
-
-```bash
-cd backend
 npm run dev
 ```
 
-Backend API: `http://localhost:3000`
-
-#### Frontend (Terminal 2)
+## Tests
 
 ```bash
-cd frontend
-npm run dev
-```
-
-Frontend: `http://localhost:5173`
-
-Hinweis: Der Vite-Proxy nutzt standardmäßig `/api` → `http://localhost:3000` und kann in Compose über `VITE_API_PROXY_TARGET` gesetzt werden.
-
-## Build
-
-### Frontend
-
-Create a production build:
-
-```bash
-cd frontend
-npm run build
-```
-
-Preview the production build:
-
-```bash
-cd frontend
-npm run preview
-```
-
-### Backend
-
-The backend runs as a Node.js server. For production deployment, ensure `NODE_ENV=production` is set.
-
-## Testing
-
-### Run Tests
-
-Both frontend and backend have test suites:
-
-```bash
-# Frontend tests (Vitest + React Testing Library)
-cd frontend
-npm test
-
-# Backend tests (Vitest + Supertest)
+# Backend
 cd backend
 npm test
+
+# Frontend
+cd frontend
+npm test
 ```
 
-## Authors
+## Testuser
 
-Melissa Armbruster (313275),
-Ronny Wittmer(313387)
+Es gibt aktuell **keinen fest hinterlegten Seed-Testuser**.  
+Nach einem DB-Reset registrierst du Testnutzer über die App unter `/register`.
 
-## Repository Link
+Beispiel-Credentials (gültig zur Passwortregel):
+
+- E-Mail: `dm@example.com`
+- Passwort: `Testpass1`
+
+Passwortregel im Backend: 8–30 Zeichen, mindestens 1 Großbuchstabe, 1 Kleinbuchstabe, 1 Zahl, nur Buchstaben/Zahlen.
+
+## Einschränkungen
+
+- SQLite als lokale Datenbank (kein Multi-Node-/Cloud-Setup).
+- Keine Passwort-Reset- oder E-Mail-Verifizierung.
+- Keine Datei-Uploads für Bilder (nur Bild-URLs).
+- Keine Echtzeit-Kollaboration oder Konfliktauflösung bei paralleler Bearbeitung.
+- Rollenverwaltung nur für DM/Owner auf der Manage-Seite.
+
+## Autoren
+
+- Melissa Armbruster (313275)
+- Ronny Wittmer (313387)
+
+## Repository
 
 <https://github.com/Grottenolm2702/ZartagsWritings>
