@@ -1,0 +1,54 @@
+\documentclass[11pt,a4paper,oneside]{article}
+%!TEX program = lualatex
+
+% --- Konfigurationen laden ---
+\input{config/packages.tex}
+\input{config/styles.tex}
+
+% --- Metadaten ---
+\title{Zartags Writings\\Ausarbeitung zum Web-Entwicklungsprojekt}
+\author{Ronny Wittmer \and Melissa Armbruster}
+\date{\today}
+
+\begin{document}
+
+% --- Deckblatt ---
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\LARGE\bfseries Zartags Writings\par}
+  \vspace{0.5cm}
+  {\Large Ausarbeitung zum Web-Entwicklungsprojekt\par}
+  \vspace{2cm}
+  {\large
+  Ronny Wittmer (Matrikelnummer: 313387)\par
+  Melissa Armbruster (Matrikelnummer: 313275)\par}
+  \vfill
+  {\large Abgabedatum: \today\par}
+\end{titlepage}
+
+% --- Verzeichnisse ---
+\tableofcontents
+\newpage
+\listoffigures
+\listoftables
+\renewcommand{\lstlistlistingname}{Codeverzeichnis}
+\lstlistoflistings
+\newpage
+
+% --- Kapitel (Inhalte einbinden) ---
+\include{sections/01_einleitung}
+\include{sections/02_technologie_stack}
+\include{sections/03_architektur}
+\include{sections/04_umsetzung_meilensteine}
+\include{sections/05_testing_qualitaet}
+\include{sections/06_betrieb}
+\include{sections/07_reflexion_fazit}
+\appendix
+\include{sections/08_anhang_screenshots}
+\include{sections/09_quellenhinweise}
+
+% --- Literaturverzeichnis ---
+\newpage
+\printbibliography[heading=bibintoc, title={Literaturverzeichnis}]
+\end{document}

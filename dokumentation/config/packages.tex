@@ -1,0 +1,53 @@
+% --- Spracheinstellungen ---
+\usepackage[ngerman]{babel} 
+
+% --- Schriften (Modern via Fontspec mit Fehlertoleranz) ---
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+
+% Prüft ob Fira Code existiert, sonst Fallback auf Latin Modern Mono
+\IfFontExistsTF{Fira Code}{
+    \setmonofont{Fira Code}[Scale=MatchLowercase, Contextuals=Alternate]
+}{
+    \setmonofont{Latin Modern Mono}[Scale=MatchLowercase]
+}
+
+% --- Layout und Ränder ---
+\usepackage[left=3cm,right=2.5cm,top=3cm,bottom=3cm,headheight=14pt]{geometry}
+\usepackage{microtype}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{parskip} 
+\usepackage{authoraftertitle}
+
+% --- Basis-Pakete für Layout-Erweiterungen ---
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[autostyle]{csquotes}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{blindtext} 
+
+% --- Mathematische Diagramme & Funktionsgraphen ---
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% --- Code-Repository ---
+\usepackage{listings}
+
+% --- Bibtex ---
+\usepackage[backend=biber, style=numeric, sorting=none]{biblatex}
+\addbibresource{references.bib} % Verweis auf die Literatur-Datei
+
+% --- Verweise und PDFs (Immer weit nach hinten/am Ende der Paketliste) ---
+\usepackage[
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    bookmarksnumbered=true 
+]{hyperref}
+
+\usepackage{cleveref}
