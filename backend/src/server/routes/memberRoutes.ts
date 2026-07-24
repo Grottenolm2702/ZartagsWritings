@@ -2,7 +2,7 @@ import type { Express, Response } from "express";
 import { prisma } from "../config.js";
 import { authenticateToken } from "../auth.js";
 import type { AuthRequest } from "../types.js";
-import { canEditCampaign, loadCampaignForUser } from "../entities.js";
+import { canManageCampaign, loadCampaignForUser } from "../entities.js";
 import { toSingleValue } from "../utils.js";
 
 export function registerMemberRoutes(app: Express) {
@@ -26,7 +26,7 @@ export function registerMemberRoutes(app: Express) {
       if (!access.campaign) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
-      if (!canEditCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
+      if (!canManageCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
         return res.status(403).json({ error: "Keine Berechtigung zum Bearbeiten" });
       }
 

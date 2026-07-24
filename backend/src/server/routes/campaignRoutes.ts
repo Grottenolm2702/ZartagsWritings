@@ -3,7 +3,7 @@ import { prisma } from "../config.js";
 import { authenticateToken } from "../auth.js";
 import type { AuthRequest, ApiEntityType } from "../types.js";
 import {
-  canEditCampaign,
+  canManageCampaign,
   ENTITY_TYPE_LABELS,
   loadCampaignForUser,
   serializeEntity,
@@ -254,7 +254,7 @@ export function registerCampaignRoutes(app: Express) {
       if (!access.campaign) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
-      if (!canEditCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
+      if (!canManageCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
         return res.status(403).json({ error: "Keine Berechtigung zum Bearbeiten" });
       }
 

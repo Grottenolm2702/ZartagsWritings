@@ -389,3 +389,12 @@ export function canEditCampaign(
   if (ownerId === userId) return true;
   return membershipRole === "DM" || membershipRole === "EDITOR";
 }
+
+export function canManageCampaign(
+  ownerId: number | null | undefined,
+  membershipRole: string | null | undefined,
+  userId: number,
+) {
+  if (ownerId === userId) return true;
+  return membershipRole === "DM";
+}
