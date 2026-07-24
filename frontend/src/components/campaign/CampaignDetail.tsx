@@ -142,11 +142,13 @@ export default function CampaignDetail({
 
   const title = draft.name || draft.headerFields[0]?.value || "Entity";
   const canEdit = editable && !previewMode;
+  const defaultTypeValue = ENTITY_TYPE_LABELS[entityType].trim().toLowerCase();
   const editableHeaderFields = draft.headerFields
     .map((field, index) => ({ field, index }))
     .filter(({ field }) => {
       const label = field.label.trim().toLowerCase().replace(/:$/, "");
-      return label !== "type";
+      if (label !== "type") return true;
+      return field.value.trim().toLowerCase() !== defaultTypeValue;
     });
 
   function updateCard(index: number, updated: ApiCardSpec) {

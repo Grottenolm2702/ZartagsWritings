@@ -153,6 +153,14 @@ export const ENTITY_TEMPLATES: Record<
           items: [{ label: "Garten" }, { label: "Keller" }, { label: "Küche" }],
         },
       },
+      {
+        title: "General Notes",
+        content: {
+          type: "paragraph",
+          text: "Misc Notes.",
+        },
+        wide: true,
+      },
     ],
   },
 };
