@@ -1,5 +1,6 @@
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import jwt from "jsonwebtoken";
 
 const prismaMock = vi.hoisted(() => ({
   user: {
@@ -10,10 +11,13 @@ const prismaMock = vi.hoisted(() => ({
   campaignMember: {
     findMany: vi.fn(async () => []),
     create: vi.fn(async () => undefined),
+    findUnique: vi.fn(async () => null),
+    update: vi.fn(async () => null),
   },
   campaign: {
     findUnique: vi.fn(async () => null),
     create: vi.fn(async () => ({ id: 0 })),
+    update: vi.fn(async () => null),
   },
   $transaction: vi.fn(async (callback: any) => callback({})),
 })) as any;
@@ -38,6 +42,36 @@ vi.mock("bcrypt", () => ({
 
 import bcrypt from "bcrypt";
 import { createApp } from "./server/app.js";
+
+function buildCampaignForMembership(role: "DM" | "EDITOR" | "PLAYER") {
+  return {
+    id: 11,
+    ownerId: 99,
+    slug: "wald",
+    name: "Wald",
+    description: "Eine Kampagne",
+    joinCode: "JOIN123456",
+    createdAt: "2026-06-28T00:00:00.000Z",
+    updatedAt: "2026-06-28T00:00:00.000Z",
+    owner: {
+      id: 99,
+      email: "owner@example.com",
+      name: "Owner",
+    },
+    members: [
+      {
+        id: 1,
+        campaignId: 11,
+        userId: 7,
+        role,
+        displayName: "Current User",
+        joinedAt: "2026-06-28T00:00:00.000Z",
+        user: { id: 7, email: "user@example.com", name: "Current User" },
+      },
+    ],
+    entities: [],
+  };
+}
 
 describe("Server auth routes", () => {
   beforeEach(() => {
@@ -65,6 +99,81 @@ describe("Server auth routes", () => {
         name: "Alice",
         password: "hashed-password",
       },
+    });
+  });
+
+  describe("Campaign manage permissions", () => {
+    beforeEach(() => {
+      vi.resetAllMocks();
+    });
+
+    it("verbietet Editor das Regenerieren des Join-Codes", async () => {
+      prismaMock.campaign.findUnique.mockResolvedValue(buildCampaignForMembership("EDITOR"));
+
+      const app = createApp();
+      const token = jwt.sign({ id: 7, email: "editor@example.com" }, "test-secret");
+      const res = await request(app)
+        .post("/api/campaigns/wald/regenerate-join-code")
+        .set("Cookie", `token=${token}`);
+
+      expect(res.status).toBe(403);
+      expect(prismaMock.campaign.update).not.toHaveBeenCalled();
+    });
+
+    it("erlaubt DM das Regenerieren des Join-Codes", async () => {
+      prismaMock.campaign.findUnique.mockResolvedValue(buildCampaignForMembership("DM"));
+      prismaMock.campaign.update.mockResolvedValue({ joinCode: "NEWCODE2345" });
+
+      const app = createApp();
+      const token = jwt.sign({ id: 7, email: "dm@example.com" }, "test-secret");
+      const res = await request(app)
+        .post("/api/campaigns/wald/regenerate-join-code")
+        .set("Cookie", `token=${token}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({ joinCode: "NEWCODE2345" });
+    });
+
+    it("verbietet Editor das Ändern von Member-Rollen", async () => {
+      prismaMock.campaign.findUnique.mockResolvedValue(buildCampaignForMembership("EDITOR"));
+
+      const app = createApp();
+      const token = jwt.sign({ id: 7, email: "editor@example.com" }, "test-secret");
+      const res = await request(app)
+        .patch("/api/campaigns/wald/members/9")
+        .set("Cookie", `token=${token}`)
+        .send({ role: "DM" });
+
+      expect(res.status).toBe(403);
+      expect(prismaMock.campaignMember.update).not.toHaveBeenCalled();
+    });
+
+    it("erlaubt DM das Ändern von Member-Rollen", async () => {
+      prismaMock.campaign.findUnique.mockResolvedValue(buildCampaignForMembership("DM"));
+      prismaMock.campaignMember.findUnique.mockResolvedValue({
+        id: 20,
+        campaignId: 11,
+        userId: 9,
+        role: "PLAYER",
+        displayName: "Target User",
+      });
+      prismaMock.campaignMember.update.mockResolvedValue({
+        id: 20,
+        campaignId: 11,
+        userId: 9,
+        role: "DM",
+        displayName: "Target User",
+      });
+
+      const app = createApp();
+      const token = jwt.sign({ id: 7, email: "dm@example.com" }, "test-secret");
+      const res = await request(app)
+        .patch("/api/campaigns/wald/members/9")
+        .set("Cookie", `token=${token}`)
+        .send({ role: "DM" });
+
+      expect(res.status).toBe(200);
+      expect(res.body.role).toBe("DM");
     });
   });
 
