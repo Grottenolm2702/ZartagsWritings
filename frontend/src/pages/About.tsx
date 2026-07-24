@@ -28,22 +28,20 @@ export default function About() {
           <h2>What We Offer</h2>
           <ul>
             <li>
-              <strong>Separate Campaign:</strong> Each campaign operates within
-              its own separate environment.
+              <strong>Separate Campaigns:</strong> Each campaign has its own
+              members, join code, and entries.
             </li>
             <li>
-              <strong>Character Profiles:</strong> Flexible, highly customizable
-              templates for both player characters (PCs) and non-player
-              characters (NPCs).
+              <strong>Character Profiles:</strong> Ready-to-edit pages for
+              player characters (PCs) and non-player characters (NPCs).
             </li>
             <li>
-              <strong>Lore &amp; Locations:</strong> Comprehensive templates for
-              all types of locations, along with lore elements such as deities,
-              historical events, religions, and related worldbuilding aspects.
+              <strong>Locations:</strong> Structured location entries with cards
+              for notes and details.
             </li>
             <li>
-              <strong>Items &amp; Artifacts:</strong> Customizable templates for
-              both magical and non-magical items.
+              <strong>Magic Items:</strong> Dedicated templates for item-based
+              campaign content.
             </li>
           </ul>
         </section>
