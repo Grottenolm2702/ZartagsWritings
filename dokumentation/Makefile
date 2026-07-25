@@ -1,6 +1,8 @@
 # Suche alle Hauptdateien (die \begin{document} enthalten)
 TEX_FILES := $(shell grep -l '\\begin{document}' *.tex 2>/dev/null)
 PDF_FILES := $(TEX_FILES:.tex=.pdf)
+SHARED_DEPS := $(shell find sections config -type f -name '*.tex' 2>/dev/null) \
+               $(wildcard *.bib .latexmkrc)
 
 # Nutze latexmk, da es inkrementelle Builds und Referenzen perfekt verwaltet
 LATEXMK = latexmk
@@ -13,7 +15,7 @@ all: $(PDF_FILES)
 
 # Die eigentliche Regel: Baut die PDF-Datei NUR, wenn die .tex-Datei neuer ist
 # oder sich interne Abhängigkeiten geändert haben.
-%.pdf: %.tex
+%.pdf: %.tex $(SHARED_DEPS)
 	@echo "=== Prüfe/Kompiliere $< ==="
 	$(LATEXMK) $(FLAGS) $<
 
