@@ -1,12 +1,105 @@
 \section{Reflexion \& Fazit}
 
-\textbf{Zielumfang:} ca. 2 Seiten.
-
 \subsection{Was lief gut}
-Positive Aspekte in Planung, Teamarbeit und technischer Umsetzung.
+
+Ein wesentlicher Erfolgsfaktor war die schrittweise Entwicklung über klar
+abgrenzte Meilensteine.
+Dadurch konnten Anforderungen iterativ umgesetzt und laufend validiert werden:
+zuerst ein stabiles UI-Grundgerüst, danach die Migration auf eine
+komponentenbasierte SPA und schließlich die Erweiterung zur Full-Stack-Lösung
+mit Backend, Authentifizierung und Datenbank.
+Diese Reihenfolge war rückblickend sinnvoll, weil sie technische Risiken
+reduzierte und zu jedem Zeitpunkt einen lauffähigen Projektstand sicherstellte.
+
+Auch die Verbindung von fachlicher Domäne und technischer Umsetzung hat gut
+funktioniert.
+Da das Projekt aus einem realen Bedarf im eigenen Spielkontext entstanden ist,
+waren Anforderungen wie Übersichtlichkeit, schnelle Bedienbarkeit und
+rollenbasierte Sichtbarkeit von Beginn an klar.
+Das hat Priorisierungsentscheidungen erleichtert und zu einer konsistenten
+Produktlinie geführt.
+
+In der Teamarbeit war positiv, dass technische Umbauten nicht nur
+feature-getrieben, sondern auch strukturell durchgeführt wurden.
+Beispiele dafür sind die Umstellung auf wiederverwendbare Komponenten, die
+Einführung von TypeScript-Typen, die spätere Trennung in Frontend/Backend und
+die klare Dokumentation der Meilensteine.
+So wurde vermieden, dass kurzfristige Lösungen die Wartbarkeit dauerhaft
+verschlechtern.
+
+Zusätzlich war die frühe Etablierung von Tooling hilfreich:
+Linting/Formatierung, automatisierte Tests und ein reproduzierbarer
+Startprozess mit Docker Compose haben die Qualität in der Abschlussphase
+messbar stabilisiert.
+Gerade bei der Vorbereitung von Demo und Ausarbeitung hat sich gezeigt, dass
+ein konsistenter Betriebsstand viele Folgekosten reduziert.
 
 \subsection{Was würden wir anders machen}
-Verbesserungspotenziale für Architektur, Vorgehen oder Priorisierung.
+
+Rückblickend würde das Projekt einige technische Entscheidungen früher treffen.
+Die wichtigste davon betrifft die Systemgrenze zwischen Frontend und Backend.
+In den frühen Ständen wurden Teile der Logik zunächst clientseitig modelliert;
+mit wachsender Komplexität (Rollen, Authentifizierung, persistente Inhalte)
+mussten diese Konzepte später auf serverseitige Regeln umgestellt werden.
+Beim nächsten Projekt würde die API- und Datenmodellplanung früher erfolgen, um
+Umbauten in späteren Phasen zu reduzieren.
+
+Ein zweiter Punkt betrifft die Benennung und Konsistenz von Pfaden, Modulen und
+Routen.
+Durch den langen Entwicklungsverlauf mit mehreren Umstrukturierungen
+(\texttt{src/}~$\rightarrow$~\texttt{frontend/}, neue Backend-Struktur,
+Refactorings im Routing) entstand zwischenzeitlich inkonsistente Terminologie.
+Diese wurde zwar bereinigt, hätte aber mit früheren Konventionen weniger
+Nacharbeit erzeugt.
+
+Auch die Teststrategie würde künftig früher breiter aufgesetzt.
+Die vorhandenen Tests decken zentrale Pfade gut ab, wurden aber erst in späteren
+Meilensteinen systematisch ausgebaut.
+Ein früheres, stärker risikobasiertes Testdesign (z.\,B. Auth- und
+Rollenfälle bereits parallel zur ersten Backend-Integration) hätte manche
+Fehlerkorrekturen beschleunigt.
+
+Organisatorisch würde die Abschlussphase zeitlich noch stärker gegen Ende
+gepuffert werden.
+Der inhaltliche Abschluss (Demo, Kapitelabgleich, formale Nacharbeit) ist
+erfahrungsgemäß aufwendiger als erwartet, selbst wenn die Kernfunktionalität
+bereits steht.
+Für zukünftige Projekte ist deshalb eine frühere Synchronisation zwischen
+Implementierungsstand und finalem Abgabeformat sinnvoll.
 
 \subsection{Was wurde gelernt}
-Wichtigste technische und organisatorische Erkenntnisse aus dem Projekt.
+
+Technisch wurde vor allem deutlich, wie wichtig eine saubere
+Verantwortungstrennung in Webanwendungen ist.
+Die Trennung zwischen UI, API und Persistenz verbessert nicht nur die
+Wartbarkeit, sondern auch Sicherheit und Nachvollziehbarkeit.
+Insbesondere bei Authentifizierung, Rollenlogik und Datenzugriff ist eine
+serverseitige Durchsetzung zentral, da rein clientseitige Regeln nicht
+ausreichen.
+
+Ein weiterer Lernpunkt ist der praktische Wert konsistenter Typisierung.
+TypeScript hat die Kommunikation zwischen Modulen verbessert und Refactorings
+abgesichert, vor allem bei komplexeren Datenstrukturen für Kampagneninhalte und
+Benutzerzustände.
+In Kombination mit klaren Interfaces und einem strukturierten API-Vertrag
+konnten Integrationsprobleme früh erkannt werden.
+
+Im Bereich Qualitätssicherung wurde gelernt, dass Tests den größten Nutzen
+haben, wenn sie reale Kernabläufe abbilden:
+Login/Logout, geschützte Routen, Rollenrechte und typische Nutzeraktionen.
+Diese Tests sind nicht nur technische Absicherung, sondern auch eine
+ausführbare Spezifikation des erwarteten Systemverhaltens.
+
+Organisatorisch hat das Projekt gezeigt, dass kontinuierliche Dokumentation ein
+entscheidender Erfolgsfaktor ist.
+Wenn Architektur-, Betriebs- und Testentscheidungen erst am Ende beschrieben
+werden, geht Kontext verloren.
+Die laufende Pflege von README, Meilensteinzuordnung und Ausarbeitung erleichtert
+dagegen sowohl Teamabstimmung als auch Abgabevorbereitung erheblich.
+
+Insgesamt wurde aus dem Projekt mitgenommen, dass ein gutes Ergebnis weniger von
+einzelnen Features abhängt als von der Verbindung aus
+\textbf{inkrementeller Planung, strukturiertem Refactoring, testbarer
+Architektur und reproduzierbarem Betrieb}.
+Diese Kombination hat aus einem anfänglich kleinen Frontend-Prototyp eine
+vollständig nutzbare Full-Stack-Anwendung gemacht.
