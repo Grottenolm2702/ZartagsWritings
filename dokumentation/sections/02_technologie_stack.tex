@@ -1,15 +1,156 @@
 \section{Technologie-Stack}
 
-\textbf{Zielumfang:} ca. 2 Seiten.
+Der Technologie-Stack deckt die Anforderungen des Projekts
+(\emph{Single-Page-Webanwendung mit Login, Rollen/Rechten und persistenter
+Datenhaltung}) mit überschaubarem Betriebsaufwand abdeckt.
+Im Fokus stehen dabei: schnelle Entwicklung, gute Testbarkeit und
+eine klare Trennung zwischen Benutzeroberfläche, API-Logik und Persistenz.
 
 \subsection{Frontend}
-Eingesetzte Technologien (z.\,B. React, TypeScript, Vite) und kurze Begründung der Wahl.
+
+Das Frontend basiert auf \textbf{React} mit \textbf{TypeScript} und wird über
+\textbf{Vite} gebaut und lokal ausgeführt.
+
+\paragraph{React}
+React passt hier, weil die Anwendung stark zustandsgetrieben ist:
+Anmeldestatus, Rollen im Campaign-Kontext, Entity-Listen und
+Bearbeitungszustände müssen konsistent über mehrere Seiten hinweg verwaltet
+werden.
+Durch die komponentenbasierte Struktur konnten wiederverwendbare UI-Bausteine
+(\emph{Layout, Header, Campaign-Komponenten}) klar getrennt und wartbar
+umgesetzt werden.
+
+\paragraph{TypeScript im Frontend}
+TypeScript reduziert Integrationsfehler zwischen API und UI, insbesondere bei
+verschachtelten Nutzerdaten und Campaign-Strukturen.
+Das Projekt nutzt explizite Typen für zentrale Datenobjekte
+(\emph{z.\,B. AuthUser, Campaign-API-Typen}), was die Weiterentwicklung
+erleichtert und Refactorings sicherer macht.
+Gerade bei rollenabhängiger Darstellung (\emph{DM/EDITOR/PLAYER}) verbessert
+das die Verständlichkeit der Logik deutlich.
+
+\paragraph{React Router}
+Für die Navigation wird \textbf{react-router-dom} eingesetzt.
+Als Single-Page-Ansatz vermeidet dies vollständige Seiten-Reloads und erlaubt
+eine saubere Trennung zwischen öffentlichen Seiten
+(\emph{Login/Registrierung}) und geschützten Bereichen
+(\emph{Campaign-Ansichten, Verwaltung}).
+Dadurch bleibt die Nutzerführung schnell und konsistent.
+
+\paragraph{Vite als Build- und Dev-Server}
+Vite passt als Build-Tool, da es in der Entwicklung sehr kurze
+Start- und Aktualisierungszeiten liefert.
+Für dieses Projekt ist zusätzlich der konfigurierte \texttt{/api}-Proxy
+entscheidend: Frontend-Anfragen werden im Dev-Betrieb transparent an das
+Backend weitergeleitet.
+Das vereinfacht die lokale Entwicklung und vermeidet CORS-Probleme durch
+abweichende Ports.
 
 \subsection{Backend}
-Eingesetzte Technologien (z.\,B. Node.js, Express, TypeScript) und deren Rolle im System.
+
+Das Backend wurde mit \textbf{Node.js}, \textbf{Express} und \textbf{TypeScript}
+umgesetzt.
+Es stellt die REST-API bereit, kapselt die Geschäftslogik
+(\emph{Authentifizierung, Rollenprüfung, Campaign-Operationen}) und steuert den
+Zugriff auf die Datenbank.
+
+\paragraph{Node.js}
+Node.js passt gut zum Frontend-Stack, da Sprache und
+Ökosystem über beide Schichten hinweg konsistent sind.
+Das reduziert Reibungsverluste im Team, vereinfacht Tooling und ermöglicht eine
+schnelle Iteration in den Meilensteinen.
+
+\paragraph{Express}
+Express ist als bewusst schlankes Framework hier passend.
+Für die Projektanforderungen --- klar definierte REST-Endpunkte,
+Cookie-basierte Authentifizierung, Middleware für CORS/JSON/Parser ---
+liefert Express genug Struktur, ohne unnötige Komplexität einzuführen.
+Die Routen sind nach Domänen getrennt
+(\texttt{authRoutes}, \texttt{userRoutes}, \texttt{campaignRoutes},
+\texttt{entityRoutes}, \texttt{memberRoutes}), was die Wartbarkeit erhöht.
+
+\paragraph{Auth- und Security-Bausteine}
+Für Authentifizierung und Sicherheit werden mehrere spezialisierte Bibliotheken
+kombiniert:
+\begin{itemize}
+  \item \textbf{jsonwebtoken}: Signieren und Verifizieren von JWTs,
+  \item \textbf{cookie-parser}: Zugriff auf den Token im HttpOnly-Cookie,
+  \item \textbf{bcrypt}: sicheres Hashing von Passwörtern,
+  \item \textbf{cors}: kontrollierte Freigabe erlaubter Origins.
+\end{itemize}
+Die Entscheidung für JWT im HttpOnly-Cookie reduziert das Risiko, Tokens im
+Frontend-Code oder Local Storage offenzulegen.
 
 \subsection{Datenhaltung}
-SQLite/Prisma-Setup, Migrationskonzept und Begründung für die gewählte Persistenz.
+
+Die Persistenz basiert auf \textbf{SQLite} in Kombination mit \textbf{Prisma}
+als ORM.
+
+\paragraph{SQLite}
+SQLite passt, weil die Anwendung im Projektkontext lokal, kompakt und
+ohne externen Datenbankserver betrieben werden soll.
+Für den vorgesehenen Umfang (Einzelinstanz, moderate Datenmengen,
+Entwicklungs-/Demobetrieb) bietet SQLite ein gutes Verhältnis aus Einfachheit
+und Zuverlässigkeit.
+Die Einstiegshürde ist gering, da Setup und Deployment ohne separate DB-Infra
+auskommen.
+
+\paragraph{Prisma}
+Prisma übernimmt die typsichere Datenzugriffsschicht und bildet das
+Domänenmodell explizit ab
+(\texttt{User}, \texttt{Campaign}, \texttt{CampaignMember}, \texttt{Entity},
+\texttt{ContentBlock}, \dots).
+Die wichtigsten Vorteile in diesem Projekt:
+\begin{itemize}
+  \item \textbf{Klare Modellierung}: Relationen und Constraints sind direkt im
+  Schema dokumentiert.
+  \item \textbf{Typsichere Queries}: weniger Laufzeitfehler beim Zugriff aus
+  dem TypeScript-Backend.
+  \item \textbf{Migrationsunterstützung}: Schema-Änderungen bleiben versioniert
+  und reproduzierbar.
+\end{itemize}
+
+\paragraph{Migrationskonzept}
+Die Datenbankstruktur wird über Prisma-Migrationen verwaltet
+(\texttt{prisma/migrations/...}).
+Beim Start in Docker wird die Migration automatisiert ausgeführt
+(\texttt{prisma migrate deploy}), wodurch Entwicklungs- und Laufzeitumgebung
+konsistent bleiben.
+Dieses Vorgehen minimiert manuelle Setup-Fehler und erhöht die Reproduzierbarkeit.
 
 \subsection{Entwicklungs- und Testwerkzeuge}
-Kurzüberblick über zentrale Tools (z.\,B. Vitest, ESLint, Build-Tools).
+
+Neben den Kerntechnologien ergänzen Tools die Codequalität,
+Entwicklungsfluss und Nachvollziehbarkeit unterstützen.
+
+\paragraph{Tests mit Vitest}
+Sowohl Frontend als auch Backend nutzen \textbf{Vitest}.
+Im Backend werden API-Routen in einer Node-Umgebung getestet, im Frontend
+Komponenten- und Interaktionslogik in einer \texttt{jsdom}-Umgebung.
+Ergänzend kommen \textbf{Testing Library} und \textbf{Supertest} zum Einsatz,
+um UI-Verhalten bzw. HTTP-Endpunkte realitätsnah zu prüfen.
+Die Entscheidung für denselben Test-Runner in beiden Teilprojekten reduziert
+Komplexität im Tooling.
+
+\paragraph{Codequalität: ESLint + Prettier}
+Im Frontend sorgen \textbf{ESLint} (inkl.\ React- und TypeScript-Regeln) und
+\textbf{Prettier} für konsistente Codequalität und einheitliche Formatierung.
+Über \textbf{simple-git-hooks} wird vor Commits automatisch linting/formatting
+ausgeführt.
+So werden Stil- und Basisqualitätsprobleme früh abgefangen.
+
+\paragraph{TypeScript-Tooling und Dev-Workflow}
+Das Backend nutzt \textbf{tsx watch} für schnellen TypeScript-Dev-Betrieb ohne
+separaten Build-Schritt.
+Im Frontend übernimmt Vite denselben Zweck.
+Durch diesen direkten Feedback-Zyklus konnten Features pro Meilenstein
+inkrementell umgesetzt und getestet werden.
+
+\paragraph{Containerisierung mit Docker Compose}
+Für einen reproduzierbaren Start des Gesamtsystems wird \textbf{Docker Compose}
+genutzt.
+Frontend und Backend laufen als getrennte Services mit klaren Umgebungsvariablen
+(\texttt{DATABASE\_URL}, \texttt{JWT\_SECRET}, \texttt{CORS\_ORIGIN},
+\texttt{VITE\_API\_PROXY\_TARGET}).
+Dadurch ist das Projekt unabhängig vom lokalen Host-Setup schnell lauffähig und
+für Abgabe/Demo stabil reproduzierbar.

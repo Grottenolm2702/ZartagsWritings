@@ -1,15 +1,307 @@
 \section{Architektur}
 
-\textbf{Zielumfang:} ca. 3--4 Seiten.
-
 \subsection{Komponentenstruktur}
-Beschreibung der wichtigsten Frontend- und Backend-Komponenten und ihrer Verantwortlichkeiten.
+
+Die Anwendung folgt einer klassischen \textbf{3-Schichten-Struktur}:
+\textbf{Frontend (Präsentation)}, \textbf{Backend (API + Fachlogik)} und
+\textbf{Persistenz (SQLite über Prisma)}.
+Die Schichten sind klar getrennt und kommunizieren ausschließlich über
+HTTP-Requests auf \texttt{/api/*}.
+
+\paragraph{Frontend-Schicht}
+Das Frontend ist als Single-Page-Anwendung mit React umgesetzt.
+Die Routen in \texttt{frontend/src/App.tsx} bilden die fachlichen Bereiche ab:
+Authentifizierung (\texttt{/login}, \texttt{/register}), Campaign-Übersicht
+(\texttt{/campaigns/:slug}) sowie Entity-Ansichten und Bearbeitung.
+
+Eine zentrale Rolle übernimmt der \texttt{JWTAuthContext}:
+Er hält den globalen Authentifizierungszustand (\texttt{user},
+\texttt{isLoggedIn}, \texttt{loading}, \texttt{error}),
+führt Login/Logout aus und lädt den aktuellen Benutzer über \texttt{/api/user}.
+Dadurch bleibt Auth-Logik aus den Seitenkomponenten ausgelagert und
+wiederverwendbar.
+
+Für API-Aufrufe wird ein gemeinsamer Fetch-Wrapper
+(\texttt{frontend/src/lib/api.ts}) genutzt. Dieser setzt standardmäßig
+\texttt{credentials: include}, damit das JWT-Cookie bei geschützten Requests
+mitgesendet wird.
+
+\paragraph{Backend-Schicht}
+Das Backend ist modular in Routenpakete aufgeteilt, die in
+\texttt{backend/src/server/app.ts} registriert werden:
+\texttt{authRoutes}, \texttt{userRoutes}, \texttt{campaignRoutes},
+\texttt{entityRoutes}, \texttt{memberRoutes}, \texttt{healthRoutes}.
+
+Die Route-Module kapseln jeweils eine fachliche Domäne:
+\begin{itemize}
+  \item \textbf{Auth:} Registrierung, Login, Logout,
+  \item \textbf{User:} aktuelles Profil lesen/löschen,
+  \item \textbf{Campaigns:} anlegen, beitreten, laden, Join-Code regenerieren,
+  \item \textbf{Entities:} Templates, Listen, Details und CRUD je Entity-Typ,
+  \item \textbf{Members:} Rollen- und Anzeigenamenverwaltung innerhalb einer Campaign.
+\end{itemize}
+
+In \texttt{backend/src/server/entities.ts} liegt zentrale Domain-Logik, die von
+mehreren Routen wiederverwendet wird, z.\,B.:
+\texttt{loadCampaignForUser}, \texttt{serializeEntity},
+\texttt{canEditCampaign}, \texttt{canManageCampaign}.
+So wird verhindert, dass Autorisierungs- und Transformationslogik in mehreren
+Dateien dupliziert wird.
+
+\paragraph{Persistenz-Schicht}
+Der Datenzugriff erfolgt ausschließlich über Prisma.
+Die Prisma-Client-Instanz wird zentral in \texttt{config.ts} erzeugt und über
+den Better-SQLite3-Adapter mit \texttt{DATABASE\_URL} verbunden.
+Das reduziert Kopplung, da Routen keine eigene DB-Verbindung aufbauen.
 
 \subsection{API-Design}
-Darstellung der zentralen Endpunkte, Datenflüsse und Autorisierungslogik.
+
+Die API ist als \textbf{REST-orientierte JSON-API} unter \texttt{/api} umgesetzt.
+Für geschützte Endpunkte wird die Middleware \texttt{authenticateToken}
+verwendet, die den JWT aus dem HttpOnly-Cookie validiert und den User-Kontext
+an den Request hängt.
+
+\paragraph{Konventionen}
+\begin{itemize}
+  \item Ressourcenorientierte Pfade, z.\,B. \texttt{/api/campaigns/:slug}.
+  \item HTTP-Methoden gemäß Operation (\texttt{GET}, \texttt{POST},
+  \texttt{PUT}, \texttt{PATCH}, \texttt{DELETE}).
+  \item Fehlerantworten mit passendem Statuscode und JSON-Fehlermeldung
+  (\texttt{\{ error: ... \}}).
+  \item Rollenprüfung serverseitig vor schreibenden Aktionen.
+\end{itemize}
+
+\paragraph{Zentrale Endpunkte}
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.3cm} >{\raggedright\arraybackslash}p{2.6cm}}
+\toprule
+\textbf{Methode} & \textbf{Pfad} & \textbf{Schutz} & \textbf{Zweck} \\
+\midrule
+POST & \url{/api/register} & nein & Benutzer registrieren \\
+POST & \url{/api/login} & nein & JWT-Cookie setzen \\
+POST & \url{/api/logout} & nein & JWT-Cookie löschen \\
+GET & \url{/api/user} & ja & aktuellen Benutzer laden \\
+GET & \url{/api/campaigns} & ja & Campaign-Liste des Users \\
+POST & \url{/api/campaigns} & ja & neue Campaign erstellen \\
+POST & \url{/api/campaigns/join} & ja & per Join-Code beitreten \\
+GET & \url{/api/campaigns/:slug} & ja & Campaign inkl.\ Entities laden \\
+POST & \url{/api/campaigns/:slug/regenerate-join-code} & ja (DM/Owner) & Join-Code erneuern \\
+\shortstack[l]{GET/POST/\\PUT/DELETE} & \url{/api/campaigns/:slug/entities/...} & ja (rollenabhängig) & Entity-CRUD \\
+PATCH & \url{/api/campaigns/:slug/members/:memberUserId} & ja (DM/Owner) & Mitgliedsdaten/Rolle ändern \\
+\bottomrule
+\end{tabularx}
+\caption{Zentrale API-Endpunkte}
+\label{tab:api-endpunkte}
+\end{table}
+
+\paragraph{Autorisierungslogik}
+Die Autorisierung ist zweistufig aufgebaut:
+\begin{enumerate}
+  \item \textbf{Authentifizierung} über JWT-Cookie
+  (\texttt{authenticateToken}).
+  \item \textbf{Fachliche Berechtigungen} über Rollenprüfungen:
+  \texttt{canEditCampaign} erlaubt Owner, DM und Editor;
+  \texttt{canManageCampaign} erlaubt Owner und DM.
+\end{enumerate}
+
+Damit werden unzulässige Änderungen serverseitig abgefangen, auch wenn ein
+Client manipulierte Requests sendet.
 
 \subsection{Datenbankschema}
-Überblick über relevante Entitäten und Relationen.
 
+Das Datenmodell ist auf zwei Kernanforderungen ausgelegt:
+\textbf{(1) Mitglieder- und Rollenverwaltung pro Campaign} und
+\textbf{(2) flexible Inhaltsstruktur für unterschiedliche Entity-Typen}.
+
+\paragraph{Kernentitäten}
+\begin{itemize}
+  \item \texttt{User}: registrierte Benutzer mit Login-Daten.
+  \item \texttt{Campaign}: Kampagne mit Owner, Metadaten und Join-Code.
+  \item \texttt{CampaignMember}: Zuordnung User $\leftrightarrow$ Campaign inkl. Rolle.
+  \item \texttt{Entity}: fachliches Objekt (PC, NPC, MAGIC\_ITEM, LOCATION).
+  \item \texttt{EntityField}: strukturierte Header-Felder einer Entity.
+  \item \texttt{ContentBlock}: Inhaltskarten pro Entity (Text, Liste, Attribute, Bild).
+  \item \texttt{ContentListItem} und \texttt{ContentAttribute}: Unterelemente für
+  Listen und Attribute.
+\end{itemize}
+
+\paragraph{Relationen und Constraints}
+\begin{itemize}
+  \item Ein User kann in vielen Campaigns Mitglied sein; eine Campaign hat viele
+  Mitglieder (\texttt{CampaignMember} als Join-Tabelle).
+  \item Eine Campaign hat viele Entities; eine Entity gehört genau zu einer Campaign.
+  \item Eindeutigkeit wird über fachliche Schlüssel gesichert, u.\,a.
+  \texttt{Campaign.slug}, \texttt{Campaign.joinCode},
+  \texttt{User.email} sowie \texttt{(campaignId, type, slug)} für Entities.
+  \item Cascading-Deletes entfernen abhängige Daten konsistent
+  (z.\,B. Entity $\rightarrow$ Fields/Blocks).
+\end{itemize}
+
+Das Schema kombiniert damit klare Normalisierung für Beziehungen
+(\texttt{User}, \texttt{Campaign}, \texttt{CampaignMember}) mit einer flexiblen
+Content-Struktur für heterogene Kampagneninhalte.
+
+\FloatBarrier
 \subsection{Diagramme}
-Einbindung von Architektur- und/oder Sequenzdiagrammen mit kurzer Erläuterung.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=11mm,
+  box/.style={draw, rounded corners, align=left, fill=gray!8, minimum width=10.5cm, inner sep=4pt},
+  arr/.style={-Latex, thick}
+]
+\node[box] (browser) {\textbf{Browser} \\ User-Interaktion};
+\node[box, below=of browser] (frontend) {\textbf{React Frontend} \\ Router, Seiten/Komponenten, JWTAuthContext};
+\node[box, below=of frontend] (backend) {\textbf{Express Backend} \\ authRoutes, userRoutes, campaignRoutes, entityRoutes, memberRoutes \\ JWT-Middleware + Rollenprüfung};
+\node[box, below=of backend] (db) {\textbf{SQLite + Prisma} \\ User, Campaign, CampaignMember, Entity, ContentBlock, \dots};
+
+\draw[arr] (browser) -- node[right]{HTTPS + HttpOnly-Cookie} (frontend);
+\draw[arr] (frontend) -- node[right]{\texttt{/api/*} (JSON)} (backend);
+\draw[arr] (backend) -- node[right]{Prisma Client} (db);
+\end{tikzpicture}
+\caption{Komponentendiagramm der Anwendung}
+\label{fig:komponenten}
+\end{figure}
+
+\noindent
+Das Komponentendiagramm zeigt die klare Entkopplung der Schichten.
+Das Frontend kennt die Datenbank nicht direkt, sondern ausschließlich die
+HTTP-Schnittstelle. Geschäftsregeln und Rechteprüfung bleiben vollständig im
+Backend.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  lifeline/.style={draw, dashed, gray},
+  actor/.style={draw, rounded corners, fill=gray!8, minimum width=2.7cm, align=center},
+  msg/.style={-Latex, thick},
+  ret/.style={-Latex, thick, dashed},
+  every node/.style={font=\small}
+]
+% Teilnehmer
+\node[actor] (u) at (0,0) {User};
+\node[actor] (f) at (4.5,0) {Frontend};
+\node[actor] (b) at (9,0) {Backend};
+\node[actor] (d) at (13.5,0) {Datenbank};
+
+% Lifelines
+\draw[lifeline] (u.south) -- ++(0,-8.1);
+\draw[lifeline] (f.south) -- ++(0,-8.1);
+\draw[lifeline] (b.south) -- ++(0,-8.1);
+\draw[lifeline] (d.south) -- ++(0,-8.1);
+
+% Hilfskoordinaten direkt auf den Lifelines (garantiert horizontale Pfeile)
+\coordinate (u1) at ($(u.south)+(0,-0.7)$);
+\coordinate (f1) at ($(f.south)+(0,-0.7)$);
+\coordinate (f2) at ($(f.south)+(0,-1.6)$);
+\coordinate (b2) at ($(b.south)+(0,-1.6)$);
+\coordinate (b3) at ($(b.south)+(0,-2.5)$);
+\coordinate (d3) at ($(d.south)+(0,-2.5)$);
+\coordinate (d4) at ($(d.south)+(0,-3.3)$);
+\coordinate (b4) at ($(b.south)+(0,-3.3)$);
+\coordinate (b5) at ($(b.south)+(0,-4.2)$);
+\coordinate (f5) at ($(f.south)+(0,-4.2)$);
+\coordinate (f6) at ($(f.south)+(0,-5.1)$);
+\coordinate (b6) at ($(b.south)+(0,-5.1)$);
+\coordinate (b7) at ($(b.south)+(0,-6.0)$);
+\coordinate (d7) at ($(d.south)+(0,-6.0)$);
+\coordinate (d8) at ($(d.south)+(0,-6.8)$);
+\coordinate (b8) at ($(b.south)+(0,-6.8)$);
+\coordinate (b9) at ($(b.south)+(0,-7.6)$);
+\coordinate (f9) at ($(f.south)+(0,-7.6)$);
+
+% Nachrichten
+\draw[msg] (u1) -- node[above]{Login absenden} (f1);
+\draw[msg] (f2) -- node[above]{POST \texttt{/api/login}} (b2);
+\draw[msg] (b3) -- node[above]{User laden + Passwort prüfen} (d3);
+\draw[ret] (d4) -- node[above]{User-Daten} (b4);
+\draw[ret] (b5) -- node[above]{200 + Set-Cookie(JWT)} (f5);
+\draw[msg] (f6) -- node[above]{GET \texttt{/api/user}} (b6);
+\draw[msg] (b7) -- node[above]{JWT prüfen + Memberships laden} (d7);
+\draw[ret] (d8) -- node[above]{User + Rollen} (b8);
+\draw[ret] (b9) -- node[above]{User-JSON} (f9);
+\end{tikzpicture}
+\caption{Sequenzdiagramm: Login und geschützter Datenabruf}
+\label{fig:sequenz-login}
+\end{figure}
+
+\noindent
+Der Ablauf verdeutlicht, dass der Token nicht im JavaScript-Speicher abgelegt
+wird, sondern als HttpOnly-Cookie übertragen wird.
+Folgezugriffe auf geschützte Ressourcen nutzen denselben Mechanismus und
+werden zusätzlich durch rollenbasierte Prüfungen abgesichert.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=10mm and 9mm,
+  ent/.style={draw, rounded corners, fill=gray!8, minimum width=3.5cm, minimum height=0.95cm, align=center},
+  rel/.style={-Latex, thick},
+  every node/.style={font=\small}
+]
+\node[ent] (user) {User};
+\node[ent, right=of user] (member) {CampaignMember};
+\node[ent, right=of member] (campaign) {Campaign};
+
+\node[ent, below=of campaign] (entity) {Entity};
+\node[ent, left=of entity] (field) {EntityField};
+\node[ent, right=of entity] (block) {ContentBlock};
+\node[ent, below=of block] (listitem) {ContentListItem};
+\node[ent, left=of listitem] (attr) {ContentAttribute};
+
+\draw[rel] (user) -- node[above]{1:n} (member);
+\draw[rel] (campaign) -- node[above]{1:n} (member);
+\draw[rel] (campaign) -- node[right]{1:n} (entity);
+\draw[rel] (entity) -- node[above]{1:n} (field);
+\draw[rel] (entity) -- node[above]{1:n} (block);
+\draw[rel] (block) -- node[right]{1:n} (listitem);
+\draw[rel] (block) -- node[above]{1:n} (attr);
+\end{tikzpicture}
+\caption{Vereinfachtes ER-Diagramm des Domänenmodells}
+\label{fig:er-modell}
+\end{figure}
+
+\noindent
+Das ER-Diagramm zeigt die zwei zentralen Stränge der Persistenz:
+Mitgliedschaft mit Rollen (\texttt{User}--\texttt{CampaignMember}--\texttt{Campaign})
+und inhaltliche Modellierung der Campaign-Daten
+(\texttt{Campaign}--\texttt{Entity}--\texttt{ContentBlock}).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=9mm,
+  stepbox/.style={draw, rounded corners, fill=gray!8, minimum width=11.3cm, align=left, inner sep=4pt},
+  decision/.style={diamond, draw, aspect=2.2, inner sep=1pt, align=center, fill=gray!8},
+  arr/.style={-Latex, thick},
+  every node/.style={font=\small}
+]
+\node[stepbox] (r1) {1) Request auf geschützten Endpunkt (\texttt{/api/campaigns/...})};
+\node[stepbox, below=of r1] (r2) {2) \texttt{authenticateToken}: JWT aus HttpOnly-Cookie prüfen};
+\node[decision, below=10mm of r2] (d1) {Token\\gültig?};
+\node[stepbox, below=11mm of d1] (r3) {3) Campaign und Membership laden (\texttt{loadCampaignForUser})};
+\node[decision, below=10mm of r3] (d2) {Rolle\\ausreichend?};
+\node[stepbox, below=11mm of d2] (r4) {4) Fachoperation ausführen (z.\,B. Entity erstellen/ändern)};
+
+\draw[arr] (r1) -- (r2);
+\draw[arr] (r2) -- (d1);
+\draw[arr] (d1) -- node[right]{ja} (r3);
+\draw[arr] ($(d1.east)+(0.1,0)$) -- ++(1.7,0) node[right]{nein $\rightarrow$ 401/403};
+\draw[arr] (r3) -- (d2);
+\draw[arr] (d2) -- node[right]{ja} (r4);
+\draw[arr] ($(d2.east)+(0.1,0)$) -- ++(1.7,0) node[right]{nein $\rightarrow$ 403};
+\end{tikzpicture}
+\caption{Autorisierungs- und Request-Flow für schreibende Endpunkte}
+\label{fig:auth-flow}
+\end{figure}
+
+\noindent
+Der Ablauf macht sichtbar, dass Autorisierung strikt serverseitig erfolgt:
+ohne gültigen Token oder ausreichende Rolle wird die Aktion vor der
+Fachoperation abgelehnt.

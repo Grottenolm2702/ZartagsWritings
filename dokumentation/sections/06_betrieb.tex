@@ -1,12 +1,100 @@
 \section{Betrieb}
 
-\textbf{Zielumfang:} ca. 1--2 Seiten.
-
 \subsection{Start der Anwendung}
-Schritte zum lokalen Start von Frontend und Backend.
+
+Für den Entwicklungsbetrieb ist \textbf{Docker Compose} der primäre
+Startweg, da Frontend, Backend und Persistenzpfad in einem reproduzierbaren
+Setup zusammengeführt werden.
+
+\paragraph{Betrieb mit Docker Compose}
+Der Start erfolgt mit den folgenden Befehlen:
+
+\begin{lstlisting}[style=terminal]
+cp .env.example .env
+docker compose up
+\end{lstlisting}
+
+Nach dem Start stehen die zentralen Endpunkte bereit:
+\begin{itemize}
+  \item Frontend: \url{http://localhost:5173}
+  \item Backend: \url{http://localhost:3000}
+  \item Health-Endpoint: \url{http://localhost:3000/api/health}
+\end{itemize}
+
+Im Compose-Betrieb führt der Backend-Service vor dem Start automatisch
+\texttt{prisma migrate deploy} aus.
+Damit ist sichergestellt, dass das Datenbankschema dem aktuellen
+Migrationsstand entspricht.
+
+\paragraph{Lokaler Betrieb ohne Docker}
+Alternativ kann die Anwendung lokal in zwei Prozessen betrieben werden:
+
+\begin{lstlisting}[style=terminal,caption={Backend lokal starten}]
+cd backend
+npm ci
+npx prisma migrate deploy
+npm run dev
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal,caption={Frontend lokal starten (zweites Terminal)}]
+cd frontend
+npm ci
+npm run dev
+\end{lstlisting}
+
+Im lokalen Betrieb ist ein \texttt{backend/.env} mit den notwendigen Variablen
+erforderlich (siehe \cref{subsec:betrieb-konfiguration}).
 
 \subsection{Konfiguration}
-Relevante Umgebungsvariablen und Voraussetzungen.
+\label{subsec:betrieb-konfiguration}
+
+Die Anwendung wird über Umgebungsvariablen konfiguriert.
+Für den Compose-Betrieb dient \texttt{.env.example} als Vorlage.
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.1cm} >{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Variable} & \textbf{Beispielwert} & \textbf{Bedeutung} \\
+\midrule
+\texttt{JWT\_SECRET} & \texttt{dev-secret-change-me} & Secret für Signierung und Verifikation der JWTs im Backend. \\
+\texttt{CORS\_ORIGIN} & \texttt{http://localhost:5173} & Erlaubte Origin(s) für CORS-Requests auf die API. \\
+\texttt{DATABASE\_URL} & \texttt{file:./data/dev.db} & SQLite-Datenbankpfad des Backends. \\
+\shortstack[l]{\texttt{VITE\_API\_}\\\texttt{PROXY\_TARGET}} & \texttt{http://backend:3000} & Ziel für den \texttt{/api}-Proxy des Vite-Dev-Servers. \\
+\bottomrule
+\end{tabularx}
+\caption{Relevante Umgebungsvariablen im Entwicklungsbetrieb}
+\label{tab:betrieb-env}
+\end{table}
+
+\paragraph{Voraussetzungen}
+Für den Betrieb werden Node.js und npm benötigt.
+Im Docker-Modus sind zusätzlich Docker Engine und Docker Compose erforderlich.
+Die Persistenz erfolgt auf SQLite-Basis und benötigt keinen separaten
+Datenbankserver.
 
 \subsection{Betriebsmodus}
-Kurze Hinweise zu Entwicklungsbetrieb und typischem Workflow.
+
+Die Anwendung ist als \textbf{Entwicklungs- und Demo-Betrieb} ausgelegt.
+Frontend und Backend laufen als getrennte Prozesse/Container, kommunizieren
+über HTTP und nutzen ein Cookie-basiertes Session-Modell mit JWT.
+
+\paragraph{Typischer Workflow}
+\begin{enumerate}
+  \item Services starten (Compose oder lokal).
+  \item Benutzer über \texttt{/register} anlegen und anmelden.
+  \item Campaign erstellen oder per Join-Code beitreten.
+  \item Inhalte pflegen (abhängig von der Rolle DM/EDITOR/PLAYER).
+\end{enumerate}
+
+\paragraph{Betriebsrelevante Eigenschaften}
+\begin{itemize}
+  \item Daten werden persistent in SQLite gespeichert.
+  \item Schemaänderungen werden über Prisma-Migrationen ausgerollt.
+  \item Geschützte Endpunkte erfordern gültige JWT-Cookies.
+  \item Die Trennung von Frontend und Backend erlaubt klare Fehlersuche
+  (UI-/API-/DB-Ebene).
+\end{itemize}

@@ -1,12 +1,99 @@
 \section{Testing \& Qualitätssicherung}
 
-\textbf{Zielumfang:} ca. 2 Seiten.
-
 \subsection{Teststrategie}
-Welche Ebenen getestet werden (z.\,B. Unit/Integration) und warum.
+
+Die Qualitätssicherung kombiniert drei Ebenen:
+\textbf{Unit-nahe Logiktests}, \textbf{API-Integrationstests} und
+\textbf{Frontend-Komponenten-/Flow-Tests}.
+Ziel ist nicht nur die Prüfung einzelner Funktionen, sondern vor allem die
+Absicherung der kritischen Nutzerpfade:
+Registrierung, Login, Rollen-/Rechteprüfung und Campaign-Operationen.
+
+\paragraph{Backend-Strategie}
+Im Backend werden Routen mit \texttt{supertest} gegen die Express-App getestet.
+Dadurch lassen sich HTTP-Statuscodes, Response-Bodies, Cookie-Handling und
+Autorisierungsregeln realitätsnah prüfen.
+Die Prisma-Zugriffe werden in den Tests gezielt gemockt, sodass
+Fehlerfälle (z.\,B. Unique-Constraint-Verletzungen) reproduzierbar testbar sind.
+
+\paragraph{Frontend-Strategie}
+Im Frontend werden mit Vitest + Testing Library Seiten und
+Context-Logik getestet.
+Fokus liegt auf sichtbar nutzerrelevantem Verhalten:
+Formularvalidierung, API-Aufrufe, Navigation sowie Fehler- und Erfolgsfälle.
+Externe Abhängigkeiten (\texttt{fetch}, Routing) werden kontrolliert gemockt.
+
+\paragraph{Warum diese Aufteilung}
+Die Kombination aus API-Integrationstests und Frontend-Interaktionstests liefert
+ein gutes Verhältnis aus Aussagekraft und Wartbarkeit:
+Routenfehler, fehlende Berechtigungsprüfungen und fehlerhafte Client-Flows werden
+früh erkannt, ohne den Aufwand eines vollständigen End-to-End-Teststacks.
 
 \subsection{Was wird getestet}
-Überblick über kritische Funktionen und deren Testabdeckung.
+
+\paragraph{Backend-Abdeckung}
+Die Backend-Tests decken zentrale Sicherheits- und Geschäftsregeln ab:
+\begin{itemize}
+  \item \textbf{Authentifizierung:} Login erfolgreich/fehlgeschlagen,
+  JWT-Cookie wird gesetzt, Logout liefert erwartete Antwort.
+  \item \textbf{Autorisierung:} geschützte Endpunkte liefern
+  \texttt{401} ohne Token und \texttt{403} bei ungültigem Token.
+  \item \textbf{Rollenrechte in Campaigns:}
+  Editor darf Join-Code nicht regenerieren und keine Member-Rollen ändern;
+  DM darf beide Operationen ausführen.
+  \item \textbf{Registrierung:} Passwortregeln und Duplikatbehandlung
+  (\texttt{409} bei bereits registrierter E-Mail).
+  \item \textbf{Join-Code-Logik:} Format des Join-Codes sowie Retry-Verhalten
+  bei Unique-Konflikten.
+\end{itemize}
+
+\paragraph{Frontend-Abdeckung}
+Die Frontend-Tests prüfen sowohl Seitenlogik als auch API-Helfer:
+\begin{itemize}
+  \item \textbf{Auth-Context:} \texttt{login()} und \texttt{logout()} rufen die
+  richtigen API-Endpunkte mit korrekten Request-Optionen auf.
+  \item \textbf{Register-Flow:} schwache Passwörter werden clientseitig blockiert,
+  starke Passwörter führen zum Register-Request.
+  \item \textbf{Home-Flow:} Campaigns laden, Join per Code und Weiterleitung auf
+  die Overview-Seite.
+  \item \textbf{API-Wrapper (\texttt{apiFetch}):} \texttt{credentials: include},
+  Header-Handling und Fehler-Mapping (JSON-\texttt{error} bzw. Fallback-Text).
+\end{itemize}
 
 \subsection{Exemplarische Ergebnisse}
-Kurze Darstellung ausgewählter Testergebnisse inklusive Interpretation.
+
+Die folgenden Auszüge stammen aus den aktuellen Testläufen:
+
+\begin{lstlisting}[style=terminal,caption={Backend-Testlauf}]
+cd backend
+npm test
+
+Test Files  4 passed (4)
+Tests       21 passed (21)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal,caption={Frontend-Testlauf}]
+cd frontend
+npm test
+
+Test Files  5 passed (5)
+Tests       11 passed (11)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal,caption={Ausgewählte gezielte Testläufe}]
+# Backend (Autorisierungs- und Logout-Fälle)
+npm --prefix backend test -- src/server.routes.test.ts
+# Ergebnis: 11 passed
+
+# Frontend (API-Wrapper-Tests)
+npm --prefix frontend test -- src/__tests__/api.test.ts
+# Ergebnis: 3 passed
+\end{lstlisting}
+
+\paragraph{Interpretation}
+Die Ergebnisse bestätigen, dass die zentralen Sicherheits- und
+Geschäftsregeln stabil umgesetzt sind:
+Auth-Cookie-Flow funktioniert erwartungsgemäß, unautorisierte Zugriffe werden
+korrekt abgefangen und rollenbasierte Schreibrechte serverseitig durchgesetzt.
+Auf Frontend-Seite zeigen die Tests, dass API-Aufrufe konsistent aufgebaut
+werden und Fehler dem UI in auswertbarer Form zur Verfügung stehen.

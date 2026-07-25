@@ -249,4 +249,34 @@ describe("Server auth routes", () => {
     expect(userRes.body.email).toBe("alice@example.com");
     expect(userRes.body.memberships).toHaveLength(1);
   });
+
+  it("gibt 401 zurück, wenn /api/user ohne Token aufgerufen wird", async () => {
+    const app = createApp();
+    const res = await request(app).get("/api/user");
+
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({ error: "Bitte melden Sie sich an" });
+    expect(prismaMock.user.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("gibt 403 zurück, wenn /api/user mit ungültigem Token aufgerufen wird", async () => {
+    const app = createApp();
+    const res = await request(app)
+      .get("/api/user")
+      .set("Cookie", "token=invalid.token.value");
+
+    expect(res.status).toBe(403);
+    expect(res.body).toEqual({ error: "Ungültiger Token" });
+    expect(prismaMock.user.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("logout löscht das Auth-Cookie", async () => {
+    const app = createApp();
+    const res = await request(app).post("/api/logout");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ message: "Logout erfolgreich" });
+    expect(res.headers["set-cookie"]).toBeDefined();
+    expect(res.headers["set-cookie"][0]).toContain("token=;");
+  });
 });
