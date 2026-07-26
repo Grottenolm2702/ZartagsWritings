@@ -3,7 +3,7 @@
 Die Umsetzung erfolgte inkrementell über vier Meilensteine.
 Als Referenzstände dienen die getaggten Commits
 \texttt{meilenstein1}, \texttt{Meilenstein2} und \texttt{Meilenstein3}; der
-finale Projektstand entspricht \texttt{Meilenstein 4}.
+finale Projektstand entspricht \texttt{Meilenstein4}.
 Zwischen den Meilensteinen wurde die Anwendung schrittweise von einer
 statischen Frontend-Struktur zu einer komponentenbasierten SPA und danach zu
 einer vollständigen Webanwendung mit eigenem Backend, Authentifizierung und
@@ -270,15 +270,27 @@ Artefakten zu.
 Die Zuordnung basiert auf den getaggten Meilenstein-Ständen und den daraus
 hervorgegangenen Modulen einschließlich des finalen Betriebsstands.
 
-\begin{table}[h]
-\centering
 \small
 \setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{4.0cm} >{\raggedright\arraybackslash}X}
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{4.0cm} >{\raggedright\arraybackslash}p{5.2cm}}
+\caption{Zuordnung zentraler Vorlesungskonzepte zu Codebereichen}\label{tab:vl-zuordnung-code}\\
 \toprule
 \textbf{VL-Konzept} & \textbf{Meilenstein} & \textbf{Codebereich} & \textbf{Umsetzung im Projekt} \\
 \midrule
+\endfirsthead
+
+\toprule
+\textbf{VL-Konzept} & \textbf{Meilenstein} & \textbf{Codebereich} & \textbf{Umsetzung im Projekt} \\
+\midrule
+\endhead
+
+\midrule
+\multicolumn{4}{r}{\textit{Fortsetzung auf der nächsten Seite}} \\
+\endfoot
+
+\bottomrule
+\endlastfoot
 Semantisches HTML & M1 & \path{src/about.html}, \path{src/login.html} & Strukturierung über \texttt{main}, \texttt{section}, \texttt{nav}, formulargerechte Labels/Inputs. \\
 Responsive Design & M1 & \path{src/styles/navigation.css} & Mobile Sidebar per Media Query (\texttt{max-width: 800px}) und Overlay-Logik. \\
 DOM-Interaktion mit JS & M1 & \path{src/script.js} & Zustandswechsel der Navigation über Klassen, ARIA-Attribute und \texttt{inert}. \\
@@ -295,11 +307,7 @@ Passwortsicherheit & M3 & \path{backend/src/server.ts} & Serverseitiges Hashing 
 Persistenz/ORM & M3 & \path{backend/prisma/schema.prisma} & Relationales Modell für User, Campaigns, Rollen und Inhalte via Prisma + SQLite. \\
 Automatisierte Tests & M3/M4 & \path{backend/src/server.test.ts}, \path{frontend/src/__tests__/auth.test.tsx} & Absicherung zentraler Backend-/Frontend-Pfade mit Vitest, Supertest, Testing Library. \\
 Deployment/Betrieb & M4 & \path{docker-compose.yml}, \path{README.md}, \path{dokumentation/sections/06_betrieb.tex} & Reproduzierbarer Startprozess, dokumentierte Betriebsanleitung und Abgabevorbereitung. \\
-\bottomrule
-\end{tabularx}
-\caption{Zuordnung zentraler Vorlesungskonzepte zu Codebereichen}
-\label{tab:vl-zuordnung-code}
-\end{table}
+\end{longtable}
 
 \paragraph{Zusammenfassung der Umsetzungslogik}
 Die Meilensteinfolge folgt einer klaren technischen Lern- und
