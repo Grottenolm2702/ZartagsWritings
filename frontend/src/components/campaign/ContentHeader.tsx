@@ -23,60 +23,51 @@ export default function ContentHeader({
     <section aria-label="Header section">
       <div className={contentStyles.contentHeader}>
         {fields.map((field, index) => (
-          <section className={contentStyles.contentHeaderItem} key={`${field.label}-${index}`}>
+          <section className={contentStyles.contentHeaderItem} key={index}>
             {editable ? (
-              index === 0 ? (
-                <>
-                  <span className={contentStyles.label}>{field.label}</span>
-                  <input
-                    className={contentStyles.headerInput}
-                    value={field.value}
-                    onChange={(e) => onChange?.(index, { ...field, value: e.target.value })}
-                  />
-                </>
-              ) : (
-                <>
-                  <input
-                    className={contentStyles.headerInput}
-                    value={field.label}
-                    onChange={(e) => onChange?.(index, { ...field, label: e.target.value })}
-                    placeholder="Field name"
-                  />
-                  <input
-                    className={contentStyles.headerInput}
-                    value={field.value}
-                    onChange={(e) => onChange?.(index, { ...field, value: e.target.value })}
-                    placeholder="Value"
-                  />
-                  <div className={contentStyles.headerActionRow}>
-                    <button
-                      type="button"
-                      className={contentStyles.iconButton}
-                      aria-label={`Move field ${index + 1} left`}
-                      disabled={index === 0}
-                      onClick={() => onMove?.(index, -1)}
-                    >
-                      ←
-                    </button>
-                    <button
-                      type="button"
-                      className={contentStyles.iconButton}
-                      aria-label={`Move field ${index + 1} right`}
-                      disabled={index === fields.length - 1}
-                      onClick={() => onMove?.(index, 1)}
-                    >
-                      →
-                    </button>
-                    <button
-                      type="button"
-                      className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                      onClick={() => onRemove?.(index)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </>
-              )
+              <>
+                <input
+                  className={contentStyles.headerInput}
+                  value={field.label}
+                  aria-label={`Header field ${index + 1} label`}
+                  onChange={(e) => onChange?.(index, { ...field, label: e.target.value })}
+                  placeholder="Field name"
+                />
+                <input
+                  className={contentStyles.headerInput}
+                  value={field.value}
+                  aria-label={`Header field ${index + 1} value`}
+                  onChange={(e) => onChange?.(index, { ...field, value: e.target.value })}
+                  placeholder="Value"
+                />
+                <div className={contentStyles.headerActionRow}>
+                  <button
+                    type="button"
+                    className={contentStyles.iconButton}
+                    aria-label={`Move field ${index + 1} left`}
+                    disabled={index === 0}
+                    onClick={() => onMove?.(index, -1)}
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    className={contentStyles.iconButton}
+                    aria-label={`Move field ${index + 1} right`}
+                    disabled={index === fields.length - 1}
+                    onClick={() => onMove?.(index, 1)}
+                  >
+                    →
+                  </button>
+                  <button
+                    type="button"
+                    className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                    onClick={() => onRemove?.(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </>
             ) : (
               <>
                 <span className={contentStyles.label}>{field.label}</span>

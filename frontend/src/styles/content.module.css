@@ -195,6 +195,22 @@
   color: var(--accent-color);
 }
 
+.headerOrderNumber,
+.cardOrderNumber {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--highlight-color);
+  border-radius: 999px;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  line-height: 1;
+  text-align: center;
+}
+
 .contentHeaderActions {
   margin: 0.75rem 0.5rem 0;
 }

@@ -6,6 +6,7 @@ import type { ApiCardSpec } from "../../types/campaign-api";
 type ItemCardProps = {
   card: ApiCardSpec;
   editable?: boolean;
+  orderNumber?: number;
   children?: React.ReactNode;
   onUpdate?: (updated: ApiCardSpec) => void;
   onRemove?: () => void;
@@ -18,6 +19,7 @@ type ItemCardProps = {
 export default function ItemCard({
   card,
   editable,
+  orderNumber,
   children,
   onUpdate,
   onRemove,
@@ -50,6 +52,11 @@ export default function ItemCard({
 
         {editable ? (
           <div className={contentStyles.itemCardActions}>
+            {orderNumber ? (
+              <span className={contentStyles.cardOrderNumber} aria-label={`Card order ${orderNumber}`}>
+                {orderNumber}
+              </span>
+            ) : null}
             <button
               type="button"
               className={contentStyles.iconButton}

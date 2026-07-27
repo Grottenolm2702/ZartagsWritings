@@ -23,6 +23,7 @@ export default function ItemsGrid({ cards, editable, onUpdate, onRemove, onMove 
             key={index}
             card={card}
             editable={editable}
+            orderNumber={editable ? index + 1 : undefined}
             onUpdate={(updated) => onUpdate?.(index, updated)}
             onRemove={() => onRemove?.(index)}
             onMoveUp={onMove ? () => onMove(index, -1) : undefined}
