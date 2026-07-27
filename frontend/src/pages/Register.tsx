@@ -1,5 +1,6 @@
 import React from "react";
 import Layout from "../components/Layout";
+import PasswordInput from "../components/PasswordInput";
 import formStyles from "../styles/form.module.css";
 import { useNavigate } from "react-router-dom";
 import { useJWTAuth } from "../context/JWTAuthContext";
@@ -81,8 +82,7 @@ export default function Register() {
           <label htmlFor="password" className={formStyles.formLabel}>
             Password:
           </label>
-          <input
-            type="password"
+          <PasswordInput
             name="password"
             id="password"
             className={formStyles.formInput}
@@ -115,8 +115,7 @@ export default function Register() {
           <label htmlFor="repeatPassword" className={formStyles.formLabel}>
             Password wiederholen:
           </label>
-          <input
-            type="password"
+          <PasswordInput
             name="repeatPassword"
             id="repeatPassword"
             className={formStyles.formInput}

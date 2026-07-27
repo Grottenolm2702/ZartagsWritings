@@ -29,6 +29,41 @@
   border-color: var(--accent-color);
 }
 
+.passwordInputWrapper {
+  position: relative;
+}
+
+.passwordInputWithToggle {
+  padding-right: 2.6em;
+}
+
+.passwordToggleButton {
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8em;
+  height: 1.8em;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0.25em;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.passwordToggleButton:hover {
+  color: var(--accent-color);
+}
+
+.passwordToggleButton:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
 .formButton {
   width: 100%;
   padding: 0.75em;
