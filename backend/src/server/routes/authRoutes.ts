@@ -3,6 +3,17 @@ import jwt from "jsonwebtoken";
 import type { Express, Request, Response } from "express";
 import { prisma, JWT_SECRET } from "../config.js";
 
+const TOKEN_MAX_AGE_MS = 60 * 60 * 1000;
+
+function setAuthCookie(res: Response, token: string) {
+  res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: TOKEN_MAX_AGE_MS,
+  });
+}
+
 export function registerAuthRoutes(app: Express) {
   app.post("/api/register", async (req: Request, res: Response) => {
     const { email, name, password } = req.body;
@@ -64,16 +75,38 @@ export function registerAuthRoutes(app: Express) {
       const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET!, {
         expiresIn: "1h",
       });
-      res.cookie("token", token, {
-        httpOnly: true,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 3600000,
-      });
+      setAuthCookie(res, token);
       res.json({ message: "Login erfolgreich" });
     } catch (error) {
       res.status(500).json({ error: "Fehler bei der Anmeldung" });
     }
+  });
+
+  app.post("/api/session/refresh", (req: Request, res: Response) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ error: "Bitte melden Sie sich an" });
+    }
+
+    jwt.verify(token, JWT_SECRET!, (err: Error | null, decoded: unknown) => {
+      if (err) {
+        res.clearCookie("token", {
+          httpOnly: true,
+          sameSite: "strict",
+          secure: process.env.NODE_ENV === "production",
+        });
+        return res.status(401).json({ error: "Bitte melden Sie sich an" });
+      }
+
+      const user = decoded as { id: number; email: string };
+      const refreshedToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET!, {
+        expiresIn: "1h",
+      });
+
+      setAuthCookie(res, refreshedToken);
+      return res.json({ message: "Session verlängert" });
+    });
   });
 
   app.post("/api/logout", (_req: Request, res: Response) => {

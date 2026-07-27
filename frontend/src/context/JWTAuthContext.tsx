@@ -49,6 +49,58 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<AuthUser | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const lastActivityRef = React.useRef(Date.now());
+  const lastRefreshRef = React.useRef(0);
+  const refreshInFlightRef = React.useRef<Promise<boolean> | null>(null);
+  const activityListenerOptions = React.useMemo(() => ({ passive: true } as AddEventListenerOptions), []);
+
+  const refreshSession = React.useCallback(async () => {
+    if (!user) {
+      return false;
+    }
+
+    const now = Date.now();
+    const activityWindowMs = 10 * 60 * 1000;
+    const refreshIntervalMs = 15 * 60 * 1000;
+
+    if (now - lastActivityRef.current > activityWindowMs) {
+      return false;
+    }
+
+    if (now - lastRefreshRef.current < refreshIntervalMs) {
+      return false;
+    }
+
+    if (refreshInFlightRef.current) {
+      return refreshInFlightRef.current;
+    }
+
+    const refreshPromise = (async () => {
+      try {
+        const res = await fetch("/api/session/refresh", {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          if (res.status === 401 || res.status === 403) {
+            setUser(null);
+          }
+          return false;
+        }
+
+        lastRefreshRef.current = Date.now();
+        return true;
+      } catch {
+        return false;
+      } finally {
+        refreshInFlightRef.current = null;
+      }
+    })();
+
+    refreshInFlightRef.current = refreshPromise;
+    return refreshPromise;
+  }, [user]);
 
   const login = React.useCallback(
     async (email: string, password: string) => {
@@ -122,6 +174,55 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (user) {
+      const now = Date.now();
+      lastActivityRef.current = now;
+      lastRefreshRef.current = now;
+    }
+  }, [user]);
+
+  React.useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    const markActivity = () => {
+      lastActivityRef.current = Date.now();
+      void refreshSession();
+    };
+
+    const events: Array<keyof WindowEventMap> = [
+      "pointerdown",
+      "keydown",
+      "scroll",
+      "touchstart",
+      "focus",
+    ];
+
+    events.forEach((eventName) => window.addEventListener(eventName, markActivity, activityListenerOptions));
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        markActivity();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    const interval = window.setInterval(() => {
+      void refreshSession();
+    }, 5 * 60 * 1000);
+
+    return () => {
+      events.forEach((eventName) =>
+        window.removeEventListener(eventName, markActivity, activityListenerOptions),
+      );
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.clearInterval(interval);
+    };
+  }, [user, refreshSession, activityListenerOptions]);
 
   React.useEffect(() => {
     let mounted = true;

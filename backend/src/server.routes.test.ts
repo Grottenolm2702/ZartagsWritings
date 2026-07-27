@@ -208,6 +208,28 @@ describe("Server auth routes", () => {
     expect(res.headers["set-cookie"][0]).toContain("token=");
   });
 
+  it("verlängert die Session bei aktivem gültigem Token", async () => {
+    prismaMock.user.findUnique.mockResolvedValue({
+      id: 7,
+      email: "alice@example.com",
+      password: "hashed-password",
+    });
+
+    const app = createApp();
+    const loginRes = await request(app).post("/api/login").send({
+      email: "alice@example.com",
+      password: "Secret123",
+    });
+
+    const refreshRes = await request(app)
+      .post("/api/session/refresh")
+      .set("Cookie", loginRes.headers["set-cookie"]);
+
+    expect(refreshRes.status).toBe(200);
+    expect(refreshRes.body).toEqual({ message: "Session verlängert" });
+    expect(refreshRes.headers["set-cookie"][0]).toContain("token=");
+  });
+
   it("liefert Benutzer-Daten nur mit gültigem Token", async () => {
     prismaMock.user.findUnique
       .mockResolvedValueOnce({
