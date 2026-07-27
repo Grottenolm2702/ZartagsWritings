@@ -255,6 +255,22 @@
   flex-wrap: wrap;
 }
 
+@media screen and (max-width: 800px) {
+  .campaignDetailTopActions {
+    margin-left: 0;
+  }
+
+  .campaignDetailHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .campaignDetailActions {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
 .campaignDetailAddMenu {
   position: relative;
 }

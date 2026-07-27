@@ -227,7 +227,7 @@ export default function CampaignDetail({
 
   return (
     <main className={contentStyles.campaignDetail}>
-      <nav className={contentStyles.campaignDetailTopActions} aria-label="Back navigation">
+      <div className={contentStyles.campaignDetailTopActions} role="navigation" aria-label="Back navigation">
         <button
           type="button"
           className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
@@ -235,7 +235,7 @@ export default function CampaignDetail({
         >
           ← Back to overview
         </button>
-      </nav>
+      </div>
       <header className={contentStyles.campaignDetailHeader}>
         <h1 className={contentStyles.campaignDetailTitle}>{title}</h1>
         {editable ? (
