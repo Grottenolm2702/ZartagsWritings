@@ -31,6 +31,44 @@ type Draft = {
   cards: ApiCardSpec[];
 };
 
+type AutoResizeTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+const AutoResizeTextarea = React.forwardRef<HTMLTextAreaElement, AutoResizeTextareaProps>(
+  function AutoResizeTextarea({ onChange, style, ...props }, forwardedRef) {
+    const localRef = React.useRef<HTMLTextAreaElement | null>(null);
+
+    const setRef = React.useCallback(
+      (node: HTMLTextAreaElement | null) => {
+        localRef.current = node;
+
+        if (typeof forwardedRef === "function") {
+          forwardedRef(node);
+        } else if (forwardedRef) {
+          forwardedRef.current = node;
+        }
+      },
+      [forwardedRef],
+    );
+
+    React.useLayoutEffect(() => {
+      const element = localRef.current;
+      if (!element) return;
+
+      element.style.height = "auto";
+      element.style.height = `${element.scrollHeight}px`;
+    }, [props.value]);
+
+    return (
+      <textarea
+        {...props}
+        ref={setRef}
+        onChange={onChange}
+        style={{ ...style, overflow: "hidden", resize: "none" }}
+      />
+    );
+  },
+);
+
 const ENTITY_TYPE_LABELS: Record<ApiEntityType, string> = {
   pc: "Player Character",
   npc: "NPC",
@@ -68,6 +106,17 @@ function createEmptyDraft(entityType: ApiEntityType, template?: ApiEntityTemplat
 
 function cloneCardContent(content?: ApiCardContent): ApiCardContent | undefined {
   return content ? JSON.parse(JSON.stringify(content)) : undefined;
+}
+
+function moveItem<T>(items: T[], index: number, direction: -1 | 1): T[] {
+  const targetIndex = index + direction;
+  if (targetIndex < 0 || targetIndex >= items.length) {
+    return items;
+  }
+
+  const next = [...items];
+  [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+  return next;
 }
 
 function cloneDraft(entity: ApiEntity | null | undefined, entityType: ApiEntityType): Draft {
@@ -162,6 +211,10 @@ export default function CampaignDetail({
     });
   }
 
+  function moveCard(index: number, direction: -1 | 1) {
+    setDraft((current) => ({ ...current, cards: moveItem(current.cards, index, direction) }));
+  }
+
   function removeCard(index: number) {
     setDraft((current) => ({
       ...current,
@@ -180,6 +233,13 @@ export default function CampaignDetail({
     setDraft((current) => ({
       ...current,
       headerFields: current.headerFields.filter((_, fieldIndex) => fieldIndex !== index),
+    }));
+  }
+
+  function moveHeaderField(index: number, direction: -1 | 1) {
+    setDraft((current) => ({
+      ...current,
+      headerFields: moveItem(current.headerFields, index, direction),
     }));
   }
 
@@ -367,7 +427,7 @@ export default function CampaignDetail({
               </label>
               <label htmlFor="entity-summary">
                 Summary
-                <textarea
+                <AutoResizeTextarea
                   id="entity-summary"
                   className={contentStyles.editInputTransparent}
                   rows={4}
@@ -404,6 +464,12 @@ export default function CampaignDetail({
           }
           onAdd={canEdit ? addHeaderField : undefined}
           onRemove={canEdit ? (index) => removeHeaderField(editableHeaderFields[index].index) : undefined}
+          onMove={
+            canEdit
+              ? (index, direction) =>
+                  moveHeaderField(editableHeaderFields[index].index, direction)
+              : undefined
+          }
         />
       ) : null}
 
@@ -412,6 +478,7 @@ export default function CampaignDetail({
         editable={canEdit}
         onUpdate={updateCard}
         onRemove={removeCard}
+        onMove={moveCard}
       />
 
       {deleteOpen ? (

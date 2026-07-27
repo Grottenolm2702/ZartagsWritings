@@ -8,12 +8,14 @@ export default function ContentHeader({
   onChange,
   onAdd,
   onRemove,
+  onMove,
 }: {
   fields: ApiHeaderField[];
   editable?: boolean;
   onChange?: (idx: number, updated: ApiHeaderField) => void;
   onAdd?: () => void;
   onRemove?: (idx: number) => void;
+  onMove?: (idx: number, direction: -1 | 1) => void;
 }) {
   if (!fields || fields.length === 0) return null;
 
@@ -46,13 +48,33 @@ export default function ContentHeader({
                     onChange={(e) => onChange?.(index, { ...field, value: e.target.value })}
                     placeholder="Value"
                   />
-                  <button
-                    type="button"
-                    className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                    onClick={() => onRemove?.(index)}
-                  >
-                    Remove
-                  </button>
+                  <div className={contentStyles.headerActionRow}>
+                    <button
+                      type="button"
+                      className={contentStyles.iconButton}
+                      aria-label={`Move field ${index + 1} left`}
+                      disabled={index === 0}
+                      onClick={() => onMove?.(index, -1)}
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      className={contentStyles.iconButton}
+                      aria-label={`Move field ${index + 1} right`}
+                      disabled={index === fields.length - 1}
+                      onClick={() => onMove?.(index, 1)}
+                    >
+                      →
+                    </button>
+                    <button
+                      type="button"
+                      className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                      onClick={() => onRemove?.(index)}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </>
               )
             ) : (

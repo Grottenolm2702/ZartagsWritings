@@ -9,6 +9,10 @@ type ItemCardProps = {
   children?: React.ReactNode;
   onUpdate?: (updated: ApiCardSpec) => void;
   onRemove?: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
 };
 
 export default function ItemCard({
@@ -17,6 +21,10 @@ export default function ItemCard({
   children,
   onUpdate,
   onRemove,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown,
 }: ItemCardProps) {
   const updateCard = (patch: Partial<ApiCardSpec>) => {
     onUpdate?.({
@@ -42,6 +50,24 @@ export default function ItemCard({
 
         {editable ? (
           <div className={contentStyles.itemCardActions}>
+            <button
+              type="button"
+              className={contentStyles.iconButton}
+              aria-label={`Move ${card.title} up`}
+              disabled={!canMoveUp}
+              onClick={() => onMoveUp?.()}
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              className={contentStyles.iconButton}
+              aria-label={`Move ${card.title} down`}
+              disabled={!canMoveDown}
+              onClick={() => onMoveDown?.()}
+            >
+              ↓
+            </button>
             <button
               type="button"
               className={`${contentStyles.actionButton} ${contentStyles.secondary}`}

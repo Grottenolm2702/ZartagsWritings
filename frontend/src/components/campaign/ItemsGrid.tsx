@@ -9,56 +9,35 @@ type ItemsGridProps = {
   editable?: boolean;
   onUpdate?: (index: number, updated: ApiCardSpec) => void;
   onRemove?: (index: number) => void;
+  onMove?: (index: number, direction: -1 | 1) => void;
 };
 
-export default function ItemsGrid({ cards, editable, onUpdate, onRemove }: ItemsGridProps) {
+export default function ItemsGrid({ cards, editable, onUpdate, onRemove, onMove }: ItemsGridProps) {
   if (!cards || cards.length === 0) return null;
-  const normalCards = cards
-    .map((card, index) => ({ card, index }))
-    .filter(({ card }) => !card.wide);
-  const wideCards = cards
-    .map((card, index) => ({ card, index }))
-    .filter(({ card }) => card.wide);
 
   return (
     <section className={contentStyles.itemsGrid} aria-label="Karten">
       <div className={contentStyles.itemsMasonry}>
-        {normalCards.map(({ card, index }) => (
-            <ItemCard
-              key={index}
-              card={card}
+        {cards.map((card, index) => (
+          <ItemCard
+            key={index}
+            card={card}
+            editable={editable}
+            onUpdate={(updated) => onUpdate?.(index, updated)}
+            onRemove={() => onRemove?.(index)}
+            onMoveUp={onMove ? () => onMove(index, -1) : undefined}
+            onMoveDown={onMove ? () => onMove(index, 1) : undefined}
+            canMoveUp={index > 0}
+            canMoveDown={index < cards.length - 1}
+          >
+            <CardContent
+              content={card.content}
               editable={editable}
-              onUpdate={(updated) => onUpdate?.(index, updated)}
-              onRemove={() => onRemove?.(index)}
-            >
-              <CardContent
-                content={card.content}
-                editable={editable}
-                onChange={(updated) => onUpdate?.(index, { ...card, content: updated })}
-              />
-            </ItemCard>
-          ))}
+              onChange={(updated) => onUpdate?.(index, { ...card, content: updated })}
+            />
+          </ItemCard>
+        ))}
       </div>
-
-      {wideCards.length > 0 ? (
-        <section className={contentStyles.itemsGridWideSection} aria-label="Breite Karten">
-          {wideCards.map(({ card, index }) => (
-            <ItemCard
-              key={index}
-              card={card}
-              editable={editable}
-              onUpdate={(updated) => onUpdate?.(index, updated)}
-              onRemove={() => onRemove?.(index)}
-            >
-              <CardContent
-                content={card.content}
-                editable={editable}
-                onChange={(updated) => onUpdate?.(index, { ...card, content: updated })}
-              />
-            </ItemCard>
-          ))}
-        </section>
-      ) : null}
     </section>
   );
 }
