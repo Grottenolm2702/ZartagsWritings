@@ -60,7 +60,8 @@ Für den Compose-Betrieb dient \texttt{.env.example} als Vorlage.
 \toprule
 \textbf{Variable} & \textbf{Beispielwert} & \textbf{Bedeutung} \\
 \midrule
-\texttt{JWT\_SECRET} & \texttt{dev-secret-change-me} & Secret für Signierung und Verifikation der JWTs im Backend. \\
+\texttt{PORT} & \texttt{3000} & Port, auf dem das Backend lauscht (alternativ über Host vorgegeben). \\
+\texttt{JWT\_SECRET} & \texttt{replace-with-a-long-random-secret} & Secret für Signierung und Verifikation der JWTs im Backend (Pflichtwert, unsichere Defaults sind blockiert). \\
 \texttt{CORS\_ORIGIN} & \texttt{http://localhost:5173} & Erlaubte Origin(s) für CORS-Requests auf die API. \\
 \texttt{DATABASE\_URL} & \texttt{file:./data/dev.db} & SQLite-Datenbankpfad des Backends. \\
 \shortstack[l]{\texttt{VITE\_API\_}\\\texttt{PROXY\_TARGET}} & \texttt{http://backend:3000} & Ziel für den \texttt{/api}-Proxy des Vite-Dev-Servers. \\
@@ -95,6 +96,7 @@ Frontend und Backend laufen als getrennte Prozesse/Container, kommunizieren
   \item Daten werden persistent in SQLite gespeichert.
   \item Schemaänderungen werden über Prisma-Migrationen ausgerollt.
   \item Geschützte Endpunkte erfordern gültige JWT-Cookies.
+  \item Der Health-Endpoint \texttt{/api/health} liefert zusätzlich \texttt{version} und \texttt{uptimeSeconds}.
   \item Die Trennung von Frontend und Backend erlaubt klare Fehlersuche
   (UI-/API-/DB-Ebene).
 \end{itemize}

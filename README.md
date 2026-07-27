@@ -162,7 +162,8 @@ docker compose up
 
 ```env
 DATABASE_URL="file:./dev.db"
-JWT_SECRET="dev-secret-change-me"
+PORT="3000"
+JWT_SECRET="replace-with-a-long-random-secret"
 CORS_ORIGIN="http://localhost:5173"
 ```
 
@@ -182,6 +183,43 @@ cd frontend
 npm ci
 npm run dev
 ```
+
+Wichtig: Das Backend startet nur mit gesetztem `JWT_SECRET`, und der Wert
+`dev-secret-change-me` ist absichtlich blockiert.
+
+## Deployment (minimal)
+
+Der aktuelle Stack ist primär auf Development/Demo ausgelegt. Für einen
+minimalen Deploy sollten mindestens folgende Variablen gesetzt sein:
+
+```env
+PORT=3000
+JWT_SECRET=<long-random-secret>
+CORS_ORIGIN=https://deine-frontend-domain.tld
+DATABASE_URL=file:./data/dev.db
+VITE_API_PROXY_TARGET=https://dein-backend-host.tld
+```
+
+Startbefehle (ohne Docker):
+
+```bash
+# Backend
+cd backend
+npm ci
+npx prisma migrate deploy
+npm run dev
+```
+
+```bash
+# Frontend (zweites Terminal)
+cd frontend
+npm ci
+npm run dev -- --host 0.0.0.0 --port 5173
+```
+
+Health-Check:
+
+- `GET /api/health` liefert `ok`, `message`, `version` und `uptimeSeconds`.
 
 ## Tests
 
