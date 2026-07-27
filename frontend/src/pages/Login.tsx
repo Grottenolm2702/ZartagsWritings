@@ -30,8 +30,7 @@ export default function Login() {
         <h1>Login</h1>
         <form className={formStyles.form} onSubmit={handleSubmit}>
           <label htmlFor="email" className={formStyles.formLabel}>
-            {" "}
-            E-mail-Adresse:
+            Email:
           </label>
           <input
             type="email"

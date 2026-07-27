@@ -30,9 +30,9 @@ describe("Register page", () => {
     );
 
     fireEvent.change(screen.getByLabelText(/Name:/i), { target: { value: "Weak" } });
-    fireEvent.change(screen.getByLabelText(/E-mail-Adresse:/i), { target: { value: "weak@example.com" } });
+    fireEvent.change(screen.getByLabelText(/Email:/i), { target: { value: "weak@example.com" } });
     fireEvent.change(screen.getByLabelText(/^Password:/i), { target: { value: "weakpass" } });
-    fireEvent.change(screen.getByLabelText(/Password wiederholen:/i), { target: { value: "weakpass" } });
+    fireEvent.change(screen.getByLabelText(/Repeat password:/i), { target: { value: "weakpass" } });
 
     fireEvent.click(screen.getByRole("button", { name: /register/i }));
 
@@ -105,9 +105,9 @@ describe("Register page", () => {
     });
 
     fireEvent.change(screen.getByLabelText(/Name:/i), { target: { value: "Umlaut" } });
-    fireEvent.change(screen.getByLabelText(/E-mail-Adresse:/i), { target: { value: "umlaut@example.com" } });
+    fireEvent.change(screen.getByLabelText(/Email:/i), { target: { value: "umlaut@example.com" } });
     fireEvent.change(screen.getByLabelText(/^Password:/i), { target: { value: "123Nüsse" } });
-    fireEvent.change(screen.getByLabelText(/Password wiederholen:/i), { target: { value: "123Nüsse" } });
+    fireEvent.change(screen.getByLabelText(/Repeat password:/i), { target: { value: "123Nüsse" } });
 
     fireEvent.click(screen.getByRole("button", { name: /register/i }));
 

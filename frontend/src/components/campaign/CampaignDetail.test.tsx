@@ -4,13 +4,13 @@ import CampaignDetail from "./CampaignDetail";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-test("defaults to preview mode when editable (shows 'Bearbeiten' button)", () => {
+test("defaults to preview mode when editable (shows 'Edit' button)", () => {
   render(
     <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <CampaignDetail campaignSlug="test" entityType="npc" editable={true} />
     </MemoryRouter>,
   );
 
-  const editButton = screen.getByRole("button", { name: "Bearbeiten" });
+  const editButton = screen.getByRole("button", { name: "Edit" });
   expect(editButton).toBeInTheDocument();
 });

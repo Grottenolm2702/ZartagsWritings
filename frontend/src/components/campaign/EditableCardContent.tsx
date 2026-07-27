@@ -14,7 +14,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
         className={formStyles.formTextarea}
         rows={5}
         value={content.text}
-        aria-label="Absatz"
+        aria-label="Paragraph"
         onChange={(e) => onChange?.({ type: "paragraph", text: e.target.value })}
       />
     );
@@ -29,7 +29,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
               className={formStyles.formTextarea}
               rows={4}
               value={paragraph}
-              aria-label={`Absatz ${index + 1}`}
+              aria-label={`Paragraph ${index + 1}`}
               onChange={(e) => {
                 const next = [...content.paragraphs];
                 next[index] = e.target.value;
@@ -44,7 +44,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
             onChange?.({ type: "paragraphs", paragraphs: [...content.paragraphs, ""] })
           }
         >
-          Absatz hinzufügen
+          Add paragraph
         </button>
       </div>
     );
@@ -59,7 +59,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
               <input
                 className={formStyles.formInputTransparent}
                 value={item.label}
-                aria-label={`Eintrag ${index + 1} Bezeichnung`}
+                aria-label={`Entry ${index + 1} label`}
                 onChange={(e) => {
                   const next = content.items.map((entry, entryIndex) =>
                     entryIndex === index ? { ...entry, label: e.target.value } : entry,
@@ -70,8 +70,8 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
               <input
                 className={formStyles.formInputTransparent}
                 value={item.href || ""}
-                placeholder="Link optional"
-                aria-label={`Eintrag ${index + 1} Link`}
+                placeholder="Optional link"
+                aria-label={`Entry ${index + 1} link`}
                 onChange={(e) => {
                   const next = content.items.map((entry, entryIndex) =>
                     entryIndex === index ? { ...entry, href: e.target.value || undefined } : entry,
@@ -92,7 +92,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
               })
             }
           >
-            Eintrag hinzufügen
+            Add entry
           </button>
         </li>
       </ul>
@@ -108,7 +108,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
             <input
               className={formStyles.formInputTransparent}
               value={item.dt}
-              aria-label={`Attribut ${index + 1} Name`}
+              aria-label={`Attribute ${index + 1} name`}
               onChange={(e) => {
                 const next = content.items.map((entry, entryIndex) =>
                   entryIndex === index ? { ...entry, dt: e.target.value } : entry,
@@ -121,7 +121,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
             <input
               className={formStyles.formInputTransparent}
               value={item.dd}
-              aria-label={`Attribut ${index + 1} Wert`}
+              aria-label={`Attribute ${index + 1} value`}
               onChange={(e) => {
                 const next = content.items.map((entry, entryIndex) =>
                   entryIndex === index ? { ...entry, dd: e.target.value } : entry,
@@ -143,7 +143,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
             })
           }
         >
-          Attribut hinzufügen
+          Add attribute
         </button>
       </div>
     </>

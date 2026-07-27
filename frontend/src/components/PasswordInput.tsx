@@ -40,7 +40,7 @@ export default function PasswordInput({ className, ...props }: PasswordInputProp
       <button
         type="button"
         className={formStyles.passwordToggleButton}
-        aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+        aria-label={showPassword ? "Hide password" : "Show password"}
         aria-pressed={showPassword}
         onClick={() => setShowPassword((current) => !current)}
       >

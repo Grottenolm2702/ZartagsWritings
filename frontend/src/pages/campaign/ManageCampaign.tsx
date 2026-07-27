@@ -22,13 +22,13 @@ export default function ManageCampaign() {
       setError(null);
       try {
         if (!campaignSlug) {
-          throw new Error("Campaign-Slug fehlt");
+          throw new Error("Campaign slug is missing");
         }
         const data = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
         if (mounted) setCampaign(data);
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Campaign konnte nicht geladen werden");
+          setError(err instanceof Error ? err.message : "Failed to load campaign");
         }
       } finally {
         if (mounted) setLoading(false);
@@ -77,11 +77,11 @@ export default function ManageCampaign() {
   return (
     <Layout>
       <main className={contentStyles.managePage}>
-        <h1>Campaign verwalten</h1>
+        <h1>Manage campaign</h1>
         <p className={contentStyles.manageIntro}>
-          Hier verwaltest du Mitglieder und Zugriffsrollen für diese Campaign.
+          Manage members and access roles for this campaign.
         </p>
-        {loading ? <p>Lädt...</p> : null}
+        {loading ? <p>Loading...</p> : null}
         {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
         {campaign ? (
@@ -116,7 +116,7 @@ export default function ManageCampaign() {
                           setCampaign((prev) => (prev ? { ...prev, joinCode: resp.joinCode } : prev));
                           navigator.clipboard?.writeText(resp.joinCode);
                         } catch (err) {
-                          setError(err instanceof Error ? err.message : "Fehler beim Generieren des Codes");
+                          setError(err instanceof Error ? err.message : "Failed to generate join code");
                         }
                       }}
                     >
@@ -145,13 +145,13 @@ export default function ManageCampaign() {
                   className={contentStyles.actionButton}
                   to={`/campaigns/${campaign.slug}/overview`}
                 >
-                  Zur Übersicht
+                  Back to overview
                 </Link>
               </div>
             </section>
 
-            <section className={contentStyles.userSection} aria-label="Mitglieder">
-              <h2 className={contentStyles.userSectionTitle}>Mitglieder</h2>
+            <section className={contentStyles.userSection} aria-label="Members">
+              <h2 className={contentStyles.userSectionTitle}>Members</h2>
               <ul className={contentStyles.manageMemberList}>
               {campaign.members.map((member) => (
                 <li key={member.id} className={contentStyles.manageMemberItem}>
@@ -162,7 +162,7 @@ export default function ManageCampaign() {
                     </strong>
                   </div>
                   {canManage ? (
-                    <div className={contentStyles.manageRoleButtons} role="group" aria-label={`Rolle für ${member.displayName || member.user.name || member.user.email}`}>
+                    <div className={contentStyles.manageRoleButtons} role="group" aria-label={`Role for ${member.displayName || member.user.name || member.user.email}`}>
                       <button
                         className={roleButtonClass(member.role, "PLAYER")}
                         onClick={() => updateRole(member.userId, "PLAYER")}

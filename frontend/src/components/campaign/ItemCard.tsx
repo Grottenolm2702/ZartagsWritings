@@ -47,7 +47,7 @@ export default function ItemCard({
               className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
               onClick={() => onRemove?.()}
             >
-              Löschen
+              Delete
             </button>
           </div>
         ) : null}
@@ -56,7 +56,7 @@ export default function ItemCard({
       {editable ? (
         <div className={contentStyles.pictureUrlField}>
           <label className={contentStyles.pictureUrlInput}>
-            Bild URL
+            Image URL
             <input
               className={formStyles.formInputTransparent}
               value={card.pictureSrc || ""}
@@ -65,7 +65,7 @@ export default function ItemCard({
             />
           </label>
           <label className={contentStyles.pictureUrlInput}>
-            Alt Text
+            Alt text
             <input
               className={formStyles.formInputTransparent}
               value={card.pictureAlt || ""}
@@ -73,7 +73,7 @@ export default function ItemCard({
             />
           </label>
           <label className={`${contentStyles.pictureUrlInput} ${contentStyles.itemCardWideToggle}`}>
-            <span>Breite Karte</span>
+            <span>Wide card</span>
             <input
               type="checkbox"
               checked={!!card.wide}

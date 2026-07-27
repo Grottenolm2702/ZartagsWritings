@@ -92,16 +92,16 @@ function cloneDraft(entity: ApiEntity | null | undefined, entityType: ApiEntityT
 
 function createCard(kind: "paragraph" | "paragraphs" | "list" | "attributes" | "picture"): ApiCardSpec {
   if (kind === "picture") {
-    return { title: "Neues Bild", pictureSrc: "", pictureAlt: "", wide: false };
+    return { title: "New image", pictureSrc: "", pictureAlt: "", wide: false };
   }
 
   if (kind === "paragraph") {
-    return { title: "Neuer Text", content: { type: "paragraph", text: "" }, wide: false };
+    return { title: "New text", content: { type: "paragraph", text: "" }, wide: false };
   }
 
   if (kind === "paragraphs") {
     return {
-      title: "Mehrere Absätze",
+      title: "Multiple paragraphs",
       content: { type: "paragraphs", paragraphs: [""] },
       wide: false,
     };
@@ -109,14 +109,14 @@ function createCard(kind: "paragraph" | "paragraphs" | "list" | "attributes" | "
 
   if (kind === "list") {
     return {
-      title: "Liste",
+      title: "List",
       content: { type: "list", items: [{ label: "", href: undefined }] },
       wide: false,
     };
   }
 
   return {
-    title: "Attribute",
+    title: "Attributes",
     content: { type: "attributes", items: [{ dt: "", dd: "" }] },
     wide: false,
   };
@@ -203,7 +203,7 @@ export default function CampaignDetail({
       });
       navigate(`/campaigns/${campaignSlug}/${entityType}/${saved.slug}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Entity konnte nicht gespeichert werden");
+      setError(err instanceof Error ? err.message : "Failed to save entity");
     } finally {
       setSaving(false);
     }
@@ -219,7 +219,7 @@ export default function CampaignDetail({
       });
       navigate(`/campaigns/${campaignSlug}/${entityType}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Entity konnte nicht gelöscht werden");
+      setError(err instanceof Error ? err.message : "Failed to delete entity");
     } finally {
       setSaving(false);
     }
@@ -227,13 +227,13 @@ export default function CampaignDetail({
 
   return (
     <main className={contentStyles.campaignDetail}>
-      <nav className={contentStyles.campaignDetailTopActions} aria-label="Zurück Navigation">
+      <nav className={contentStyles.campaignDetailTopActions} aria-label="Back navigation">
         <button
           type="button"
           className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
           onClick={() => navigate(`/campaigns/${campaignSlug}/overview`)}
         >
-          ← Zur Übersicht
+          ← Back to overview
         </button>
       </nav>
       <header className={contentStyles.campaignDetailHeader}>
@@ -249,7 +249,7 @@ export default function CampaignDetail({
                 setPreviewMode((current) => !current);
               }}
             >
-              {previewMode ? "Bearbeiten" : "Vorschau"}
+              {previewMode ? "Edit" : "Preview"}
             </button>
             {!isNew && !previewMode ? (
               <button
@@ -257,7 +257,7 @@ export default function CampaignDetail({
                 className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                 onClick={() => setDeleteOpen(true)}
               >
-                Löschen
+                Delete
               </button>
             ) : null}
             {!previewMode ? (
@@ -268,14 +268,14 @@ export default function CampaignDetail({
                   onClick={handleSave}
                   disabled={saving}
                 >
-                  {saving ? "Speichern..." : "Speichern"}
+                  {saving ? "Saving..." : "Save"}
                 </button>
                 <button
                   type="button"
                   className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                   onClick={() => navigate(-1)}
                 >
-                  Abbrechen
+                  Cancel
                 </button>
                 <div className={contentStyles.campaignDetailAddMenu}>
                   <button
@@ -285,7 +285,7 @@ export default function CampaignDetail({
                     aria-expanded={showAddMenu}
                     aria-controls="card-add-menu"
                   >
-                    Feld hinzufügen
+                    Add field
                   </button>
                   {showAddMenu ? (
                     <div
@@ -294,11 +294,11 @@ export default function CampaignDetail({
                     >
                       <div className={contentStyles.campaignDetailAddMenuList}>
                         {[
-                          ["paragraph", "Absatz"],
-                          ["paragraphs", "Mehrere Absätze"],
-                          ["list", "Liste"],
-                          ["attributes", "Attribute"],
-                          ["picture", "Bild"],
+                          ["paragraph", "Paragraph"],
+                          ["paragraphs", "Multiple paragraphs"],
+                          ["list", "List"],
+                          ["attributes", "Attributes"],
+                          ["picture", "Image"],
                         ].map(([kind, label]) => (
                           <button
                             key={kind}
@@ -339,7 +339,7 @@ export default function CampaignDetail({
 
       {canEdit ? (
         <section className={contentStyles.cardSection}>
-          <div className={contentStyles.cardSectionTitle}>Basisdaten</div>
+          <div className={contentStyles.cardSectionTitle}>Basic data</div>
           <div className={contentStyles.cardSectionContent}>
             <div className={contentStyles.campaignDetailBasisGrid}>
               <div>
@@ -373,7 +373,7 @@ export default function CampaignDetail({
                     setDraft((current) => ({ ...current, isVisible: e.target.checked }))
                   }
                 />{" "}
-                sichtbar
+                visible
               </label>
             </div>
           </div>
@@ -412,18 +412,18 @@ export default function CampaignDetail({
             aria-labelledby="delete-entity-title"
             aria-describedby="delete-entity-description"
           >
-            <h3 id="delete-entity-title">Entity löschen?</h3>
-            <p id="delete-entity-description">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <h3 id="delete-entity-title">Delete entity?</h3>
+            <p id="delete-entity-description">This action cannot be undone.</p>
             <div className={contentStyles.campaignDetailDeleteActions}>
               <button
                 type="button"
                 className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                 onClick={() => setDeleteOpen(false)}
               >
-                Abbrechen
+                Cancel
               </button>
               <button type="button" className={contentStyles.actionButton} onClick={handleDelete}>
-                Löschen
+                Delete
               </button>
             </div>
           </div>

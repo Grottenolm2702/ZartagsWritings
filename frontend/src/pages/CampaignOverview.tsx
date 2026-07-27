@@ -49,13 +49,13 @@ export default function CampaignOverview() {
       setError(null);
       try {
         if (!campaignSlug) {
-          throw new Error("Campaign-Slug fehlt");
+          throw new Error("Campaign slug is missing");
         }
         const data = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
         if (mounted) setCampaign(data);
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Übersicht konnte nicht geladen werden");
+          setError(err instanceof Error ? err.message : "Failed to load overview");
         }
       } finally {
         if (mounted) setLoading(false);
@@ -138,7 +138,7 @@ export default function CampaignOverview() {
           </h1>
           <div className={contentStyles.campaignOverviewHeaderActions}>
             <Link className={contentStyles.actionButton} to={`/campaigns/${campaignSlug}/manage`}>
-              Campaign verwalten
+              Manage campaign
             </Link>
           </div>
         </header>
@@ -154,7 +154,7 @@ export default function CampaignOverview() {
           />
         </section>
 
-        {loading ? <p>Lädt...</p> : null}
+        {loading ? <p>Loading...</p> : null}
         {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
         {campaign && filteredEntities.length === 0 ? <p>No entries found.</p> : null}
@@ -195,10 +195,10 @@ export default function CampaignOverview() {
                               <input
                                 type="checkbox"
                                 checked={entity.isVisible}
-                                aria-label={`${entity.name} sichtbar`}
+                                aria-label={`${entity.name} visible`}
                                 onChange={() => updateVisibility(entity, !entity.isVisible)}
                               />
-                              visible
+                              Visible
                             </label>
                           ) : null}
                         </div>

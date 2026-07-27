@@ -18,7 +18,7 @@ export default function ContentHeader({
   if (!fields || fields.length === 0) return null;
 
   return (
-    <section aria-label="Kopfbereich">
+    <section aria-label="Header section">
       <div className={contentStyles.contentHeader}>
         {fields.map((field, index) => (
           <section className={contentStyles.contentHeaderItem} key={`${field.label}-${index}`}>
@@ -38,20 +38,20 @@ export default function ContentHeader({
                     className={contentStyles.headerInput}
                     value={field.label}
                     onChange={(e) => onChange?.(index, { ...field, label: e.target.value })}
-                    placeholder="Feldname"
+                    placeholder="Field name"
                   />
                   <input
                     className={contentStyles.headerInput}
                     value={field.value}
                     onChange={(e) => onChange?.(index, { ...field, value: e.target.value })}
-                    placeholder="Wert"
+                    placeholder="Value"
                   />
                   <button
                     type="button"
                     className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                     onClick={() => onRemove?.(index)}
                   >
-                    Entfernen
+                    Remove
                   </button>
                 </>
               )
@@ -67,7 +67,7 @@ export default function ContentHeader({
       {editable && onAdd ? (
         <div className={contentStyles.contentHeaderActions}>
           <button type="button" className={contentStyles.newButton} onClick={onAdd}>
-            Feld hinzufügen
+            Add field
           </button>
         </div>
       ) : null}

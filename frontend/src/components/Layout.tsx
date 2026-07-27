@@ -112,7 +112,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }}
         role="button"
         tabIndex={open ? 0 : -1}
-        aria-label="Sidebar schließen"
+        aria-label="Close sidebar"
         aria-hidden={!open}
       ></div>
 

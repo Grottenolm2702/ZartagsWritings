@@ -30,7 +30,7 @@ export default function CampaignCreate() {
       });
       navigate(`/campaigns/${created.slug}/manage`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Campaign konnte nicht erstellt werden");
+      setError(err instanceof Error ? err.message : "Failed to create campaign");
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,7 @@ export default function CampaignCreate() {
   return (
     <Layout>
       <main>
-        <h1>Campaign erstellen</h1>
+        <h1>Create campaign</h1>
         <form className={formStyles.form} onSubmit={handleSubmit}>
           <label className={formStyles.formLabel} htmlFor="name">
             Name
@@ -53,7 +53,7 @@ export default function CampaignCreate() {
           />
 
           <label className={formStyles.formLabel} htmlFor="description">
-            Beschreibung
+            Description
           </label>
           <textarea
             id="description"
@@ -64,7 +64,7 @@ export default function CampaignCreate() {
           />
 
           <button type="submit" className={formStyles.formButton} disabled={loading}>
-            {loading ? "Wird erstellt..." : "Campaign erstellen"}
+            {loading ? "Creating..." : "Create campaign"}
           </button>
           {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
         </form>

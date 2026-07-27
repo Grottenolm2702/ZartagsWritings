@@ -14,10 +14,10 @@ export default function Register() {
 
   const passwordRules = React.useMemo(() => {
     return [
-      { id: "lower", label: "mindestens einen Kleinbuchstaben", test: /\p{Ll}/u },
-      { id: "upper", label: "mindestens einen Großbuchstaben", test: /\p{Lu}/u },
-      { id: "digit", label: "mindestens eine Zahl", test: /\d/ },
-      { id: "length", label: "8–30 Zeichen lang", test: /^.{8,30}$/ },
+      { id: "lower", label: "at least one lowercase letter", test: /\p{Ll}/u },
+      { id: "upper", label: "at least one uppercase letter", test: /\p{Lu}/u },
+      { id: "digit", label: "at least one number", test: /\d/ },
+      { id: "length", label: "8–30 characters long", test: /^.{8,30}$/ },
     ];
   }, []);
 
@@ -38,13 +38,13 @@ export default function Register() {
     const rpt = formData.get("repeatPassword") as string;
 
     if (pwd !== rpt) {
-      setError("Passwörter stimmen nicht überein");
+      setError("Passwords do not match");
       return;
     }
 
     // Validate password against stricter client-side rules
     if (!passwordRegex.test(pwd)) {
-      setError("Passwort erfüllt nicht alle Anforderungen. Siehe Hinweise unter dem Feld.");
+      setError("Password does not meet all requirements. See the rules below.");
       return;
     }
 
@@ -67,7 +67,7 @@ export default function Register() {
           <input id="name" name="name" className={formStyles.formInput} required />
 
           <label htmlFor="email" className={formStyles.formLabel}>
-            E-mail-Adresse:
+            Email:
           </label>
           <input
             type="email"
@@ -94,8 +94,8 @@ export default function Register() {
             autoComplete="new-password"
           />
 
-          <section className={formStyles.passwordRules} aria-label="Passwort Anforderungen">
-            <p>Passwort-Anforderungen</p>
+          <section className={formStyles.passwordRules} aria-label="Password requirements">
+            <p>Password requirements</p>
             <div className={formStyles.progressBar} aria-hidden="true">
               <div
                 className={progress === 100 ? formStyles.progressFill : formStyles.progressFillIncomplete}
@@ -113,7 +113,7 @@ export default function Register() {
           </section>
 
           <label htmlFor="repeatPassword" className={formStyles.formLabel}>
-            Password wiederholen:
+            Repeat password:
           </label>
           <PasswordInput
             name="repeatPassword"

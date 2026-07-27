@@ -21,7 +21,13 @@ export default function Home() {
     let mounted = true;
 
     async function load() {
-      if (!isLoggedIn) return;
+      if (!isLoggedIn) {
+        setCampaigns([]);
+        setShowJoin(false);
+        setJoinCode("");
+        setJoinError(null);
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -29,7 +35,7 @@ export default function Home() {
         if (mounted) setCampaigns(data);
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Kampagnen konnten nicht geladen werden");
+          setError(err instanceof Error ? err.message : "Failed to load campaigns");
         }
       } finally {
         if (mounted) setLoading(false);
@@ -55,7 +61,7 @@ export default function Home() {
       setJoinCode("");
       navigate(`/campaigns/${result.campaign.slug}/overview`);
     } catch (err) {
-      setJoinError(err instanceof Error ? err.message : "Campaign konnte nicht beigetreten werden");
+      setJoinError(err instanceof Error ? err.message : "Failed to join campaign");
     } finally {
       setJoinLoading(false);
     }
@@ -68,19 +74,19 @@ export default function Home() {
 
         {!isLoggedIn ? (
           <p>
-            Bitte <Link className={contentStyles.inlineLink} to="/login">einloggen</Link> oder <Link className={contentStyles.inlineLink} to="/register">registrieren</Link>, um deine Campaigns zu sehen.
+            Please <Link className={contentStyles.inlineLink} to="/login">log in</Link> or <Link className={contentStyles.inlineLink} to="/register">register</Link> to see your campaigns.
           </p>
         ) : (
           <div className={contentStyles.homeJoinActions}>
             <Link className={contentStyles.actionButton} to="/campaigns/new">
-              Campaign erstellen
+              Create campaign
             </Link>
             <button
               type="button"
               className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
               onClick={() => setShowJoin(true)}
             >
-              Campaign beitreten
+              Join campaign
             </button>
           </div>
         )}
@@ -93,9 +99,9 @@ export default function Home() {
               aria-modal="true"
               aria-labelledby="join-campaign-title"
             >
-              <h3 id="join-campaign-title">Campaign beitreten</h3>
+              <h3 id="join-campaign-title">Join campaign</h3>
               <form onSubmit={handleJoinSubmit}>
-                <label htmlFor="joinCode">Beitrittscode</label>
+                <label htmlFor="joinCode">Join code</label>
                 <input
                   id="joinCode"
                   value={joinCode}
@@ -105,7 +111,7 @@ export default function Home() {
                 />
                 <div className={contentStyles.homeJoinButtonRow}>
                   <button type="submit" className={contentStyles.actionButton} disabled={joinLoading}>
-                    {joinLoading ? "Beitreten..." : "Beitreten"}
+                    {joinLoading ? "Joining..." : "Join"}
                   </button>
                   <button
                     type="button"
@@ -115,7 +121,7 @@ export default function Home() {
                       setJoinError(null);
                     }}
                   >
-                    Abbrechen
+                    Cancel
                   </button>
                 </div>
                 {joinError ? <div className={contentStyles.errorMessage} role="alert">{joinError}</div> : null}
@@ -124,25 +130,25 @@ export default function Home() {
           </div>
         ) : null}
 
-        {loading ? <p>Lädt...</p> : null}
+        {loading ? <p>Loading...</p> : null}
         {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
-        {campaigns.length > 0 ? (
+        {isLoggedIn && campaigns.length > 0 ? (
           <section className={contentStyles.itemsGrid}>
             <div className={contentStyles.itemsMasonry}>
               {campaigns.map((campaign) => (
                 <article key={campaign.id} className={contentStyles.campaignCard}>
                   <Link to={`/campaigns/${campaign.slug}/overview`}>
                     <h2>{campaign.name}</h2>
-                    <p>{campaign.description || "Keine Beschreibung"}</p>
-                    <p>Rolle: {campaign.role}</p>
+                    <p>{campaign.description || "No description"}</p>
+                    <p>Role: {campaign.role}</p>
                   </Link>
                 </article>
               ))}
             </div>
           </section>
         ) : isLoggedIn && !loading ? (
-          <p>Keine Campaigns gefunden.</p>
+          <p>No campaigns found.</p>
         ) : null}
       </main>
     </Layout>

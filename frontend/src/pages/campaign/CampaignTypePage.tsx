@@ -32,7 +32,7 @@ export default function CampaignTypePage() {
       setError(null);
       try {
         if (!campaignSlug) {
-          throw new Error("Campaign-Slug fehlt");
+          throw new Error("Campaign slug is missing");
         }
         const campaignData = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
         if (mounted) setCampaign(campaignData);
@@ -98,7 +98,7 @@ export default function CampaignTypePage() {
           </header>
         ) : null}
 
-        {loading ? <p>Lädt...</p> : null}
+        {loading ? <p>Loading...</p> : null}
         {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
         {entity ? (
@@ -118,14 +118,14 @@ export default function CampaignTypePage() {
                 {entities.map((entry) => (
                   <article key={entry.id} className={contentStyles.itemCard}>
                     <h2>{entry.name}</h2>
-                    <p>{entry.summary || "Keine Beschreibung"}</p>
+                    <p>{entry.summary || "No description"}</p>
                     <div className={contentStyles.campaignTypeEntityActions}>
                       <Link to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}`}>
-                        Öffnen
+                        Open
                       </Link>
                       {editable ? (
                         <Link to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}/edit`}>
-                          Bearbeiten
+                          Edit
                         </Link>
                       ) : null}
                     </div>
@@ -133,7 +133,7 @@ export default function CampaignTypePage() {
                 ))}
               </div>
             </div>
-            {!loading && entities.length === 0 ? <p>Keine Einträge gefunden.</p> : null}
+            {!loading && entities.length === 0 ? <p>No entries found.</p> : null}
           </section>
         )}
       </main>

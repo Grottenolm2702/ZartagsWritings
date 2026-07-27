@@ -29,7 +29,7 @@ export default function EditItemPage() {
 
     async function load() {
       if (!campaignSlug) {
-        setError("Campaign-Slug fehlt");
+        setError("Campaign slug is missing");
         setLoading(false);
         return;
       }
@@ -57,7 +57,7 @@ export default function EditItemPage() {
         }
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Entity konnte nicht geladen werden");
+          setError(err instanceof Error ? err.message : "Failed to load entity");
         }
       } finally {
         if (mounted) setLoading(false);
@@ -80,7 +80,7 @@ export default function EditItemPage() {
   return (
     <Layout>
       <main>
-        {loading ? <p>Lädt...</p> : null}
+        {loading ? <p>Loading...</p> : null}
         {error ? <div role="alert">{error}</div> : null}
         {campaignSlug && (isNew || entity) ? (
           <CampaignDetail

@@ -37,13 +37,13 @@ describe("Home page", () => {
     vi.clearAllMocks();
   });
 
-  it("lädt Campaigns und leitet nach Join weiter", async () => {
+  it("loads campaigns and navigates after joining", async () => {
     apiFetch.mockResolvedValueOnce([
       {
         id: 1,
         slug: "wald",
         name: "Wald",
-        description: "Eine Kampagne",
+        description: "A campaign",
         role: "DM",
       },
     ]);
@@ -59,11 +59,11 @@ describe("Home page", () => {
 
     expect(await screen.findByText("Wald")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /campaign beitreten/i }));
-    fireEvent.change(screen.getByLabelText(/beitrittscode/i), {
+    fireEvent.click(screen.getByRole("button", { name: /join campaign/i }));
+    fireEvent.change(screen.getByLabelText(/join code/i), {
       target: { value: "abc123" },
     });
-    fireEvent.submit(screen.getByRole("button", { name: /^beitreten$/i }).closest("form")!);
+    fireEvent.submit(screen.getByRole("button", { name: /^join$/i }).closest("form")!);
 
     await waitFor(() => {
       expect(apiFetch).toHaveBeenCalledWith(

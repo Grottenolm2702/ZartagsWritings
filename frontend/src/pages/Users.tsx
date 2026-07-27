@@ -13,7 +13,7 @@ export default function Users() {
   }, [loadUser]);
 
   async function handleDelete() {
-    if (!confirm("Account wirklich löschen?")) return;
+    if (!confirm("Do you really want to delete your account?")) return;
     try {
       const res = await fetch("/api/user", {
         method: "DELETE",
@@ -35,15 +35,15 @@ export default function Users() {
   return (
     <Layout>
       <main className={contentStyles.userPage}>
-        <h1>Userverwaltung</h1>
+        <h1>User account</h1>
         <p className={contentStyles.userIntro}>
-          Hier findest du deine Kontodaten, deine Campaign-Mitgliedschaften und
-          die wichtigsten Kontoeinstellungen.
+          Here you can find your account details, campaign memberships,
+          and key account settings.
         </p>
         {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
-        {loading ? <p>Lädt...</p> : null}
+        {loading ? <p>Loading...</p> : null}
         {user ? (
-          <section className={contentStyles.userCard} aria-label="Kontodaten">
+          <section className={contentStyles.userCard} aria-label="Account details">
             <dl className={contentStyles.userMetaGrid}>
               <div className={contentStyles.userMetaItem}>
                 <dt className={contentStyles.userMetaLabel}>ID</dt>
@@ -76,7 +76,7 @@ export default function Users() {
             ) : (
               <div className={contentStyles.userSection}>
                 <h2 className={contentStyles.userSectionTitle}>Campaigns</h2>
-                <p className={contentStyles.userEmptyState}>Du bist aktuell keiner Campaign zugeordnet.</p>
+                <p className={contentStyles.userEmptyState}>You are not part of any campaign yet.</p>
               </div>
             )}
 
@@ -85,10 +85,10 @@ export default function Users() {
                 className={`${contentStyles.actionButton} ${contentStyles.dangerButton}`}
                 onClick={handleDelete}
               >
-                Account löschen
+                Delete account
               </button>
               <button className={contentStyles.actionButton} onClick={handleLogout}>
-                Abmelden
+                Log out
               </button>
             </div>
           </section>
