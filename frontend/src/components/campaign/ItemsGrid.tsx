@@ -21,7 +21,7 @@ export default function ItemsGrid({ cards, editable, onUpdate, onRemove }: Items
     .filter(({ card }) => card.wide);
 
   return (
-    <div className={contentStyles.itemsGrid}>
+    <section className={contentStyles.itemsGrid} aria-label="Karten">
       <div className={contentStyles.itemsMasonry}>
         {normalCards.map(({ card, index }) => (
             <ItemCard
@@ -41,7 +41,7 @@ export default function ItemsGrid({ cards, editable, onUpdate, onRemove }: Items
       </div>
 
       {wideCards.length > 0 ? (
-        <div className={contentStyles.itemsGridWideSection}>
+        <section className={contentStyles.itemsGridWideSection} aria-label="Breite Karten">
           {wideCards.map(({ card, index }) => (
             <ItemCard
               key={index}
@@ -57,8 +57,8 @@ export default function ItemsGrid({ cards, editable, onUpdate, onRemove }: Items
               />
             </ItemCard>
           ))}
-        </div>
+        </section>
       ) : null}
-    </div>
+    </section>
   );
 }

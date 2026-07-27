@@ -566,13 +566,14 @@
 
 .userMetaLabel {
   display: block;
-  margin-bottom: 0.25rem;
+  margin: 0 0 0.25rem;
   color: var(--accent-color);
   font-weight: 600;
   font-size: 0.9rem;
 }
 
 .userMetaValue {
+  margin: 0;
   word-break: break-word;
 }
 

@@ -40,24 +40,24 @@ export default function Users() {
           Hier findest du deine Kontodaten, deine Campaign-Mitgliedschaften und
           die wichtigsten Kontoeinstellungen.
         </p>
-        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
         {loading ? <p>Lädt...</p> : null}
         {user ? (
-          <div className={contentStyles.userCard}>
-            <div className={contentStyles.userMetaGrid}>
+          <section className={contentStyles.userCard} aria-label="Kontodaten">
+            <dl className={contentStyles.userMetaGrid}>
               <div className={contentStyles.userMetaItem}>
-                <span className={contentStyles.userMetaLabel}>ID</span>
-                <span className={contentStyles.userMetaValue}>{user.id}</span>
+                <dt className={contentStyles.userMetaLabel}>ID</dt>
+                <dd className={contentStyles.userMetaValue}>{user.id}</dd>
               </div>
               <div className={contentStyles.userMetaItem}>
-                <span className={contentStyles.userMetaLabel}>E-Mail</span>
-                <span className={contentStyles.userMetaValue}>{user.email}</span>
+                <dt className={contentStyles.userMetaLabel}>E-Mail</dt>
+                <dd className={contentStyles.userMetaValue}>{user.email}</dd>
               </div>
               <div className={contentStyles.userMetaItem}>
-                <span className={contentStyles.userMetaLabel}>Name</span>
-                <span className={contentStyles.userMetaValue}>{user.name || "-"}</span>
+                <dt className={contentStyles.userMetaLabel}>Name</dt>
+                <dd className={contentStyles.userMetaValue}>{user.name || "-"}</dd>
               </div>
-            </div>
+            </dl>
 
             {user.memberships?.length ? (
               <div className={contentStyles.userSection}>
@@ -91,7 +91,7 @@ export default function Users() {
                 Abmelden
               </button>
             </div>
-          </div>
+          </section>
         ) : null}
       </main>
     </Layout>

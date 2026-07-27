@@ -98,6 +98,10 @@
   color: var(--text-color);
 }
 
+.passwordRules p {
+  margin: 0;
+}
+
 .progressBar {
   height: 8px;
   background: var(--hover-color);

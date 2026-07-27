@@ -104,6 +104,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div
         id="overlay"
         onClick={() => setOpen(false)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setOpen(false);
+          }
+        }}
+        role="button"
+        tabIndex={open ? 0 : -1}
+        aria-label="Sidebar schließen"
         aria-hidden={!open}
       ></div>
 

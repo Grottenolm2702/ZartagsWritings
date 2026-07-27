@@ -227,7 +227,7 @@ export default function CampaignDetail({
 
   return (
     <main className={contentStyles.campaignDetail}>
-      <div className={contentStyles.campaignDetailTopActions}>
+      <nav className={contentStyles.campaignDetailTopActions} aria-label="Zurück Navigation">
         <button
           type="button"
           className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
@@ -235,8 +235,8 @@ export default function CampaignDetail({
         >
           ← Zur Übersicht
         </button>
-      </div>
-      <div className={contentStyles.campaignDetailHeader}>
+      </nav>
+      <header className={contentStyles.campaignDetailHeader}>
         <h1 className={contentStyles.campaignDetailTitle}>{title}</h1>
         {editable ? (
           <div className={contentStyles.campaignDetailActions}>
@@ -282,11 +282,16 @@ export default function CampaignDetail({
                     type="button"
                     className={contentStyles.actionButton}
                     onClick={() => setShowAddMenu((value) => !value)}
+                    aria-expanded={showAddMenu}
+                    aria-controls="card-add-menu"
                   >
                     Feld hinzufügen
                   </button>
                   {showAddMenu ? (
-                    <div className={`${contentStyles.modal} ${contentStyles.campaignDetailAddMenuPopover}`}>
+                    <div
+                      id="card-add-menu"
+                      className={`${contentStyles.modal} ${contentStyles.campaignDetailAddMenuPopover}`}
+                    >
                       <div className={contentStyles.campaignDetailAddMenuList}>
                         {[
                           ["paragraph", "Absatz"],
@@ -328,9 +333,9 @@ export default function CampaignDetail({
             ) : null}
           </div>
         ) : null}
-      </div>
+      </header>
 
-      {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+      {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
       {canEdit ? (
         <section className={contentStyles.cardSection}>
@@ -340,25 +345,28 @@ export default function CampaignDetail({
               <div>
                 <strong>Type:</strong> {ENTITY_TYPE_LABELS[entityType]}
               </div>
-              <label>
+              <label htmlFor="entity-name">
                 Name
                 <input
+                  id="entity-name"
                   className={contentStyles.editInputTransparent}
                   value={draft.name}
                   onChange={(e) => setDraft((current) => ({ ...current, name: e.target.value }))}
                 />
               </label>
-              <label>
+              <label htmlFor="entity-summary">
                 Summary
                 <textarea
+                  id="entity-summary"
                   className={contentStyles.editInputTransparent}
                   rows={4}
                   value={draft.summary}
                   onChange={(e) => setDraft((current) => ({ ...current, summary: e.target.value }))}
                 />
               </label>
-              <label>
+              <label htmlFor="entity-visible">
                 <input
+                  id="entity-visible"
                   type="checkbox"
                   checked={draft.isVisible}
                   onChange={(e) =>
@@ -397,9 +405,15 @@ export default function CampaignDetail({
 
       {deleteOpen ? (
         <div className={contentStyles.modalOverlay}>
-          <div className={contentStyles.modal} role="dialog" aria-modal="true">
-            <h3>Entity löschen?</h3>
-            <p>Diese Aktion kann nicht rückgängig gemacht werden.</p>
+          <div
+            className={contentStyles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-entity-title"
+            aria-describedby="delete-entity-description"
+          >
+            <h3 id="delete-entity-title">Entity löschen?</h3>
+            <p id="delete-entity-description">Diese Aktion kann nicht rückgängig gemacht werden.</p>
             <div className={contentStyles.campaignDetailDeleteActions}>
               <button
                 type="button"

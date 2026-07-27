@@ -14,6 +14,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
         className={formStyles.formTextarea}
         rows={5}
         value={content.text}
+        aria-label="Absatz"
         onChange={(e) => onChange?.({ type: "paragraph", text: e.target.value })}
       />
     );
@@ -28,6 +29,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
               className={formStyles.formTextarea}
               rows={4}
               value={paragraph}
+              aria-label={`Absatz ${index + 1}`}
               onChange={(e) => {
                 const next = [...content.paragraphs];
                 next[index] = e.target.value;
@@ -57,6 +59,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
               <input
                 className={formStyles.formInputTransparent}
                 value={item.label}
+                aria-label={`Eintrag ${index + 1} Bezeichnung`}
                 onChange={(e) => {
                   const next = content.items.map((entry, entryIndex) =>
                     entryIndex === index ? { ...entry, label: e.target.value } : entry,
@@ -68,6 +71,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
                 className={formStyles.formInputTransparent}
                 value={item.href || ""}
                 placeholder="Link optional"
+                aria-label={`Eintrag ${index + 1} Link`}
                 onChange={(e) => {
                   const next = content.items.map((entry, entryIndex) =>
                     entryIndex === index ? { ...entry, href: e.target.value || undefined } : entry,
@@ -96,13 +100,15 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
   }
 
   return (
-    <dl>
+    <>
+      <dl>
       {content.items.map((item, index) => (
         <React.Fragment key={index}>
           <dt>
             <input
               className={formStyles.formInputTransparent}
               value={item.dt}
+              aria-label={`Attribut ${index + 1} Name`}
               onChange={(e) => {
                 const next = content.items.map((entry, entryIndex) =>
                   entryIndex === index ? { ...entry, dt: e.target.value } : entry,
@@ -115,6 +121,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
             <input
               className={formStyles.formInputTransparent}
               value={item.dd}
+              aria-label={`Attribut ${index + 1} Wert`}
               onChange={(e) => {
                 const next = content.items.map((entry, entryIndex) =>
                   entryIndex === index ? { ...entry, dd: e.target.value } : entry,
@@ -125,6 +132,7 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
           </dd>
         </React.Fragment>
       ))}
+      </dl>
       <div>
         <button
           type="button"
@@ -138,6 +146,6 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
           Attribut hinzufügen
         </button>
       </div>
-    </dl>
+    </>
   );
 }

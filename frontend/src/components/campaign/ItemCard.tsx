@@ -26,8 +26,8 @@ export default function ItemCard({
   };
 
   return (
-    <div className={`${contentStyles.itemCard}${card.wide ? ` ${contentStyles.wide}` : ""}`}>
-      <div className={contentStyles.itemCardHeader}>
+    <article className={`${contentStyles.itemCard}${card.wide ? ` ${contentStyles.wide}` : ""}`}>
+      <header className={contentStyles.itemCardHeader}>
         <div className={contentStyles.itemCardTitleWrap}>
           {editable ? (
             <input
@@ -51,23 +51,27 @@ export default function ItemCard({
             </button>
           </div>
         ) : null}
-      </div>
+      </header>
 
       {editable ? (
         <div className={contentStyles.pictureUrlField}>
-          <label className={contentStyles.pictureUrlInput}>Bild URL</label>
-          <input
-            className={formStyles.formInputTransparent}
-            value={card.pictureSrc || ""}
-            onChange={(e) => updateCard({ pictureSrc: e.target.value || undefined })}
-            placeholder="https://..."
-          />
-          <label className={contentStyles.pictureUrlInput}>Alt Text</label>
-          <input
-            className={formStyles.formInputTransparent}
-            value={card.pictureAlt || ""}
-            onChange={(e) => updateCard({ pictureAlt: e.target.value || undefined })}
-          />
+          <label className={contentStyles.pictureUrlInput}>
+            Bild URL
+            <input
+              className={formStyles.formInputTransparent}
+              value={card.pictureSrc || ""}
+              onChange={(e) => updateCard({ pictureSrc: e.target.value || undefined })}
+              placeholder="https://..."
+            />
+          </label>
+          <label className={contentStyles.pictureUrlInput}>
+            Alt Text
+            <input
+              className={formStyles.formInputTransparent}
+              value={card.pictureAlt || ""}
+              onChange={(e) => updateCard({ pictureAlt: e.target.value || undefined })}
+            />
+          </label>
           <label className={`${contentStyles.pictureUrlInput} ${contentStyles.itemCardWideToggle}`}>
             <span>Breite Karte</span>
             <input
@@ -86,6 +90,6 @@ export default function ItemCard({
           <img src={card.pictureSrc} alt={card.pictureAlt || card.title} />
         </div>
       ) : null}
-    </div>
+    </article>
   );
 }

@@ -56,7 +56,7 @@ export default function Login() {
           <button type="submit" className={formStyles.formButton} disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
-          {error ? <div className={formStyles.errorMessage}>{error}</div> : null}
+          {error ? <div className={formStyles.errorMessage} role="alert">{error}</div> : null}
         </form>
       </main>
     </Layout>

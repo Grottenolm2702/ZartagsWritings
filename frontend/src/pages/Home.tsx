@@ -71,7 +71,7 @@ export default function Home() {
             Bitte <Link className={contentStyles.inlineLink} to="/login">einloggen</Link> oder <Link className={contentStyles.inlineLink} to="/register">registrieren</Link>, um deine Campaigns zu sehen.
           </p>
         ) : (
-          <p className={contentStyles.homeJoinActions}>
+          <div className={contentStyles.homeJoinActions}>
             <Link className={contentStyles.actionButton} to="/campaigns/new">
               Campaign erstellen
             </Link>
@@ -82,13 +82,18 @@ export default function Home() {
             >
               Campaign beitreten
             </button>
-          </p>
+          </div>
         )}
 
         {showJoin ? (
           <div className={contentStyles.modalOverlay}>
-            <div className={contentStyles.modal} role="dialog" aria-modal="true">
-              <h3>Campaign beitreten</h3>
+            <div
+              className={contentStyles.modal}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="join-campaign-title"
+            >
+              <h3 id="join-campaign-title">Campaign beitreten</h3>
               <form onSubmit={handleJoinSubmit}>
                 <label htmlFor="joinCode">Beitrittscode</label>
                 <input
@@ -113,14 +118,14 @@ export default function Home() {
                     Abbrechen
                   </button>
                 </div>
-                {joinError ? <div className={contentStyles.errorMessage}>{joinError}</div> : null}
+                {joinError ? <div className={contentStyles.errorMessage} role="alert">{joinError}</div> : null}
               </form>
             </div>
           </div>
         ) : null}
 
         {loading ? <p>Lädt...</p> : null}
-        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
         {campaigns.length > 0 ? (
           <section className={contentStyles.itemsGrid}>

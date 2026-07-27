@@ -1,6 +1,5 @@
 import React from "react";
 import contentStyles from "../../styles/content.module.css";
-import formStyles from "../../styles/forms.module.css";
 import type { ApiHeaderField } from "../../types/campaign-api";
 
 export default function ContentHeader({
@@ -19,10 +18,10 @@ export default function ContentHeader({
   if (!fields || fields.length === 0) return null;
 
   return (
-    <div>
+    <section aria-label="Kopfbereich">
       <div className={contentStyles.contentHeader}>
         {fields.map((field, index) => (
-          <div className={contentStyles.contentHeaderItem} key={`${field.label}-${index}`}>
+          <section className={contentStyles.contentHeaderItem} key={`${field.label}-${index}`}>
             {editable ? (
               index === 0 ? (
                 <>
@@ -62,7 +61,7 @@ export default function ContentHeader({
                 <span>{field.value}</span>
               </>
             )}
-          </div>
+          </section>
         ))}
       </div>
       {editable && onAdd ? (
@@ -72,6 +71,6 @@ export default function ContentHeader({
           </button>
         </div>
       ) : null}
-    </div>
+    </section>
   );
 }

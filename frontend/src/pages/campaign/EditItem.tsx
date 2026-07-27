@@ -81,7 +81,7 @@ export default function EditItemPage() {
     <Layout>
       <main>
         {loading ? <p>Lädt...</p> : null}
-        {error ? <div>{error}</div> : null}
+        {error ? <div role="alert">{error}</div> : null}
         {campaignSlug && (isNew || entity) ? (
           <CampaignDetail
             key={`${campaignSlug}:${apiType}:${isNew ? template?.type ?? "new" : entity?.id ?? "entity"}`}

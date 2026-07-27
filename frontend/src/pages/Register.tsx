@@ -94,9 +94,9 @@ export default function Register() {
             autoComplete="new-password"
           />
 
-          <div className={formStyles.passwordRules}>
-            <div>Passwort-Anforderungen</div>
-            <div className={formStyles.progressBar}>
+          <section className={formStyles.passwordRules} aria-label="Passwort Anforderungen">
+            <p>Passwort-Anforderungen</p>
+            <div className={formStyles.progressBar} aria-hidden="true">
               <div
                 className={progress === 100 ? formStyles.progressFill : formStyles.progressFillIncomplete}
                 style={{ width: `${progress}%` }}
@@ -105,12 +105,12 @@ export default function Register() {
             <ul className={formStyles.ruleList}>
               {passwordRules.map((r, idx) => (
                 <li key={r.id} className={`${formStyles.ruleItem} ${satisfied[idx] ? formStyles.satisfied : ""}`}>
-                  <span className={formStyles.ruleIcon}>{satisfied[idx] ? "✓" : "○"}</span>
+                  <span className={formStyles.ruleIcon} aria-hidden="true">{satisfied[idx] ? "✓" : "○"}</span>
                   {r.label}
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
 
           <label htmlFor="repeatPassword" className={formStyles.formLabel}>
             Password wiederholen:
@@ -130,7 +130,7 @@ export default function Register() {
           <button type="submit" className={formStyles.formButton} disabled={loading}>
             {loading ? "Registering..." : "Register"}
           </button>
-          {error ? <div className={formStyles.errorMessage}>{error}</div> : null}
+          {error ? <div className={formStyles.errorMessage} role="alert">{error}</div> : null}
         </form>
       </main>
     </Layout>

@@ -132,7 +132,7 @@ export default function CampaignOverview() {
   return (
     <Layout>
       <main>
-        <div className={contentStyles.campaignOverviewHeader}>
+        <header className={contentStyles.campaignOverviewHeader}>
           <h1 className={contentStyles.campaignOverviewTitle}>
             Overview{campaign?.name ? `: ${campaign.name}` : ""}
           </h1>
@@ -141,9 +141,9 @@ export default function CampaignOverview() {
               Campaign verwalten
             </Link>
           </div>
-        </div>
+        </header>
 
-        <div className={overviewStyles.filterContainer}>
+        <section className={overviewStyles.filterContainer} aria-label="Suche">
           <input
             type="text"
             className={overviewStyles.searchbar}
@@ -152,10 +152,10 @@ export default function CampaignOverview() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-        </div>
+        </section>
 
         {loading ? <p>Lädt...</p> : null}
-        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
         {campaign && filteredEntities.length === 0 ? <p>No entries found.</p> : null}
 
@@ -195,6 +195,7 @@ export default function CampaignOverview() {
                               <input
                                 type="checkbox"
                                 checked={entity.isVisible}
+                                aria-label={`${entity.name} sichtbar`}
                                 onChange={() => updateVisibility(entity, !entity.isVisible)}
                               />
                               visible

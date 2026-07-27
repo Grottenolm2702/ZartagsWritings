@@ -83,7 +83,7 @@ export default function CampaignTypePage() {
     <Layout>
       <main>
         {!entity ? (
-          <div className={contentStyles.campaignTypeHeader}>
+          <header className={contentStyles.campaignTypeHeader}>
             <h1 className={contentStyles.campaignTypeTitle}>{TYPE_LABELS[apiType]}</h1>
             <div className={contentStyles.campaignTypeHeaderActions}>
               {editable ? (
@@ -95,11 +95,11 @@ export default function CampaignTypePage() {
                 </Link>
               ) : null}
             </div>
-          </div>
+          </header>
         ) : null}
 
         {loading ? <p>Lädt...</p> : null}
-        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
         {entity ? (
           <section className={contentStyles.campaignTypeSection}>

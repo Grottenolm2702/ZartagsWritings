@@ -66,7 +66,7 @@ export default function CampaignCreate() {
           <button type="submit" className={formStyles.formButton} disabled={loading}>
             {loading ? "Wird erstellt..." : "Campaign erstellen"}
           </button>
-          {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+          {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
         </form>
       </main>
     </Layout>

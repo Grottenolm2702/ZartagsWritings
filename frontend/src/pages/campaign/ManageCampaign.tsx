@@ -82,22 +82,23 @@ export default function ManageCampaign() {
           Hier verwaltest du Mitglieder und Zugriffsrollen für diese Campaign.
         </p>
         {loading ? <p>Lädt...</p> : null}
-        {error ? <div className={contentStyles.errorMessage}>{error}</div> : null}
+        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
         {campaign ? (
-          <div className={contentStyles.manageCard}>
-            <div className={contentStyles.manageSummary}>
-              <div>
+          <section className={contentStyles.manageCard} aria-label="Campaign Verwaltung">
+            <section className={contentStyles.manageSummary} aria-label="Campaign Details">
+              <article>
                 <span className={contentStyles.manageLabel}>Campaign</span>
                 <strong className={contentStyles.manageValue}>{campaign.name}</strong>
-              </div>
-              <div>
+              </article>
+              <article>
                 <span className={contentStyles.manageLabel}>Code</span>
                 <div className={contentStyles.manageCodeRow}>
                   <code className={contentStyles.manageCode}>{campaign.joinCode}</code>
                   <button
                     className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
                     onClick={() => navigator.clipboard?.writeText(campaign.joinCode)}
+                    aria-label="Beitrittscode kopieren"
                   >
                     Code kopieren
                   </button>
@@ -105,6 +106,7 @@ export default function ManageCampaign() {
                     <button
                       className={contentStyles.iconButton}
                       title="Neuen Beitrittscode generieren"
+                      aria-label="Neuen Beitrittscode generieren"
                       onClick={async () => {
                         try {
                           const resp = await apiFetch<{ joinCode: string }>(
@@ -137,7 +139,7 @@ export default function ManageCampaign() {
                     </button>
                   ) : null}
                 </div>
-              </div>
+              </article>
               <div className={contentStyles.manageActions}>
                 <Link
                   className={contentStyles.actionButton}
@@ -146,9 +148,9 @@ export default function ManageCampaign() {
                   Zur Übersicht
                 </Link>
               </div>
-            </div>
+            </section>
 
-            <div className={contentStyles.userSection}>
+            <section className={contentStyles.userSection} aria-label="Mitglieder">
               <h2 className={contentStyles.userSectionTitle}>Mitglieder</h2>
               <ul className={contentStyles.manageMemberList}>
               {campaign.members.map((member) => (
@@ -160,7 +162,7 @@ export default function ManageCampaign() {
                     </strong>
                   </div>
                   {canManage ? (
-                    <div className={contentStyles.manageRoleButtons}>
+                    <div className={contentStyles.manageRoleButtons} role="group" aria-label={`Rolle für ${member.displayName || member.user.name || member.user.email}`}>
                       <button
                         className={roleButtonClass(member.role, "PLAYER")}
                         onClick={() => updateRole(member.userId, "PLAYER")}
@@ -184,8 +186,8 @@ export default function ManageCampaign() {
                 </li>
               ))}
               </ul>
-            </div>
-          </div>
+            </section>
+          </section>
         ) : null}
       </main>
     </Layout>
