@@ -49,7 +49,7 @@ export default function CampaignTypePage() {
         }
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Daten konnten nicht geladen werden");
+          setError(err instanceof Error ? err.message : "Failed to load data");
         }
       } finally {
         if (mounted) setLoading(false);
@@ -91,7 +91,7 @@ export default function CampaignTypePage() {
                   className={contentStyles.actionButton}
                   to={`/campaigns/${campaignSlug}/${apiType}/new`}
                 >
-                  Neue Entity
+                  New entry
                 </Link>
               ) : null}
             </div>
@@ -133,7 +133,21 @@ export default function CampaignTypePage() {
                 ))}
               </div>
             </div>
-            {!loading && entities.length === 0 ? <p>No entries found.</p> : null}
+            {!loading && entities.length === 0 ? (
+              <section className={contentStyles.emptyStateCard} aria-label="No entries in this section">
+                <h2 className={contentStyles.emptyStateTitle}>No entries in this section</h2>
+                <p className={contentStyles.emptyStateText}>
+                  Start by creating your first entry for this type.
+                </p>
+                {editable ? (
+                  <div className={contentStyles.emptyStateActions}>
+                    <Link className={contentStyles.actionButton} to={`/campaigns/${campaignSlug}/${apiType}/new`}>
+                      New entry
+                    </Link>
+                  </div>
+                ) : null}
+              </section>
+            ) : null}
           </section>
         )}
       </main>

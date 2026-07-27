@@ -1,22 +1,27 @@
 .form {
   max-width: max(600px, 40%);
-  margin: 2em auto;
-  padding: 2em;
+  margin: var(--space-6) auto;
+  padding: var(--space-6);
   border-radius: 0.5em;
   background-color: var(--hover-color);
 }
 
 .formLabel {
   display: block;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
   font-weight: bold;
   color: var(--accent-color);
 }
 
+.requiredMark {
+  color: #ff8888;
+  margin-left: var(--space-1);
+}
+
 .formInput {
   width: 100%;
-  padding: 0.75em;
+  padding: var(--space-3);
   background-color: var(--primary-color);
   border: 1px solid var(--hover-color);
   border-radius: 0.25em;
@@ -27,6 +32,16 @@
 .formInput:focus {
   outline: none;
   border-color: var(--accent-color);
+}
+
+.formInput[aria-invalid="true"] {
+  border-color: #8b3333;
+}
+
+.inlineError {
+  margin-top: var(--space-1);
+  font-size: 0.85rem;
+  color: #ff8888;
 }
 
 .passwordInputWrapper {
@@ -66,8 +81,9 @@
 
 .formButton {
   width: 100%;
-  padding: 0.75em;
-  margin-top: 1.5em;
+  min-height: 2.5rem;
+  padding: var(--space-3);
+  margin-top: var(--space-5);
   background-color: var(--accent-color);
   border: none;
   border-radius: 0.25em;
@@ -78,12 +94,24 @@
 }
 
 .formButton:hover {
-  opacity: 0.85;
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.formButton:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.formButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .errorMessage {
-  margin-top: 1em;
-  padding: 0.75em;
+  margin-top: var(--space-4);
+  padding: var(--space-3);
   background-color: #2a1515;
   border: 1px solid #8b3333;
   border-radius: 0.25em;

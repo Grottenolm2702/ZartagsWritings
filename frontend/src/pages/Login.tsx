@@ -30,7 +30,7 @@ export default function Login() {
         <h1>Login</h1>
         <form className={formStyles.form} onSubmit={handleSubmit}>
           <label htmlFor="email" className={formStyles.formLabel}>
-            Email:
+            Email: <span className={formStyles.requiredMark}>*</span>
           </label>
           <input
             type="email"
@@ -39,15 +39,17 @@ export default function Login() {
             placeholder="your@email.com"
             autoComplete="email"
             className={formStyles.formInput}
+            aria-invalid={error ? true : undefined}
             required
           />
           <label htmlFor="password" className={formStyles.formLabel}>
-            Password:
+            Password: <span className={formStyles.requiredMark}>*</span>
           </label>
           <PasswordInput
             name="password"
             id="password"
             className={formStyles.formInput}
+            aria-invalid={error ? true : undefined}
             required
             minLength={8}
             maxLength={30}

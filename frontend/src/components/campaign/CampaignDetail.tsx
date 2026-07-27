@@ -217,7 +217,7 @@ export default function CampaignDetail({
       await apiFetch(`/api/campaigns/${campaignSlug}/entities/${entityType}/${entity.slug}`, {
         method: "DELETE",
       });
-      navigate(`/campaigns/${campaignSlug}/${entityType}`);
+      navigate(`/campaigns/${campaignSlug}/overview`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete entity");
     } finally {

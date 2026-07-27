@@ -22,6 +22,8 @@ export default function Register() {
   }, []);
 
   const passwordRegex = /^(?=.*\p{Ll})(?=.*\p{Lu})(?=.*\d)[\p{L}\d]{8,30}$/u;
+  const hasRepeatPasswordInput = repeatPassword.length > 0;
+  const passwordsDoNotMatch = hasRepeatPasswordInput && password !== repeatPassword;
 
   const satisfied = passwordRules.map((r) => r.test.test(password));
   const satisfiedCount = satisfied.filter(Boolean).length;
@@ -62,12 +64,12 @@ export default function Register() {
         <h1>Register</h1>
         <form className={formStyles.form} onSubmit={handleSubmit}>
           <label htmlFor="name" className={formStyles.formLabel}>
-            Name:
+            Name: <span className={formStyles.requiredMark}>*</span>
           </label>
           <input id="name" name="name" className={formStyles.formInput} required />
 
           <label htmlFor="email" className={formStyles.formLabel}>
-            Email:
+            Email: <span className={formStyles.requiredMark}>*</span>
           </label>
           <input
             type="email"
@@ -80,7 +82,7 @@ export default function Register() {
           />
 
           <label htmlFor="password" className={formStyles.formLabel}>
-            Password:
+            Password: <span className={formStyles.requiredMark}>*</span>
           </label>
           <PasswordInput
             name="password"
@@ -113,12 +115,13 @@ export default function Register() {
           </section>
 
           <label htmlFor="repeatPassword" className={formStyles.formLabel}>
-            Repeat password:
+            Repeat password: <span className={formStyles.requiredMark}>*</span>
           </label>
           <PasswordInput
             name="repeatPassword"
             id="repeatPassword"
             className={formStyles.formInput}
+            aria-invalid={passwordsDoNotMatch ? true : undefined}
             required
             minLength={8}
             maxLength={30}
@@ -126,6 +129,9 @@ export default function Register() {
             onChange={(e) => setRepeatPassword(e.target.value)}
             autoComplete="new-password"
           />
+          {passwordsDoNotMatch ? (
+            <p className={formStyles.inlineError}>Passwords do not match.</p>
+          ) : null}
 
           <button type="submit" className={formStyles.formButton} disabled={loading}>
             {loading ? "Registering..." : "Register"}

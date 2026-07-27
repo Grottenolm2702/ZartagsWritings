@@ -89,6 +89,12 @@ export default function CampaignOverview() {
     return matches.filter((entity) => entity.isVisible);
   }, [campaign?.entities, editable, query]);
 
+  const accessibleEntities = React.useMemo(() => {
+    const base = campaign?.entities ?? [];
+    if (editable) return base;
+    return base.filter((entity) => entity.isVisible);
+  }, [campaign?.entities, editable]);
+
   const groupedEntities = React.useMemo(() => {
     const groups: Record<ApiEntityType, ApiEntity[]> = {
       pc: [],
@@ -157,7 +163,22 @@ export default function CampaignOverview() {
         {loading ? <p>Loading...</p> : null}
         {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
 
-        {campaign && filteredEntities.length === 0 ? <p>No entries found.</p> : null}
+        {campaign && accessibleEntities.length === 0 ? (
+          <section className={contentStyles.emptyStateCard} aria-label="No entries found">
+            <h2 className={contentStyles.emptyStateTitle}>No entries yet</h2>
+            <p className={contentStyles.emptyStateText}>
+              There are no entries in this campaign yet.
+            </p>
+          </section>
+        ) : null}
+        {campaign && accessibleEntities.length > 0 && filteredEntities.length === 0 ? (
+          <section className={contentStyles.emptyStateCard} aria-label="No search results">
+            <h2 className={contentStyles.emptyStateTitle}>No matching entries</h2>
+            <p className={contentStyles.emptyStateText}>
+              Try a different search term.
+            </p>
+          </section>
+        ) : null}
 
         {campaign ? (
           TYPE_ORDER.map((type) => {

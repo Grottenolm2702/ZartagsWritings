@@ -42,7 +42,7 @@ export default function CampaignCreate() {
         <h1>Create campaign</h1>
         <form className={formStyles.form} onSubmit={handleSubmit}>
           <label className={formStyles.formLabel} htmlFor="name">
-            Name
+            Name <span className={formStyles.requiredMark}>*</span>
           </label>
           <input
             id="name"

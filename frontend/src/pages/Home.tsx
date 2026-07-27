@@ -148,7 +148,24 @@ export default function Home() {
             </div>
           </section>
         ) : isLoggedIn && !loading ? (
-          <p>No campaigns found.</p>
+          <section className={contentStyles.emptyStateCard} aria-label="No campaigns yet">
+            <h2 className={contentStyles.emptyStateTitle}>No campaigns yet</h2>
+            <p className={contentStyles.emptyStateText}>
+              Create a new campaign or join an existing one with a join code.
+            </p>
+            <div className={contentStyles.emptyStateActions}>
+              <Link className={contentStyles.actionButton} to="/campaigns/new">
+                Create campaign
+              </Link>
+              <button
+                type="button"
+                className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                onClick={() => setShowJoin(true)}
+              >
+                Join campaign
+              </button>
+            </div>
+          </section>
         ) : null}
       </main>
     </Layout>

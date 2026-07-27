@@ -31,7 +31,9 @@ nav a {
   padding: 1em 2em;
   text-decoration: none;
   color: var(--text-color);
-  transition: background-color 0.3s ease;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
 }
 
 nav button.nav-button {
@@ -43,7 +45,9 @@ nav button.nav-button {
   border: 0;
   font: inherit;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
 }
 
 nav a:hover {
@@ -55,6 +59,13 @@ nav button.nav-button:hover {
   background-color: var(--hover-color);
   color: var(--accent-color);
   border-radius: 0.25rem; /* match active radius */
+}
+
+nav a:focus-visible,
+nav button.nav-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px;
+  border-radius: 0.25rem;
 }
 
 nav a.accent-link {
