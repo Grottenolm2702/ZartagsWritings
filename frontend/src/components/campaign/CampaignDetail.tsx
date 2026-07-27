@@ -131,13 +131,16 @@ export default function CampaignDetail({
   isNew = false,
 }: CampaignDetailProps) {
   const navigate = useNavigate();
-  const [draft, setDraft] = React.useState<Draft>(() =>
-    entity ? cloneDraft(entity, entityType) : createEmptyDraft(entityType, template),
+  const initialDraft = React.useMemo(
+    () => (entity ? cloneDraft(entity, entityType) : createEmptyDraft(entityType, template)),
+    [entity, entityType, template],
   );
+  const [draft, setDraft] = React.useState<Draft>(initialDraft);
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [showAddMenu, setShowAddMenu] = React.useState(false);
   const [deleteOpen, setDeleteOpen] = React.useState(false);
+  const [discardOpen, setDiscardOpen] = React.useState(false);
   const [previewMode, setPreviewMode] = React.useState(true);
 
   const title = draft.name || draft.headerFields[0]?.value || "Entity";
@@ -178,6 +181,14 @@ export default function CampaignDetail({
       ...current,
       headerFields: current.headerFields.filter((_, fieldIndex) => fieldIndex !== index),
     }));
+  }
+
+  function discardChanges() {
+    setDraft(initialDraft);
+    setShowAddMenu(false);
+    setDeleteOpen(false);
+    setDiscardOpen(false);
+    setPreviewMode(true);
   }
 
   async function handleSave() {
@@ -273,7 +284,7 @@ export default function CampaignDetail({
                 <button
                   type="button"
                   className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                  onClick={() => navigate(-1)}
+                  onClick={() => setDiscardOpen(true)}
                 >
                   Cancel
                 </button>
@@ -424,6 +435,33 @@ export default function CampaignDetail({
               </button>
               <button type="button" className={contentStyles.actionButton} onClick={handleDelete}>
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {discardOpen ? (
+        <div className={contentStyles.modalOverlay}>
+          <div
+            className={contentStyles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="discard-changes-title"
+            aria-describedby="discard-changes-description"
+          >
+            <h3 id="discard-changes-title">Änderungen wirklich verwerfen?</h3>
+            <p id="discard-changes-description">Alle ungespeicherten Änderungen gehen verloren.</p>
+            <div className={contentStyles.campaignDetailDeleteActions}>
+              <button
+                type="button"
+                className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
+                onClick={() => setDiscardOpen(false)}
+              >
+                Abbrechen
+              </button>
+              <button type="button" className={contentStyles.actionButton} onClick={discardChanges}>
+                Verwerfen
               </button>
             </div>
           </div>

@@ -53,10 +53,10 @@
   padding: 0;
 }
 
-.listItemInputRow {
+.listItemInputColumn {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  align-items: center;
 }
 
 /* Field/attribute item styles */
