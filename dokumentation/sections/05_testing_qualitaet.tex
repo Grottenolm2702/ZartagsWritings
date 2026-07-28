@@ -18,7 +18,7 @@ Fehlerfälle (z.\,B. Unique-Constraint-Verletzungen) reproduzierbar testbar sind
 
 \paragraph{Frontend-Strategie}
 Im Frontend werden mit Vitest + Testing Library Seiten und
-Context-Logik getestet.
+Context-Logik sowie zentrale Campaign-Komponenten getestet.
 Fokus liegt auf sichtbar nutzerrelevantem Verhalten:
 Formularvalidierung, API-Aufrufe, Navigation sowie Fehler- und Erfolgsfälle.
 Externe Abhängigkeiten (\texttt{fetch}, Routing) werden kontrolliert gemockt.
@@ -35,7 +35,7 @@ früh erkannt, ohne den Aufwand eines vollständigen End-to-End-Teststacks.
 Die Backend-Tests decken zentrale Sicherheits- und Geschäftsregeln ab:
 \begin{itemize}
   \item \textbf{Authentifizierung:} Login erfolgreich/fehlgeschlagen,
-  JWT-Cookie wird gesetzt, Logout liefert erwartete Antwort.
+  JWT-Cookie wird gesetzt, Session-Refresh erneuert das Cookie, Logout liefert erwartete Antwort.
   \item \textbf{Autorisierung:} geschützte Endpunkte liefern
   \texttt{401} ohne Token und \texttt{403} bei ungültigem Token.
   \item \textbf{Rollenrechte in Campaigns:}
@@ -51,13 +51,18 @@ Die Backend-Tests decken zentrale Sicherheits- und Geschäftsregeln ab:
 Die Frontend-Tests prüfen sowohl Seitenlogik als auch API-Helfer:
 \begin{itemize}
   \item \textbf{Auth-Context:} \texttt{login()} und \texttt{logout()} rufen die
-  richtigen API-Endpunkte mit korrekten Request-Optionen auf.
+  richtigen API-Endpunkte mit korrekten Request-Optionen auf;
+  zusätzlich wird die Session-Erneuerung über \texttt{/api/session/refresh}
+  bei Aktivität geprüft.
   \item \textbf{Register-Flow:} schwache Passwörter werden clientseitig blockiert,
   starke Passwörter führen zum Register-Request.
   \item \textbf{Home-Flow:} Campaigns laden, Join per Code und Weiterleitung auf
   die Overview-Seite.
   \item \textbf{API-Wrapper (\texttt{apiFetch}):} \texttt{credentials: include},
   Header-Handling und Fehler-Mapping (JSON-\texttt{error} bzw. Fallback-Text).
+  \item \textbf{Campaign-Komponenten:} Rendering- und Interaktionslogik von
+  \texttt{CampaignDetail}, \texttt{EditableCardContent}, \texttt{ItemsGrid},
+  \texttt{ItemCard}, \texttt{CardContent} und \texttt{ContentHeader}.
 \end{itemize}
 
 \subsection{Exemplarische Ergebnisse}
@@ -66,24 +71,24 @@ Die folgenden Auszüge stammen aus den aktuellen Testläufen:
 
 \begin{lstlisting}[style=terminal,caption={Backend-Testlauf}]
 cd backend
-npm test
+npm test -- run
 
 Test Files  4 passed (4)
-Tests       21 passed (21)
+Tests       22 passed (22)
 \end{lstlisting}
 
 \begin{lstlisting}[style=terminal,caption={Frontend-Testlauf}]
 cd frontend
-npm test
+npm test -- run
 
-Test Files  5 passed (5)
-Tests       11 passed (11)
+Test Files  10 passed (10)
+Tests       23 passed (23)
 \end{lstlisting}
 
 \begin{lstlisting}[style=terminal,caption={Ausgewählte gezielte Testläufe}]
 # Backend (Autorisierungs- und Logout-Fälle)
 npm --prefix backend test -- src/server.routes.test.ts
-# Ergebnis: 11 passed
+# Ergebnis: 12 passed
 
 # Frontend (API-Wrapper-Tests)
 npm --prefix frontend test -- src/__tests__/api.test.ts
@@ -93,7 +98,8 @@ npm --prefix frontend test -- src/__tests__/api.test.ts
 \paragraph{Interpretation}
 Die Ergebnisse bestätigen, dass die zentralen Sicherheits- und
 Geschäftsregeln stabil umgesetzt sind:
-Auth-Cookie-Flow funktioniert erwartungsgemäß, unautorisierte Zugriffe werden
+Auth-Cookie-Flow inklusive Session-Erneuerung funktioniert erwartungsgemäß, unautorisierte Zugriffe werden
 korrekt abgefangen und rollenbasierte Schreibrechte serverseitig durchgesetzt.
 Auf Frontend-Seite zeigen die Tests, dass API-Aufrufe konsistent aufgebaut
-werden und Fehler dem UI in auswertbarer Form zur Verfügung stehen.
+werden, Fehler dem UI in auswertbarer Form zur Verfügung stehen und die
+wiederverwendbaren Campaign-Komponenten stabil rendern.

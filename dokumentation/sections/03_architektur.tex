@@ -17,7 +17,9 @@ Authentifizierung (\texttt{/login}, \texttt{/register}), Campaign-Übersicht
 Eine zentrale Rolle übernimmt der \texttt{JWTAuthContext}:
 Er hält den globalen Authentifizierungszustand (\texttt{user},
 \texttt{isLoggedIn}, \texttt{loading}, \texttt{error}),
-führt Login/Logout aus und lädt den aktuellen Benutzer über \texttt{/api/user}.
+führt Login/Logout aus, lädt den aktuellen Benutzer über \texttt{/api/user}
+und stößt bei aktiver Nutzung die Session-Erneuerung über
+\texttt{/api/session/refresh} an.
 Dadurch bleibt Auth-Logik aus den Seitenkomponenten ausgelagert und
 wiederverwendbar.
 
@@ -34,7 +36,7 @@ Das Backend ist modular in Routenpakete aufgeteilt, die in
 
 Die Route-Module kapseln jeweils eine fachliche Domäne:
 \begin{itemize}
-  \item \textbf{Auth:} Registrierung, Login, Logout,
+  \item \textbf{Auth:} Registrierung, Login, Session-Refresh, Logout,
   \item \textbf{User:} aktuelles Profil lesen/löschen,
   \item \textbf{Campaigns:} anlegen, beitreten, laden, Join-Code regenerieren,
   \item \textbf{Entities:} Templates, Listen, Details und CRUD je Entity-Typ,
@@ -83,14 +85,18 @@ an den Request hängt.
 \midrule
 POST & \url{/api/register} & nein & Benutzer registrieren \\
 POST & \url{/api/login} & nein & JWT-Cookie setzen \\
+POST & \url{/api/session/refresh} & ja (Cookie) & Session-Cookie verlängern \\
 POST & \url{/api/logout} & nein & JWT-Cookie löschen \\
 GET & \url{/api/user} & ja & aktuellen Benutzer laden \\
+DELETE & \url{/api/user} & ja & aktuellen Benutzer löschen \\
 GET & \url{/api/campaigns} & ja & Campaign-Liste des Users \\
 POST & \url{/api/campaigns} & ja & neue Campaign erstellen \\
 POST & \url{/api/campaigns/join} & ja & per Join-Code beitreten \\
 GET & \url{/api/campaigns/:slug} & ja & Campaign inkl.\ Entities laden \\
+GET & \url{/api/campaigns/:slug/overview} & ja & aggregierte Overview-Daten laden \\
 POST & \url{/api/campaigns/:slug/regenerate-join-code} & ja (DM/Owner) & Join-Code erneuern \\
-\shortstack[l]{GET/POST/\\PUT/DELETE} & \url{/api/campaigns/:slug/entities/...} & ja (rollenabhängig) & Entity-CRUD \\
+GET & \url{/api/campaigns/:slug/entities/:type/template} & ja & Template je Entity-Typ laden \\
+\shortstack[l]{GET/POST/\\PUT/DELETE} & \shortstack[l]{\texttt{/api/campaigns/:slug/entities/:type}\\\texttt{/api/campaigns/:slug/entities/:type/:entitySlug}} & ja (rollenabhängig) & Entity-Liste, Detail und CRUD \\
 PATCH & \url{/api/campaigns/:slug/members/:memberUserId} & ja (DM/Owner) & Mitgliedsdaten/Rolle ändern \\
 \bottomrule
 \end{tabularx}
@@ -160,8 +166,8 @@ Content-Struktur für heterogene Kampagneninhalte.
 \node[box, below=of frontend] (backend) {\textbf{Express Backend} \\ authRoutes, userRoutes, campaignRoutes, entityRoutes, memberRoutes \\ JWT-Middleware + Rollenprüfung};
 \node[box, below=of backend] (db) {\textbf{SQLite + Prisma} \\ User, Campaign, CampaignMember, Entity, ContentBlock, \dots};
 
-\draw[arr] (browser) -- node[right]{HTTPS + HttpOnly-Cookie} (frontend);
-\draw[arr] (frontend) -- node[right]{\texttt{/api/*} (JSON)} (backend);
+\draw[arr] (browser) -- node[right]{UI-Interaktion} (frontend);
+\draw[arr] (frontend) -- node[right]{HTTP(S) \texttt{/api/*} + HttpOnly-Cookie} (backend);
 \draw[arr] (backend) -- node[right]{Prisma Client} (db);
 \end{tikzpicture}
 \caption{Komponentendiagramm der Anwendung}

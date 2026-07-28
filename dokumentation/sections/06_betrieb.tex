@@ -14,6 +14,9 @@ cp .env.example .env
 docker compose up
 \end{lstlisting}
 
+Das Anlegen der \texttt{.env} ist verpflichtend, da das Backend den Betrieb mit
+einem unsicheren oder fehlenden \texttt{JWT\_SECRET} gezielt verweigert.
+
 Nach dem Start stehen die zentralen Endpunkte bereit:
 \begin{itemize}
   \item Frontend: \url{http://localhost:5173}
@@ -96,6 +99,8 @@ Frontend und Backend laufen als getrennte Prozesse/Container, kommunizieren
   \item Daten werden persistent in SQLite gespeichert.
   \item Schemaänderungen werden über Prisma-Migrationen ausgerollt.
   \item Geschützte Endpunkte erfordern gültige JWT-Cookies.
+  \item Aktive Sitzungen werden über \texttt{/api/session/refresh} kontrolliert
+  verlängert.
   \item Der Health-Endpoint \texttt{/api/health} liefert zusätzlich \texttt{version} und \texttt{uptimeSeconds}.
   \item Die Trennung von Frontend und Backend erlaubt klare Fehlersuche
   (UI-/API-/DB-Ebene).
