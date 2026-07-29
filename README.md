@@ -152,6 +152,12 @@ cp .env.example .env
 docker compose up
 ```
 
+Oder interaktiv (funktioniert auch nach frischem Pull):
+
+```bash
+./docker_setup.sh
+```
+
 - Frontend: <http://localhost:5173>
 - Backend: <http://localhost:3000>
 - Health: <http://localhost:3000/api/health>
