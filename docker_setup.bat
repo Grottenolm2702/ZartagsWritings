@@ -82,7 +82,7 @@ set /p VITE_API_PROXY_TARGET=VITE_API_PROXY_TARGET [http://backend:3000]:
 if "!VITE_API_PROXY_TARGET!"=="" set "VITE_API_PROXY_TARGET=http://backend:3000"
 
 if exist ".env" (
-  set /p OVERWRITE=.env existiert. Ueberschreiben? (y/n) [y]:
+  set /p OVERWRITE=.env existiert. Ueberschreiben? ^(y/n^) [y]:
   if "!OVERWRITE!"=="" set "OVERWRITE=y"
   if /I not "!OVERWRITE!"=="y" (
     echo Abgebrochen. Bestehende .env bleibt unveraendert.
