@@ -166,11 +166,18 @@ Danach fuer den normalen Start ohne Reset:
 ./docker_start.sh
 ```
 
+Zum Beenden:
+
+```bash
+./docker_shutdown.sh
+```
+
 Windows (PowerShell/CMD im Projektordner):
 
 ```bat
 docker_setup.bat
 docker_start.bat
+docker_shutdown.bat
 ```
 
 - Frontend: <http://localhost:5173>
