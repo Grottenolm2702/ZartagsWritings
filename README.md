@@ -158,6 +158,12 @@ Oder interaktiv (funktioniert auch nach frischem Pull):
 ./docker_setup.sh
 ```
 
+Danach fuer den normalen Start ohne Reset:
+
+```bash
+./docker_start.sh
+```
+
 - Frontend: <http://localhost:5173>
 - Backend: <http://localhost:3000>
 - Health: <http://localhost:3000/api/health>
