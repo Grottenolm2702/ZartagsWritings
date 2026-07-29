@@ -26,6 +26,23 @@ if ! docker compose version >/dev/null 2>&1; then
   exit 1
 fi
 
+generate_jwt_secret() {
+  if command -v openssl >/dev/null 2>&1; then
+    openssl rand -hex 32
+    return
+  fi
+
+  if command -v python3 >/dev/null 2>&1; then
+    python3 - <<'PY'
+import secrets
+print(secrets.token_hex(32))
+PY
+    return
+  fi
+
+  tr -dc 'A-Za-z0-9' </dev/urandom | head -c 64
+}
+
 read_with_default() {
   local prompt="$1"
   local default="$2"
@@ -43,10 +60,11 @@ while ! [[ "$PORT" =~ ^[0-9]+$ ]] || (( PORT < 1 || PORT > 65535 )); do
   PORT="$(read_with_default "PORT" "3000")"
 done
 
-JWT_SECRET="$(read_with_default "JWT_SECRET" "dev-local-super-secret-change-this-2026")"
+GENERATED_JWT_SECRET="$(generate_jwt_secret)"
+JWT_SECRET="$(read_with_default "JWT_SECRET (leer = zufaellig generiert)" "$GENERATED_JWT_SECRET")"
 while [[ "$JWT_SECRET" == "dev-secret-change-me" || ${#JWT_SECRET} -lt 16 ]]; do
   echo "JWT_SECRET muss mindestens 16 Zeichen lang sein und darf nicht 'dev-secret-change-me' sein."
-  JWT_SECRET="$(read_with_default "JWT_SECRET" "dev-local-super-secret-change-this-2026")"
+  JWT_SECRET="$(read_with_default "JWT_SECRET (leer = zufaellig generiert)" "$GENERATED_JWT_SECRET")"
 done
 
 CORS_ORIGIN="$(read_with_default "CORS_ORIGIN" "http://localhost:5173")"

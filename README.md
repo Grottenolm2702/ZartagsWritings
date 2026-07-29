@@ -158,10 +158,19 @@ Oder interaktiv (funktioniert auch nach frischem Pull):
 ./docker_setup.sh
 ```
 
+Hinweis: Beim Setup kann `JWT_SECRET` leer gelassen werden, dann wird automatisch ein zufaelliger Secret-Wert erzeugt.
+
 Danach fuer den normalen Start ohne Reset:
 
 ```bash
 ./docker_start.sh
+```
+
+Windows (PowerShell/CMD im Projektordner):
+
+```bat
+docker_setup.bat
+docker_start.bat
 ```
 
 - Frontend: <http://localhost:5173>
