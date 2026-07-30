@@ -7,7 +7,27 @@ Startweg, da Frontend, Backend und Persistenzpfad in einem reproduzierbaren
 Setup zusammengeführt werden.
 
 \paragraph{Betrieb mit Docker Compose}
-Der Start erfolgt mit den folgenden Befehlen:
+Für die Abgabe wird der Betrieb über die bereitgestellten Docker-Skripte
+empfohlen, da diese die Konfiguration und den Start reproduzierbar durchführen.
+
+\begin{lstlisting}[style=terminal,caption={Erstinitialisierung (Linux/macOS)}]
+./docker_setup.sh
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal,caption={Regulaerer Start/Stop (Linux/macOS)}]
+./docker_start.sh
+./docker_shutdown.sh
+\end{lstlisting}
+
+Unter Windows stehen funktional gleichwertige Batch-Dateien bereit:
+
+\begin{lstlisting}[style=terminal,caption={Windows (CMD/PowerShell)}]
+docker_setup.bat
+docker_start.bat
+docker_shutdown.bat
+\end{lstlisting}
+
+Alternativ ist der manuelle Compose-Start weiterhin möglich:
 
 \begin{lstlisting}[style=terminal]
 cp .env.example .env
@@ -16,6 +36,9 @@ docker compose up
 
 Das Anlegen der \texttt{.env} ist verpflichtend, da das Backend den Betrieb mit
 einem unsicheren oder fehlenden \texttt{JWT\_SECRET} gezielt verweigert.
+Im Setup-Skript kann \texttt{JWT\_SECRET} leer gelassen werden; in diesem Fall
+wird automatisiert ein zufälliger, sicherer Secret-Wert generiert und in die
+\texttt{.env} übernommen.
 
 Nach dem Start stehen die zentralen Endpunkte bereit:
 \begin{itemize}
@@ -28,6 +51,9 @@ Im Compose-Betrieb führt der Backend-Service vor dem Start automatisch
 \texttt{prisma migrate deploy} aus.
 Damit ist sichergestellt, dass das Datenbankschema dem aktuellen
 Migrationsstand entspricht.
+Das Setup-Skript ergänzt dies um die initiale Installation der Abhängigkeiten in
+den Docker-Volumes (\texttt{npm ci} für Frontend und Backend), wodurch ein
+frischer Pull ohne manuelle Zwischenschritte lauffähig wird.
 
 \paragraph{Lokaler Betrieb ohne Docker}
 Alternativ kann die Anwendung lokal in zwei Prozessen betrieben werden:
@@ -79,6 +105,8 @@ Für den Betrieb werden Node.js und npm benötigt.
 Im Docker-Modus sind zusätzlich Docker Engine und Docker Compose erforderlich.
 Die Persistenz erfolgt auf SQLite-Basis und benötigt keinen separaten
 Datenbankserver.
+Für die Windows-Skripte wird zusätzlich eine Standardinstallation von
+PowerShell vorausgesetzt (zur Erzeugung eines zufälligen JWT-Secrets).
 
 \subsection{Betriebsmodus}
 

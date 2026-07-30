@@ -229,6 +229,9 @@ Die zentralen M4-Arbeitspakete wurden in vier Blöcken abgeschlossen:
 \begin{itemize}
   \item \textbf{Betrieb vereinheitlicht:} reproduzierbarer Start der Gesamtanwendung über
   \texttt{docker compose up} mit Frontend-, Backend- und Datenbankpfad-Setup.
+  Ergänzend wurden dedizierte Setup-/Start-/Shutdown-Skripte für Linux und
+  Windows bereitgestellt, um den Betriebsablauf für die Abgabe zu
+  standardisieren.
   \item \textbf{README vervollständigt:} Projektbeschreibung, Architektur,
   Setup-Schritte, Testhinweise, bekannte Einschränkungen.
   \item \textbf{Test- und Qualitätsnachweis konsolidiert:} strukturierte
@@ -306,7 +309,7 @@ Authentifizierung mit JWT & M3 & \path{backend/src/server.ts}, \path{frontend/sr
 Passwortsicherheit & M3 & \path{backend/src/server.ts} & Serverseitiges Hashing und Vergleich über \texttt{bcrypt}. \\
 Persistenz/ORM & M3 & \path{backend/prisma/schema.prisma} & Relationales Modell für User, Campaigns, Rollen und Inhalte via Prisma + SQLite. \\
 Automatisierte Tests & M3/M4 & \path{backend/src/server.test.ts}, \path{frontend/src/__tests__/auth.test.tsx} & Absicherung zentraler Backend-/Frontend-Pfade mit Vitest, Supertest, Testing Library. \\
-Deployment/Betrieb & M4 & \path{docker-compose.yml}, \path{README.md}, \path{dokumentation/sections/06_betrieb.tex} & Reproduzierbarer Startprozess, dokumentierte Betriebsanleitung und Abgabevorbereitung. \\
+Deployment/Betrieb & M4 & \path{docker-compose.yml}, \path{docker_setup.sh/.bat}, \path{docker_start.sh/.bat}, \path{docker_shutdown.sh/.bat}, \path{README.md}, \path{dokumentation/sections/06_betrieb.tex} & Reproduzierbarer Startprozess, standardisierte Betriebs-Skripte für mehrere Betriebssysteme, dokumentierte Betriebsanleitung und Abgabevorbereitung. \\
 \end{longtable}
 
 \paragraph{Zusammenfassung der Umsetzungslogik}
