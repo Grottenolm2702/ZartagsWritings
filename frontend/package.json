@@ -27,7 +27,7 @@
     "prettier": "^3.8.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^6.30.4",
+    "react-router-dom": "7.18.2",
     "vite": "^8.0.3"
   },
   "devDependencies": {
@@ -48,6 +48,6 @@
     "vitest": "^4.1.9"
   },
   "simple-git-hooks": {
-    "pre-commit": "npm run lint:fix && npm run format"
+    "pre-commit": "npm --prefix frontend run lint:fix && npm --prefix frontend run format && npm --prefix backend run format"
   }
 }
