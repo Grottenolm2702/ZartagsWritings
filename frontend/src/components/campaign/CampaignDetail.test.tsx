@@ -19,7 +19,9 @@ afterAll(() => {
 
 test("defaults to preview mode when editable (shows 'Edit' button)", () => {
   render(
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <CampaignDetail campaignSlug="test" entityType="npc" editable={true} />
     </MemoryRouter>,
   );
@@ -30,7 +32,9 @@ test("defaults to preview mode when editable (shows 'Edit' button)", () => {
 
 test("opens discard confirmation and stays on the entity after confirming", () => {
   render(
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <CampaignDetail
         campaignSlug="test"
         entityType="npc"
@@ -53,17 +57,23 @@ test("opens discard confirmation and stays on the entity after confirming", () =
   fireEvent.click(screen.getByRole("button", { name: "Edit" }));
   fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
-  expect(screen.getByRole("dialog", { name: "Änderungen wirklich verwerfen?" })).toBeInTheDocument();
+  expect(
+    screen.getByRole("dialog", { name: "Änderungen wirklich verwerfen?" }),
+  ).toBeInTheDocument();
 
   fireEvent.click(screen.getByRole("button", { name: "Verwerfen" }));
 
-  expect(screen.queryByRole("dialog", { name: "Änderungen wirklich verwerfen?" })).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("dialog", { name: "Änderungen wirklich verwerfen?" }),
+  ).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
 });
 
 test("auto-resizes the summary textarea in edit mode", () => {
   render(
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <CampaignDetail
         campaignSlug="test"
         entityType="npc"

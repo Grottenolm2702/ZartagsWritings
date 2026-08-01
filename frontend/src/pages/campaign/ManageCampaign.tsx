@@ -24,11 +24,15 @@ export default function ManageCampaign() {
         if (!campaignSlug) {
           throw new Error("Campaign slug is missing");
         }
-        const data = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
+        const data = await apiFetch<ApiCampaign>(
+          `/api/campaigns/${campaignSlug}`,
+        );
         if (mounted) setCampaign(data);
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Failed to load campaign");
+          setError(
+            err instanceof Error ? err.message : "Failed to load campaign",
+          );
         }
       } finally {
         if (mounted) setLoading(false);
@@ -41,12 +45,16 @@ export default function ManageCampaign() {
     };
   }, [campaignSlug]);
 
-  const currentMembership = campaign?.members.find((member) => member.userId === user?.id);
+  const currentMembership = campaign?.members.find(
+    (member) => member.userId === user?.id,
+  );
   const canManage =
-    campaign?.owner?.id === user?.id ||
-    currentMembership?.role === "DM";
+    campaign?.owner?.id === user?.id || currentMembership?.role === "DM";
 
-  async function updateRole(memberUserId: number, role: "DM" | "EDITOR" | "PLAYER") {
+  async function updateRole(
+    memberUserId: number,
+    role: "DM" | "EDITOR" | "PLAYER",
+  ) {
     const updated = await apiFetch<{
       role: "DM" | "EDITOR" | "PLAYER";
       displayName?: string | null;
@@ -60,7 +68,11 @@ export default function ManageCampaign() {
             ...prev,
             members: prev.members.map((member) =>
               member.userId === memberUserId
-                ? { ...member, role: updated.role, displayName: updated.displayName }
+                ? {
+                    ...member,
+                    role: updated.role,
+                    displayName: updated.displayName,
+                  }
                 : member,
             ),
           }
@@ -68,7 +80,10 @@ export default function ManageCampaign() {
     );
   }
 
-  function roleButtonClass(memberRole: "DM" | "EDITOR" | "PLAYER", role: "DM" | "EDITOR" | "PLAYER") {
+  function roleButtonClass(
+    memberRole: "DM" | "EDITOR" | "PLAYER",
+    role: "DM" | "EDITOR" | "PLAYER",
+  ) {
     return memberRole === role
       ? contentStyles.actionButton
       : `${contentStyles.actionButton} ${contentStyles.secondary}`;
@@ -82,22 +97,38 @@ export default function ManageCampaign() {
           Manage members and access roles for this campaign.
         </p>
         {loading ? <p>Loading...</p> : null}
-        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
+        {error ? (
+          <div className={contentStyles.errorMessage} role="alert">
+            {error}
+          </div>
+        ) : null}
 
         {campaign ? (
-          <section className={contentStyles.manageCard} aria-label="Campaign Verwaltung">
-            <section className={contentStyles.manageSummary} aria-label="Campaign Details">
+          <section
+            className={contentStyles.manageCard}
+            aria-label="Campaign Verwaltung"
+          >
+            <section
+              className={contentStyles.manageSummary}
+              aria-label="Campaign Details"
+            >
               <article>
                 <span className={contentStyles.manageLabel}>Campaign</span>
-                <strong className={contentStyles.manageValue}>{campaign.name}</strong>
+                <strong className={contentStyles.manageValue}>
+                  {campaign.name}
+                </strong>
               </article>
               <article>
                 <span className={contentStyles.manageLabel}>Code</span>
                 <div className={contentStyles.manageCodeRow}>
-                  <code className={contentStyles.manageCode}>{campaign.joinCode}</code>
+                  <code className={contentStyles.manageCode}>
+                    {campaign.joinCode}
+                  </code>
                   <button
                     className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
-                    onClick={() => navigator.clipboard?.writeText(campaign.joinCode)}
+                    onClick={() =>
+                      navigator.clipboard?.writeText(campaign.joinCode)
+                    }
                     aria-label="Beitrittscode kopieren"
                   >
                     Code kopieren
@@ -113,14 +144,27 @@ export default function ManageCampaign() {
                             `/api/campaigns/${campaign.slug}/regenerate-join-code`,
                             { method: "POST" },
                           );
-                          setCampaign((prev) => (prev ? { ...prev, joinCode: resp.joinCode } : prev));
+                          setCampaign((prev) =>
+                            prev ? { ...prev, joinCode: resp.joinCode } : prev,
+                          );
                           navigator.clipboard?.writeText(resp.joinCode);
                         } catch (err) {
-                          setError(err instanceof Error ? err.message : "Failed to generate join code");
+                          setError(
+                            err instanceof Error
+                              ? err.message
+                              : "Failed to generate join code",
+                          );
                         }
                       }}
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden
+                      >
                         <path
                           d="M19 6V10H15"
                           stroke="currentColor"
@@ -153,38 +197,47 @@ export default function ManageCampaign() {
             <section className={contentStyles.userSection} aria-label="Members">
               <h2 className={contentStyles.userSectionTitle}>Members</h2>
               <ul className={contentStyles.manageMemberList}>
-              {campaign.members.map((member) => (
-                <li key={member.id} className={contentStyles.manageMemberItem}>
-                  <div className={contentStyles.manageMemberHeader}>
-                    <strong>
-                      {member.displayName || member.user.name || member.user.email}
-                      {campaign.owner?.id === member.userId ? " (Owner)" : ""}
-                    </strong>
-                  </div>
-                  {canManage ? (
-                    <div className={contentStyles.manageRoleButtons} role="group" aria-label={`Role for ${member.displayName || member.user.name || member.user.email}`}>
-                      <button
-                        className={roleButtonClass(member.role, "PLAYER")}
-                        onClick={() => updateRole(member.userId, "PLAYER")}
-                      >
-                        Player
-                      </button>
-                      <button
-                        className={roleButtonClass(member.role, "EDITOR")}
-                        onClick={() => updateRole(member.userId, "EDITOR")}
-                      >
-                        Editor
-                      </button>
-                      <button
-                        className={roleButtonClass(member.role, "DM")}
-                        onClick={() => updateRole(member.userId, "DM")}
-                      >
-                        DM
-                      </button>
+                {campaign.members.map((member) => (
+                  <li
+                    key={member.id}
+                    className={contentStyles.manageMemberItem}
+                  >
+                    <div className={contentStyles.manageMemberHeader}>
+                      <strong>
+                        {member.displayName ||
+                          member.user.name ||
+                          member.user.email}
+                        {campaign.owner?.id === member.userId ? " (Owner)" : ""}
+                      </strong>
                     </div>
-                  ) : null}
-                </li>
-              ))}
+                    {canManage ? (
+                      <div
+                        className={contentStyles.manageRoleButtons}
+                        role="group"
+                        aria-label={`Role for ${member.displayName || member.user.name || member.user.email}`}
+                      >
+                        <button
+                          className={roleButtonClass(member.role, "PLAYER")}
+                          onClick={() => updateRole(member.userId, "PLAYER")}
+                        >
+                          Player
+                        </button>
+                        <button
+                          className={roleButtonClass(member.role, "EDITOR")}
+                          onClick={() => updateRole(member.userId, "EDITOR")}
+                        >
+                          Editor
+                        </button>
+                        <button
+                          className={roleButtonClass(member.role, "DM")}
+                          onClick={() => updateRole(member.userId, "DM")}
+                        >
+                          DM
+                        </button>
+                      </div>
+                    ) : null}
+                  </li>
+                ))}
               </ul>
             </section>
           </section>

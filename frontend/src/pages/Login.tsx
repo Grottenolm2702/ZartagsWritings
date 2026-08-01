@@ -54,10 +54,18 @@ export default function Login() {
             minLength={8}
             maxLength={30}
           />
-          <button type="submit" className={formStyles.formButton} disabled={loading}>
+          <button
+            type="submit"
+            className={formStyles.formButton}
+            disabled={loading}
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
-          {error ? <div className={formStyles.errorMessage} role="alert">{error}</div> : null}
+          {error ? (
+            <div className={formStyles.errorMessage} role="alert">
+              {error}
+            </div>
+          ) : null}
         </form>
       </main>
     </Layout>

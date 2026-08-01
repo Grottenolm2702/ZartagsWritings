@@ -36,7 +36,9 @@ export default function ItemCard({
   };
 
   return (
-    <article className={`${contentStyles.itemCard}${card.wide ? ` ${contentStyles.wide}` : ""}`}>
+    <article
+      className={`${contentStyles.itemCard}${card.wide ? ` ${contentStyles.wide}` : ""}`}
+    >
       <header className={contentStyles.itemCardHeader}>
         <div className={contentStyles.itemCardTitleWrap}>
           {editable ? (
@@ -53,7 +55,10 @@ export default function ItemCard({
         {editable ? (
           <div className={contentStyles.itemCardActions}>
             {orderNumber ? (
-              <span className={contentStyles.cardOrderNumber} aria-label={`Card order ${orderNumber}`}>
+              <span
+                className={contentStyles.cardOrderNumber}
+                aria-label={`Card order ${orderNumber}`}
+              >
                 {orderNumber}
               </span>
             ) : null}
@@ -93,7 +98,9 @@ export default function ItemCard({
             <input
               className={formStyles.formInputTransparent}
               value={card.pictureSrc || ""}
-              onChange={(e) => updateCard({ pictureSrc: e.target.value || undefined })}
+              onChange={(e) =>
+                updateCard({ pictureSrc: e.target.value || undefined })
+              }
               placeholder="https://..."
             />
           </label>
@@ -102,10 +109,14 @@ export default function ItemCard({
             <input
               className={formStyles.formInputTransparent}
               value={card.pictureAlt || ""}
-              onChange={(e) => updateCard({ pictureAlt: e.target.value || undefined })}
+              onChange={(e) =>
+                updateCard({ pictureAlt: e.target.value || undefined })
+              }
             />
           </label>
-          <label className={`${contentStyles.pictureUrlInput} ${contentStyles.itemCardWideToggle}`}>
+          <label
+            className={`${contentStyles.pictureUrlInput} ${contentStyles.itemCardWideToggle}`}
+          >
             <span>Wide card</span>
             <input
               type="checkbox"

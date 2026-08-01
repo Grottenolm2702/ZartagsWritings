@@ -43,7 +43,9 @@ describe("apiFetch", () => {
     });
     vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
 
-    await expect(apiFetch("/api/campaigns/join")).rejects.toThrow("Join-Code fehlt");
+    await expect(apiFetch("/api/campaigns/join")).rejects.toThrow(
+      "Join-Code fehlt",
+    );
   });
 
   it("fällt auf Raw-Text zurück, wenn keine JSON-Fehlermeldung vorhanden ist", async () => {
@@ -54,6 +56,8 @@ describe("apiFetch", () => {
     });
     vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
 
-    await expect(apiFetch("/api/fail")).rejects.toThrow("Internal Server Error");
+    await expect(apiFetch("/api/fail")).rejects.toThrow(
+      "Internal Server Error",
+    );
   });
 });

@@ -6,10 +6,19 @@ import jwt from "jsonwebtoken";
 
 vi.mock("./server/config.js", () => {
   const campaignCreateMock = vi.fn();
-  const userFindUniqueMock = vi.fn().mockResolvedValue({ id: 1, email: "test@example.com", name: "Test User" });
-  const txMock = { campaign: { create: campaignCreateMock }, user: { findUnique: userFindUniqueMock } };
+  const userFindUniqueMock = vi
+    .fn()
+    .mockResolvedValue({ id: 1, email: "test@example.com", name: "Test User" });
+  const txMock = {
+    campaign: { create: campaignCreateMock },
+    user: { findUnique: userFindUniqueMock },
+  };
   const prisma = { $transaction: vi.fn(async (cb: any) => cb(txMock)) };
-  return { prisma, JWT_SECRET: "test-secret", __mocks: { campaignCreateMock, userFindUniqueMock, txMock, prisma } };
+  return {
+    prisma,
+    JWT_SECRET: "test-secret",
+    __mocks: { campaignCreateMock, userFindUniqueMock, txMock, prisma },
+  };
 });
 
 // Import after mocking
@@ -34,9 +43,15 @@ describe("Campaign creation retry behavior", () => {
   it("retries on joinCode unique constraint and succeeds", async () => {
     // First call throws unique constraint, second resolves
     const campaignCreateMock = (config as any).__mocks.campaignCreateMock;
-    campaignCreateMock.mockImplementationOnce(() => {
-      throw new Error("Unique constraint failed: joinCode");
-    }).mockResolvedValueOnce({ id: 123, slug: "test-campaign", name: "TestCampaign" });
+    campaignCreateMock
+      .mockImplementationOnce(() => {
+        throw new Error("Unique constraint failed: joinCode");
+      })
+      .mockResolvedValueOnce({
+        id: 123,
+        slug: "test-campaign",
+        name: "TestCampaign",
+      });
 
     const app = express();
     app.use(express.json());

@@ -3,7 +3,11 @@ import type { NextFunction, Response } from "express";
 import type { AuthRequest } from "./types.js";
 import { JWT_SECRET } from "./config.js";
 
-export function authenticateToken(req: AuthRequest, res: Response, next: NextFunction) {
+export function authenticateToken(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
   const token = req.cookies.token;
 
   if (!token) {

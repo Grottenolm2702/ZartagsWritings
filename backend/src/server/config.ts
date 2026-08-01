@@ -5,7 +5,8 @@ import { PrismaClient } from "../generated/client.js";
 dotenv.config();
 
 const portValue = Number(process.env.PORT);
-export const PORT = Number.isInteger(portValue) && portValue > 0 ? portValue : 3000;
+export const PORT =
+  Number.isInteger(portValue) && portValue > 0 ? portValue : 3000;
 
 export const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
   .split(",")
@@ -17,7 +18,9 @@ if (!jwtSecret) {
   throw new Error("JWT_SECRET ist nicht gesetzt");
 }
 if (jwtSecret === "dev-secret-change-me") {
-  throw new Error("JWT_SECRET darf nicht auf dem unsicheren Default-Wert stehen");
+  throw new Error(
+    "JWT_SECRET darf nicht auf dem unsicheren Default-Wert stehen",
+  );
 }
 export const JWT_SECRET = jwtSecret;
 

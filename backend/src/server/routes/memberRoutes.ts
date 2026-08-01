@@ -19,15 +19,25 @@ export function registerMemberRoutes(app: Express) {
       };
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
 
       const access = await loadCampaignForUser(userId, slug);
       if (!access.campaign) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
-      if (!canManageCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
-        return res.status(403).json({ error: "Keine Berechtigung zum Bearbeiten" });
+      if (
+        !canManageCampaign(
+          access.campaign.ownerId,
+          access.membership?.role,
+          userId,
+        )
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Keine Berechtigung zum Bearbeiten" });
       }
 
       const member = await prisma.campaignMember.findUnique({

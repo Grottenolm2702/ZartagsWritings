@@ -17,7 +17,9 @@ test("renders same-origin campaign links as router links", () => {
   };
 
   render(
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <CardContent content={content} />
     </MemoryRouter>,
   );
@@ -35,7 +37,9 @@ test("keeps external links as anchors", () => {
   };
 
   render(
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <CardContent content={content} />
     </MemoryRouter>,
   );

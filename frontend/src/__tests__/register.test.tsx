@@ -22,17 +22,27 @@ describe("Register page", () => {
     vi.stubGlobal("fetch", fetchMock as any);
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <JWTAuthProvider>
           <Register />
         </JWTAuthProvider>
       </MemoryRouter>,
     );
 
-    fireEvent.change(screen.getByLabelText(/Name:/i), { target: { value: "Weak" } });
-    fireEvent.change(screen.getByLabelText(/Email:/i), { target: { value: "weak@example.com" } });
-    fireEvent.change(screen.getByLabelText(/^Password:/i), { target: { value: "weakpass" } });
-    fireEvent.change(screen.getByLabelText(/Repeat password:/i), { target: { value: "weakpass" } });
+    fireEvent.change(screen.getByLabelText(/Name:/i), {
+      target: { value: "Weak" },
+    });
+    fireEvent.change(screen.getByLabelText(/Email:/i), {
+      target: { value: "weak@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/^Password:/i), {
+      target: { value: "weakpass" },
+    });
+    fireEvent.change(screen.getByLabelText(/Repeat password:/i), {
+      target: { value: "weakpass" },
+    });
 
     fireEvent.click(screen.getByRole("button", { name: /register/i }));
 
@@ -43,7 +53,9 @@ describe("Register page", () => {
     });
 
     // Ensure register endpoint was not called (ignore other initial calls like /api/user)
-    const registerCalls = (fetchMock as any).mock.calls.filter((c: any[]) => c[0] === "/api/register");
+    const registerCalls = (fetchMock as any).mock.calls.filter(
+      (c: any[]) => c[0] === "/api/register",
+    );
     expect(registerCalls.length).toBe(0);
   });
 
@@ -51,19 +63,33 @@ describe("Register page", () => {
     // stub fetch to respond OK for registration
     const fetchMock = vi.fn((url: string) => {
       if (url === "/api/register") {
-        return Promise.resolve({ ok: true, text: () => Promise.resolve("") } as any);
+        return Promise.resolve({
+          ok: true,
+          text: () => Promise.resolve(""),
+        } as any);
       }
-      return Promise.resolve({ ok: true, text: () => Promise.resolve("") } as any);
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(""),
+      } as any);
     });
     vi.stubGlobal("fetch", fetchMock as any);
 
     function Caller() {
       const { register } = useJWTAuth();
-      return <button onClick={() => register("Good", "good@example.com", "GoodPass1")}>Call</button>;
+      return (
+        <button
+          onClick={() => register("Good", "good@example.com", "GoodPass1")}
+        >
+          Call
+        </button>
+      );
     }
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <JWTAuthProvider>
           <Caller />
         </JWTAuthProvider>
@@ -85,14 +111,22 @@ describe("Register page", () => {
   it("allows unicode letters in strong passwords on client-side", async () => {
     const fetchMock = vi.fn((url: string) => {
       if (url === "/api/register") {
-        return Promise.resolve({ ok: true, text: () => Promise.resolve("") } as any);
+        return Promise.resolve({
+          ok: true,
+          text: () => Promise.resolve(""),
+        } as any);
       }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as any);
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({}),
+      } as any);
     });
     vi.stubGlobal("fetch", fetchMock as any);
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <JWTAuthProvider>
           <Register />
         </JWTAuthProvider>
@@ -100,19 +134,31 @@ describe("Register page", () => {
     );
 
     await waitFor(() => {
-      const button = screen.getByRole("button", { name: /register/i }) as HTMLButtonElement;
+      const button = screen.getByRole("button", {
+        name: /register/i,
+      }) as HTMLButtonElement;
       expect(button.disabled).toBe(false);
     });
 
-    fireEvent.change(screen.getByLabelText(/Name:/i), { target: { value: "Umlaut" } });
-    fireEvent.change(screen.getByLabelText(/Email:/i), { target: { value: "umlaut@example.com" } });
-    fireEvent.change(screen.getByLabelText(/^Password:/i), { target: { value: "123Nüsse" } });
-    fireEvent.change(screen.getByLabelText(/Repeat password:/i), { target: { value: "123Nüsse" } });
+    fireEvent.change(screen.getByLabelText(/Name:/i), {
+      target: { value: "Umlaut" },
+    });
+    fireEvent.change(screen.getByLabelText(/Email:/i), {
+      target: { value: "umlaut@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/^Password:/i), {
+      target: { value: "123Nüsse" },
+    });
+    fireEvent.change(screen.getByLabelText(/Repeat password:/i), {
+      target: { value: "123Nüsse" },
+    });
 
     fireEvent.click(screen.getByRole("button", { name: /register/i }));
 
     await waitFor(() => {
-      const registerCalls = (fetch as any).mock.calls.filter((c: any[]) => c[0] === "/api/register");
+      const registerCalls = (fetch as any).mock.calls.filter(
+        (c: any[]) => c[0] === "/api/register",
+      );
       expect(registerCalls.length).toBe(1);
     });
   });

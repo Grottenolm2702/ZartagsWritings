@@ -31,43 +31,45 @@ type Draft = {
   cards: ApiCardSpec[];
 };
 
-type AutoResizeTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+type AutoResizeTextareaProps =
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const AutoResizeTextarea = React.forwardRef<HTMLTextAreaElement, AutoResizeTextareaProps>(
-  function AutoResizeTextarea({ onChange, style, ...props }, forwardedRef) {
-    const localRef = React.useRef<HTMLTextAreaElement | null>(null);
+const AutoResizeTextarea = React.forwardRef<
+  HTMLTextAreaElement,
+  AutoResizeTextareaProps
+>(function AutoResizeTextarea({ onChange, style, ...props }, forwardedRef) {
+  const localRef = React.useRef<HTMLTextAreaElement | null>(null);
 
-    const setRef = React.useCallback(
-      (node: HTMLTextAreaElement | null) => {
-        localRef.current = node;
+  const setRef = React.useCallback(
+    (node: HTMLTextAreaElement | null) => {
+      localRef.current = node;
 
-        if (typeof forwardedRef === "function") {
-          forwardedRef(node);
-        } else if (forwardedRef) {
-          forwardedRef.current = node;
-        }
-      },
-      [forwardedRef],
-    );
+      if (typeof forwardedRef === "function") {
+        forwardedRef(node);
+      } else if (forwardedRef) {
+        forwardedRef.current = node;
+      }
+    },
+    [forwardedRef],
+  );
 
-    React.useLayoutEffect(() => {
-      const element = localRef.current;
-      if (!element) return;
+  React.useLayoutEffect(() => {
+    const element = localRef.current;
+    if (!element) return;
 
-      element.style.height = "auto";
-      element.style.height = `${element.scrollHeight}px`;
-    }, [props.value]);
+    element.style.height = "auto";
+    element.style.height = `${element.scrollHeight}px`;
+  }, [props.value]);
 
-    return (
-      <textarea
-        {...props}
-        ref={setRef}
-        onChange={onChange}
-        style={{ ...style, overflow: "hidden", resize: "none" }}
-      />
-    );
-  },
-);
+  return (
+    <textarea
+      {...props}
+      ref={setRef}
+      onChange={onChange}
+      style={{ ...style, overflow: "hidden", resize: "none" }}
+    />
+  );
+});
 
 const ENTITY_TYPE_LABELS: Record<ApiEntityType, string> = {
   pc: "Player Character",
@@ -76,7 +78,10 @@ const ENTITY_TYPE_LABELS: Record<ApiEntityType, string> = {
   location: "Location",
 };
 
-function createEmptyDraft(entityType: ApiEntityType, template?: ApiEntityTemplate | null): Draft {
+function createEmptyDraft(
+  entityType: ApiEntityType,
+  template?: ApiEntityTemplate | null,
+): Draft {
   if (template) {
     return {
       name: template.name,
@@ -104,7 +109,9 @@ function createEmptyDraft(entityType: ApiEntityType, template?: ApiEntityTemplat
   };
 }
 
-function cloneCardContent(content?: ApiCardContent): ApiCardContent | undefined {
+function cloneCardContent(
+  content?: ApiCardContent,
+): ApiCardContent | undefined {
   return content ? JSON.parse(JSON.stringify(content)) : undefined;
 }
 
@@ -119,7 +126,10 @@ function moveItem<T>(items: T[], index: number, direction: -1 | 1): T[] {
   return next;
 }
 
-function cloneDraft(entity: ApiEntity | null | undefined, entityType: ApiEntityType): Draft {
+function cloneDraft(
+  entity: ApiEntity | null | undefined,
+  entityType: ApiEntityType,
+): Draft {
   if (!entity) return createEmptyDraft(entityType);
   return {
     name: entity.name,
@@ -139,13 +149,19 @@ function cloneDraft(entity: ApiEntity | null | undefined, entityType: ApiEntityT
   };
 }
 
-function createCard(kind: "paragraph" | "paragraphs" | "list" | "attributes" | "picture"): ApiCardSpec {
+function createCard(
+  kind: "paragraph" | "paragraphs" | "list" | "attributes" | "picture",
+): ApiCardSpec {
   if (kind === "picture") {
     return { title: "New image", pictureSrc: "", pictureAlt: "", wide: false };
   }
 
   if (kind === "paragraph") {
-    return { title: "New text", content: { type: "paragraph", text: "" }, wide: false };
+    return {
+      title: "New text",
+      content: { type: "paragraph", text: "" },
+      wide: false,
+    };
   }
 
   if (kind === "paragraphs") {
@@ -181,7 +197,10 @@ export default function CampaignDetail({
 }: CampaignDetailProps) {
   const navigate = useNavigate();
   const initialDraft = React.useMemo(
-    () => (entity ? cloneDraft(entity, entityType) : createEmptyDraft(entityType, template)),
+    () =>
+      entity
+        ? cloneDraft(entity, entityType)
+        : createEmptyDraft(entityType, template),
     [entity, entityType, template],
   );
   const [draft, setDraft] = React.useState<Draft>(initialDraft);
@@ -212,7 +231,10 @@ export default function CampaignDetail({
   }
 
   function moveCard(index: number, direction: -1 | 1) {
-    setDraft((current) => ({ ...current, cards: moveItem(current.cards, index, direction) }));
+    setDraft((current) => ({
+      ...current,
+      cards: moveItem(current.cards, index, direction),
+    }));
   }
 
   function removeCard(index: number) {
@@ -232,7 +254,9 @@ export default function CampaignDetail({
   function removeHeaderField(index: number) {
     setDraft((current) => ({
       ...current,
-      headerFields: current.headerFields.filter((_, fieldIndex) => fieldIndex !== index),
+      headerFields: current.headerFields.filter(
+        (_, fieldIndex) => fieldIndex !== index,
+      ),
     }));
   }
 
@@ -285,9 +309,12 @@ export default function CampaignDetail({
     setSaving(true);
     setError(null);
     try {
-      await apiFetch(`/api/campaigns/${campaignSlug}/entities/${entityType}/${entity.slug}`, {
-        method: "DELETE",
-      });
+      await apiFetch(
+        `/api/campaigns/${campaignSlug}/entities/${entityType}/${entity.slug}`,
+        {
+          method: "DELETE",
+        },
+      );
       navigate(`/campaigns/${campaignSlug}/overview`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete entity");
@@ -298,7 +325,11 @@ export default function CampaignDetail({
 
   return (
     <main className={contentStyles.campaignDetail}>
-      <div className={contentStyles.campaignDetailTopActions} role="navigation" aria-label="Back navigation">
+      <div
+        className={contentStyles.campaignDetailTopActions}
+        role="navigation"
+        aria-label="Back navigation"
+      >
         <button
           type="button"
           className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
@@ -406,7 +437,11 @@ export default function CampaignDetail({
         ) : null}
       </header>
 
-      {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
+      {error ? (
+        <div className={contentStyles.errorMessage} role="alert">
+          {error}
+        </div>
+      ) : null}
 
       {canEdit ? (
         <section className={contentStyles.cardSection}>
@@ -422,7 +457,12 @@ export default function CampaignDetail({
                   id="entity-name"
                   className={contentStyles.editInputTransparent}
                   value={draft.name}
-                  onChange={(e) => setDraft((current) => ({ ...current, name: e.target.value }))}
+                  onChange={(e) =>
+                    setDraft((current) => ({
+                      ...current,
+                      name: e.target.value,
+                    }))
+                  }
                 />
               </label>
               <label htmlFor="entity-summary">
@@ -432,7 +472,12 @@ export default function CampaignDetail({
                   className={contentStyles.editInputTransparent}
                   rows={4}
                   value={draft.summary}
-                  onChange={(e) => setDraft((current) => ({ ...current, summary: e.target.value }))}
+                  onChange={(e) =>
+                    setDraft((current) => ({
+                      ...current,
+                      summary: e.target.value,
+                    }))
+                  }
                 />
               </label>
               <label htmlFor="entity-visible">
@@ -441,7 +486,10 @@ export default function CampaignDetail({
                   type="checkbox"
                   checked={draft.isVisible}
                   onChange={(e) =>
-                    setDraft((current) => ({ ...current, isVisible: e.target.checked }))
+                    setDraft((current) => ({
+                      ...current,
+                      isVisible: e.target.checked,
+                    }))
                   }
                 />{" "}
                 visible
@@ -463,7 +511,11 @@ export default function CampaignDetail({
             })
           }
           onAdd={canEdit ? addHeaderField : undefined}
-          onRemove={canEdit ? (index) => removeHeaderField(editableHeaderFields[index].index) : undefined}
+          onRemove={
+            canEdit
+              ? (index) => removeHeaderField(editableHeaderFields[index].index)
+              : undefined
+          }
           onMove={
             canEdit
               ? (index, direction) =>
@@ -500,7 +552,11 @@ export default function CampaignDetail({
               >
                 Cancel
               </button>
-              <button type="button" className={contentStyles.actionButton} onClick={handleDelete}>
+              <button
+                type="button"
+                className={contentStyles.actionButton}
+                onClick={handleDelete}
+              >
                 Delete
               </button>
             </div>
@@ -518,7 +574,9 @@ export default function CampaignDetail({
             aria-describedby="discard-changes-description"
           >
             <h3 id="discard-changes-title">Änderungen wirklich verwerfen?</h3>
-            <p id="discard-changes-description">Alle ungespeicherten Änderungen gehen verloren.</p>
+            <p id="discard-changes-description">
+              Alle ungespeicherten Änderungen gehen verloren.
+            </p>
             <div className={contentStyles.campaignDetailDeleteActions}>
               <button
                 type="button"
@@ -527,7 +585,11 @@ export default function CampaignDetail({
               >
                 Abbrechen
               </button>
-              <button type="button" className={contentStyles.actionButton} onClick={discardChanges}>
+              <button
+                type="button"
+                className={contentStyles.actionButton}
+                onClick={discardChanges}
+              >
                 Verwerfen
               </button>
             </div>

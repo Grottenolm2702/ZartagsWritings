@@ -30,7 +30,9 @@ export default function CampaignCreate() {
       });
       navigate(`/campaigns/${created.slug}/manage`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create campaign");
+      setError(
+        err instanceof Error ? err.message : "Failed to create campaign",
+      );
     } finally {
       setLoading(false);
     }
@@ -63,10 +65,18 @@ export default function CampaignCreate() {
             onChange={(e) => setDescription(e.target.value)}
           />
 
-          <button type="submit" className={formStyles.formButton} disabled={loading}>
+          <button
+            type="submit"
+            className={formStyles.formButton}
+            disabled={loading}
+          >
             {loading ? "Creating..." : "Create campaign"}
           </button>
-          {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
+          {error ? (
+            <div className={contentStyles.errorMessage} role="alert">
+              {error}
+            </div>
+          ) : null}
         </form>
       </main>
     </Layout>

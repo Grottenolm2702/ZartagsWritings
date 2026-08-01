@@ -1,7 +1,10 @@
 import { randomInt } from "node:crypto";
 import type { ApiEntityType } from "./types.js";
 
-export const ENTITY_TYPE_MAP: Record<ApiEntityType, "PC" | "NPC" | "MAGIC_ITEM" | "LOCATION"> = {
+export const ENTITY_TYPE_MAP: Record<
+  ApiEntityType,
+  "PC" | "NPC" | "MAGIC_ITEM" | "LOCATION"
+> = {
   pc: "PC",
   npc: "NPC",
   magicitem: "MAGIC_ITEM",
@@ -25,17 +28,22 @@ const JOIN_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const JOIN_CODE_LENGTH = 10;
 
 export function createJoinCode(length = JOIN_CODE_LENGTH): string {
-  return Array.from({ length }, () =>
-    JOIN_CODE_ALPHABET[randomInt(JOIN_CODE_ALPHABET.length)],
+  return Array.from(
+    { length },
+    () => JOIN_CODE_ALPHABET[randomInt(JOIN_CODE_ALPHABET.length)],
   ).join("");
 }
 
-export function getEntityType(type: string): "PC" | "NPC" | "MAGIC_ITEM" | "LOCATION" | null {
+export function getEntityType(
+  type: string,
+): "PC" | "NPC" | "MAGIC_ITEM" | "LOCATION" | null {
   const normalized = type.toLowerCase() as ApiEntityType;
   return ENTITY_TYPE_MAP[normalized] ?? null;
 }
 
-export function entityTypeToApi(type: "PC" | "NPC" | "MAGIC_ITEM" | "LOCATION"): ApiEntityType {
+export function entityTypeToApi(
+  type: "PC" | "NPC" | "MAGIC_ITEM" | "LOCATION",
+): ApiEntityType {
   switch (type) {
     case "PC":
       return "pc";
@@ -52,7 +60,9 @@ export function parseParagraphs(text: string | null): string[] {
   if (!text) return [];
   try {
     const parsed = JSON.parse(text);
-    return Array.isArray(parsed) ? parsed.filter((entry) => typeof entry === "string") : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((entry) => typeof entry === "string")
+      : [];
   } catch {
     return text
       .split("\n")

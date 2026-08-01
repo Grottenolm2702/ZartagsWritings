@@ -25,29 +25,23 @@ const authenticateToken = (
     return res.status(401).json({ error: "Bitte melden Sie sich an" });
   }
 
-  jwt.verify(
-    token,
-    JWT_SECRET,
-    (err: Error | null, decoded: unknown) => {
-      if (err) {
-        return res.status(403).json({ error: "Ungültiger Token" });
-      }
+  jwt.verify(token, JWT_SECRET, (err: Error | null, decoded: unknown) => {
+    if (err) {
+      return res.status(403).json({ error: "Ungültiger Token" });
+    }
 
-      req.user = decoded as { id: number; email: string };
-      next();
-    },
-  );
+    req.user = decoded as { id: number; email: string };
+    next();
+  });
 };
 
 app.post("/api/login", (req: AuthRequest, res: Response) => {
   const { email, password } = req.body;
 
   if (email === "test@example.com" && password === "password123") {
-    const token = jwt.sign(
-      { id: 1, email: "test@example.com" },
-      JWT_SECRET,
-      { expiresIn: "1h" },
-    );
+    const token = jwt.sign({ id: 1, email: "test@example.com" }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.cookie("token", token, {
       httpOnly: true,

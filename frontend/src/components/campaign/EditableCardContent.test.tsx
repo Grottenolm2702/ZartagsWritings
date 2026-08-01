@@ -43,7 +43,9 @@ test("auto-resizes paragraph textareas to fit their content", () => {
 
   render(<EditableCardContent content={content} />);
 
-  expect(screen.getByRole("textbox", { name: "Paragraph" })).toHaveStyle({ height: "120px" });
+  expect(screen.getByRole("textbox", { name: "Paragraph" })).toHaveStyle({
+    height: "120px",
+  });
 });
 
 test("lets the user remove individual list entries", () => {
@@ -69,10 +71,14 @@ test("lets the user remove individual list entries", () => {
 test("auto-resizes list textareas to fit their content", () => {
   const content: ApiCardContent = {
     type: "list",
-    items: [{ label: "Long entry text", href: "https://example.com/very/long/link" }],
+    items: [
+      { label: "Long entry text", href: "https://example.com/very/long/link" },
+    ],
   };
 
   render(<EditableCardContent content={content} />);
 
-  expect(screen.getByRole("textbox", { name: "Entry 1 label" })).toHaveStyle({ height: "120px" });
+  expect(screen.getByRole("textbox", { name: "Entry 1 label" })).toHaveStyle({
+    height: "120px",
+  });
 });

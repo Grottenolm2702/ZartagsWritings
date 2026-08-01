@@ -5,7 +5,8 @@ export interface AuthRequest extends Request {
 }
 
 export type ApiEntityType = "pc" | "npc" | "magicitem" | "location";
-export type ApiBlockType = "paragraph" | "paragraphs" | "list" | "attributes" | "picture";
+export type ApiBlockType =
+  "paragraph" | "paragraphs" | "list" | "attributes" | "picture";
 
 export type ApiHeaderField = {
   label: string;

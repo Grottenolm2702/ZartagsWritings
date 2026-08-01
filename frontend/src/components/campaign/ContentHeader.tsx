@@ -30,14 +30,18 @@ export default function ContentHeader({
                   className={contentStyles.headerInput}
                   value={field.label}
                   aria-label={`Header field ${index + 1} label`}
-                  onChange={(e) => onChange?.(index, { ...field, label: e.target.value })}
+                  onChange={(e) =>
+                    onChange?.(index, { ...field, label: e.target.value })
+                  }
                   placeholder="Field name"
                 />
                 <input
                   className={contentStyles.headerInput}
                   value={field.value}
                   aria-label={`Header field ${index + 1} value`}
-                  onChange={(e) => onChange?.(index, { ...field, value: e.target.value })}
+                  onChange={(e) =>
+                    onChange?.(index, { ...field, value: e.target.value })
+                  }
                   placeholder="Value"
                 />
                 <div className={contentStyles.headerActionRow}>
@@ -79,7 +83,11 @@ export default function ContentHeader({
       </div>
       {editable && onAdd ? (
         <div className={contentStyles.contentHeaderActions}>
-          <button type="button" className={contentStyles.newButton} onClick={onAdd}>
+          <button
+            type="button"
+            className={contentStyles.newButton}
+            onClick={onAdd}
+          >
             Add field
           </button>
         </div>

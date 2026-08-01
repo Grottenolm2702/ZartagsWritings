@@ -12,7 +12,13 @@ type ItemsGridProps = {
   onMove?: (index: number, direction: -1 | 1) => void;
 };
 
-export default function ItemsGrid({ cards, editable, onUpdate, onRemove, onMove }: ItemsGridProps) {
+export default function ItemsGrid({
+  cards,
+  editable,
+  onUpdate,
+  onRemove,
+  onMove,
+}: ItemsGridProps) {
   if (!cards || cards.length === 0) return null;
 
   return (
@@ -34,7 +40,9 @@ export default function ItemsGrid({ cards, editable, onUpdate, onRemove, onMove 
             <CardContent
               content={card.content}
               editable={editable}
-              onChange={(updated) => onUpdate?.(index, { ...card, content: updated })}
+              onChange={(updated) =>
+                onUpdate?.(index, { ...card, content: updated })
+              }
             />
           </ItemCard>
         ))}

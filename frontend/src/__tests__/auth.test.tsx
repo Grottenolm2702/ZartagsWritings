@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import React from "react";
 import { JWTAuthProvider, useJWTAuth } from "../context/JWTAuthContext";
 
@@ -31,9 +37,7 @@ describe("JWTAuthContext - Login Flow", () => {
     function LoginComponent() {
       const { login } = useJWTAuth();
       return (
-        <button onClick={() => login("user@test.com", "pass123")}>
-          Login
-        </button>
+        <button onClick={() => login("user@test.com", "pass123")}>Login</button>
       );
     }
 
@@ -60,11 +64,7 @@ describe("JWTAuthContext - Login Flow", () => {
   it("logout() macht POST request zu /api/logout endpoint", async () => {
     function LogoutComponent() {
       const { logout } = useJWTAuth();
-      return (
-        <button onClick={() => logout()}>
-          Logout
-        </button>
-      );
+      return <button onClick={() => logout()}>Logout</button>;
     }
 
     render(
@@ -98,9 +98,7 @@ describe("JWTAuthContext - Login Flow", () => {
     function LoginComponent() {
       const { login } = useJWTAuth();
       return (
-        <button onClick={() => login("user@test.com", "pass123")}>
-          Login
-        </button>
+        <button onClick={() => login("user@test.com", "pass123")}>Login</button>
       );
     }
 
@@ -168,7 +166,9 @@ describe("JWTAuthContext - Login Flow", () => {
 
     function LoginComponent() {
       const { login } = useJWTAuth();
-      return <button onClick={() => login("user@test.com", "pass123")}>Login</button>;
+      return (
+        <button onClick={() => login("user@test.com", "pass123")}>Login</button>
+      );
     }
 
     render(
@@ -203,4 +203,3 @@ describe("JWTAuthContext - Login Flow", () => {
     });
   });
 });
-

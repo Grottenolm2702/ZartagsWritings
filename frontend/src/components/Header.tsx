@@ -13,7 +13,9 @@ export default function Header() {
   const [theme, setTheme] = React.useState<ThemeMode>(() => {
     if (typeof window === "undefined") return "dark";
     const storage =
-      "localStorage" in window && window.localStorage ? window.localStorage : null;
+      "localStorage" in window && window.localStorage
+        ? window.localStorage
+        : null;
     const stored = storage?.getItem("theme") ?? null;
     if (stored === "light" || stored === "dark") return stored;
     const prefersLight =
@@ -39,16 +41,38 @@ export default function Header() {
       <nav id="navbar">
         <ul>
           <li className="home-li">
-            <Link className={isActive('/') ? contentStyles.navLinkActive : contentStyles.navLink} to="/">Home</Link>
+            <Link
+              className={
+                isActive("/")
+                  ? contentStyles.navLinkActive
+                  : contentStyles.navLink
+              }
+              to="/"
+            >
+              Home
+            </Link>
           </li>
           <li>
-            <Link className={isActive('/about') ? contentStyles.navLinkActive : contentStyles.navLink} to="/about">About</Link>
+            <Link
+              className={
+                isActive("/about")
+                  ? contentStyles.navLinkActive
+                  : contentStyles.navLink
+              }
+              to="/about"
+            >
+              About
+            </Link>
           </li>
           {isLoggedIn ? (
             <>
               <li>
                 <Link
-                  className={isActive("/users") ? contentStyles.navLinkActive : contentStyles.navLink}
+                  className={
+                    isActive("/users")
+                      ? contentStyles.navLinkActive
+                      : contentStyles.navLink
+                  }
                   to="/users"
                 >
                   Users
@@ -69,20 +93,42 @@ export default function Header() {
           ) : (
             <>
               <li>
-                <Link className={isActive('/login') ? contentStyles.navLinkActive : contentStyles.navLink} to="/login">
+                <Link
+                  className={
+                    isActive("/login")
+                      ? contentStyles.navLinkActive
+                      : contentStyles.navLink
+                  }
+                  to="/login"
+                >
                   Login
                 </Link>
               </li>
               <li>
-                <Link className={isActive('/register') ? contentStyles.navLinkActive : contentStyles.navLink} to="/register">Register</Link>
+                <Link
+                  className={
+                    isActive("/register")
+                      ? contentStyles.navLinkActive
+                      : contentStyles.navLink
+                  }
+                  to="/register"
+                >
+                  Register
+                </Link>
               </li>
             </>
           )}
           <li>
             <button
               className="nav-button"
-              onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-              aria-label={theme === "dark" ? "Zum Light Mode wechseln" : "Zum Dark Mode wechseln"}
+              onClick={() =>
+                setTheme((current) => (current === "dark" ? "light" : "dark"))
+              }
+              aria-label={
+                theme === "dark"
+                  ? "Zum Light Mode wechseln"
+                  : "Zum Dark Mode wechseln"
+              }
               title={theme === "dark" ? "Light Mode" : "Dark Mode"}
             >
               {theme === "dark" ? "☀️ Light" : "🌙 Dark"}

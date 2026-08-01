@@ -37,13 +37,20 @@ export default function Users() {
       <main className={contentStyles.userPage}>
         <h1>User account</h1>
         <p className={contentStyles.userIntro}>
-          Here you can find your account details, campaign memberships,
-          and key account settings.
+          Here you can find your account details, campaign memberships, and key
+          account settings.
         </p>
-        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
+        {error ? (
+          <div className={contentStyles.errorMessage} role="alert">
+            {error}
+          </div>
+        ) : null}
         {loading ? <p>Loading...</p> : null}
         {user ? (
-          <section className={contentStyles.userCard} aria-label="Account details">
+          <section
+            className={contentStyles.userCard}
+            aria-label="Account details"
+          >
             <dl className={contentStyles.userMetaGrid}>
               <div className={contentStyles.userMetaItem}>
                 <dt className={contentStyles.userMetaLabel}>ID</dt>
@@ -55,7 +62,9 @@ export default function Users() {
               </div>
               <div className={contentStyles.userMetaItem}>
                 <dt className={contentStyles.userMetaLabel}>Name</dt>
-                <dd className={contentStyles.userMetaValue}>{user.name || "-"}</dd>
+                <dd className={contentStyles.userMetaValue}>
+                  {user.name || "-"}
+                </dd>
               </div>
             </dl>
 
@@ -64,11 +73,18 @@ export default function Users() {
                 <h2 className={contentStyles.userSectionTitle}>Campaigns</h2>
                 <ul className={contentStyles.userCampaignList}>
                   {user.memberships.map((membership) => (
-                    <li key={membership.id} className={contentStyles.userCampaignItem}>
-                      <Link to={`/campaigns/${membership.campaign.slug}/overview`}>
+                    <li
+                      key={membership.id}
+                      className={contentStyles.userCampaignItem}
+                    >
+                      <Link
+                        to={`/campaigns/${membership.campaign.slug}/overview`}
+                      >
                         {membership.campaign.name}
                       </Link>
-                      <span className={contentStyles.userCampaignRole}>{membership.role}</span>
+                      <span className={contentStyles.userCampaignRole}>
+                        {membership.role}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -76,7 +92,9 @@ export default function Users() {
             ) : (
               <div className={contentStyles.userSection}>
                 <h2 className={contentStyles.userSectionTitle}>Campaigns</h2>
-                <p className={contentStyles.userEmptyState}>You are not part of any campaign yet.</p>
+                <p className={contentStyles.userEmptyState}>
+                  You are not part of any campaign yet.
+                </p>
               </div>
             )}
 
@@ -87,7 +105,10 @@ export default function Users() {
               >
                 Delete account
               </button>
-              <button className={contentStyles.actionButton} onClick={handleLogout}>
+              <button
+                className={contentStyles.actionButton}
+                onClick={handleLogout}
+              >
                 Log out
               </button>
             </div>

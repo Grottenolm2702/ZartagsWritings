@@ -23,7 +23,8 @@ export default function Register() {
 
   const passwordRegex = /^(?=.*\p{Ll})(?=.*\p{Lu})(?=.*\d)[\p{L}\d]{8,30}$/u;
   const hasRepeatPasswordInput = repeatPassword.length > 0;
-  const passwordsDoNotMatch = hasRepeatPasswordInput && password !== repeatPassword;
+  const passwordsDoNotMatch =
+    hasRepeatPasswordInput && password !== repeatPassword;
 
   const satisfied = passwordRules.map((r) => r.test.test(password));
   const satisfiedCount = satisfied.filter(Boolean).length;
@@ -66,7 +67,12 @@ export default function Register() {
           <label htmlFor="name" className={formStyles.formLabel}>
             Name: <span className={formStyles.requiredMark}>*</span>
           </label>
-          <input id="name" name="name" className={formStyles.formInput} required />
+          <input
+            id="name"
+            name="name"
+            className={formStyles.formInput}
+            required
+          />
 
           <label htmlFor="email" className={formStyles.formLabel}>
             Email: <span className={formStyles.requiredMark}>*</span>
@@ -96,18 +102,30 @@ export default function Register() {
             autoComplete="new-password"
           />
 
-          <section className={formStyles.passwordRules} aria-label="Password requirements">
+          <section
+            className={formStyles.passwordRules}
+            aria-label="Password requirements"
+          >
             <p>Password requirements</p>
             <div className={formStyles.progressBar} aria-hidden="true">
               <div
-                className={progress === 100 ? formStyles.progressFill : formStyles.progressFillIncomplete}
+                className={
+                  progress === 100
+                    ? formStyles.progressFill
+                    : formStyles.progressFillIncomplete
+                }
                 style={{ width: `${progress}%` }}
               />
             </div>
             <ul className={formStyles.ruleList}>
               {passwordRules.map((r, idx) => (
-                <li key={r.id} className={`${formStyles.ruleItem} ${satisfied[idx] ? formStyles.satisfied : ""}`}>
-                  <span className={formStyles.ruleIcon} aria-hidden="true">{satisfied[idx] ? "✓" : "○"}</span>
+                <li
+                  key={r.id}
+                  className={`${formStyles.ruleItem} ${satisfied[idx] ? formStyles.satisfied : ""}`}
+                >
+                  <span className={formStyles.ruleIcon} aria-hidden="true">
+                    {satisfied[idx] ? "✓" : "○"}
+                  </span>
                   {r.label}
                 </li>
               ))}
@@ -133,10 +151,18 @@ export default function Register() {
             <p className={formStyles.inlineError}>Passwords do not match.</p>
           ) : null}
 
-          <button type="submit" className={formStyles.formButton} disabled={loading}>
+          <button
+            type="submit"
+            className={formStyles.formButton}
+            disabled={loading}
+          >
             {loading ? "Registering..." : "Register"}
           </button>
-          {error ? <div className={formStyles.errorMessage} role="alert">{error}</div> : null}
+          {error ? (
+            <div className={formStyles.errorMessage} role="alert">
+              {error}
+            </div>
+          ) : null}
         </form>
       </main>
     </Layout>

@@ -19,121 +19,142 @@ function isJoinCodeUniqueConflict(error: unknown): boolean {
 }
 
 export function registerCampaignRoutes(app: Express) {
-  app.get("/api/campaigns", authenticateToken, async (req: AuthRequest, res: Response) => {
-    const userId = req.user?.id;
+  app.get(
+    "/api/campaigns",
+    authenticateToken,
+    async (req: AuthRequest, res: Response) => {
+      const userId = req.user?.id;
 
-    if (!userId) {
-      return res.status(400).json({ error: "User ID nicht im Token gefunden" });
-    }
+      if (!userId) {
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
+      }
 
-    try {
-      const memberships = await prisma.campaignMember.findMany({
-        where: { userId },
-        include: {
-          campaign: {
-            include: {
-              owner: { select: { id: true, email: true, name: true } },
-              _count: {
-                select: {
-                  members: true,
-                  entities: true,
+      try {
+        const memberships = await prisma.campaignMember.findMany({
+          where: { userId },
+          include: {
+            campaign: {
+              include: {
+                owner: { select: { id: true, email: true, name: true } },
+                _count: {
+                  select: {
+                    members: true,
+                    entities: true,
+                  },
                 },
               },
             },
           },
-        },
-        orderBy: { joinedAt: "desc" },
-      });
-
-      res.json(
-        memberships.map((membership) => ({
-          id: membership.campaign.id,
-          slug: membership.campaign.slug,
-          name: membership.campaign.name,
-          description: membership.campaign.description,
-          joinCode: membership.campaign.joinCode,
-          role: membership.role,
-          displayName: membership.displayName,
-          createdAt: membership.campaign.createdAt,
-          updatedAt: membership.campaign.updatedAt,
-          owner: membership.campaign.owner,
-          counts: membership.campaign._count,
-        })),
-      );
-    } catch (error) {
-      res.status(500).json({ error: "Fehler beim Laden der Kampagnen" });
-    }
-  });
-
-  app.post("/api/campaigns", authenticateToken, async (req: AuthRequest, res: Response) => {
-    const userId = req.user?.id;
-    const { name, description, slug } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({ error: "User ID nicht im Token gefunden" });
-    }
-
-    const campaignName = String(name ?? "").trim();
-    if (!campaignName) {
-      return res.status(400).json({ error: "Campaign-Name fehlt" });
-    }
-
-    try {
-      const created = await prisma.$transaction(async (tx) => {
-        const owner = await tx.user.findUnique({
-          where: { id: userId },
-          select: { id: true, email: true, name: true },
+          orderBy: { joinedAt: "desc" },
         });
 
-        if (!owner) {
-          throw new Error("Benutzer nicht gefunden");
-        }
+        res.json(
+          memberships.map((membership) => ({
+            id: membership.campaign.id,
+            slug: membership.campaign.slug,
+            name: membership.campaign.name,
+            description: membership.campaign.description,
+            joinCode: membership.campaign.joinCode,
+            role: membership.role,
+            displayName: membership.displayName,
+            createdAt: membership.campaign.createdAt,
+            updatedAt: membership.campaign.updatedAt,
+            owner: membership.campaign.owner,
+            counts: membership.campaign._count,
+          })),
+        );
+      } catch (error) {
+        res.status(500).json({ error: "Fehler beim Laden der Kampagnen" });
+      }
+    },
+  );
 
-        for (let attempt = 1; attempt <= MAX_JOIN_CODE_GENERATION_ATTEMPTS; attempt += 1) {
-          try {
-            return await tx.campaign.create({
-              data: {
-                slug: createSlug(slug || campaignName),
-                name: campaignName,
-                description: description ?? null,
-                joinCode: createJoinCode(),
-                ownerId: userId,
-                members: {
-                  create: {
-                    userId,
-                    role: "DM",
-                    displayName: owner.name ?? owner.email,
-                  },
-                },
-              },
-              include: {
-                owner: { select: { id: true, email: true, name: true } },
-                members: {
-                  include: {
-                    user: { select: { id: true, email: true, name: true } },
-                  },
-                },
-              },
-            });
-          } catch (error) {
-            if (isJoinCodeUniqueConflict(error) && attempt < MAX_JOIN_CODE_GENERATION_ATTEMPTS) {
-              continue;
-            }
-            throw error;
+  app.post(
+    "/api/campaigns",
+    authenticateToken,
+    async (req: AuthRequest, res: Response) => {
+      const userId = req.user?.id;
+      const { name, description, slug } = req.body;
+
+      if (!userId) {
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
+      }
+
+      const campaignName = String(name ?? "").trim();
+      if (!campaignName) {
+        return res.status(400).json({ error: "Campaign-Name fehlt" });
+      }
+
+      try {
+        const created = await prisma.$transaction(async (tx) => {
+          const owner = await tx.user.findUnique({
+            where: { id: userId },
+            select: { id: true, email: true, name: true },
+          });
+
+          if (!owner) {
+            throw new Error("Benutzer nicht gefunden");
           }
-        }
 
-        throw new Error("Join-Code konnte nicht eindeutig generiert werden");
-      });
+          for (
+            let attempt = 1;
+            attempt <= MAX_JOIN_CODE_GENERATION_ATTEMPTS;
+            attempt += 1
+          ) {
+            try {
+              return await tx.campaign.create({
+                data: {
+                  slug: createSlug(slug || campaignName),
+                  name: campaignName,
+                  description: description ?? null,
+                  joinCode: createJoinCode(),
+                  ownerId: userId,
+                  members: {
+                    create: {
+                      userId,
+                      role: "DM",
+                      displayName: owner.name ?? owner.email,
+                    },
+                  },
+                },
+                include: {
+                  owner: { select: { id: true, email: true, name: true } },
+                  members: {
+                    include: {
+                      user: { select: { id: true, email: true, name: true } },
+                    },
+                  },
+                },
+              });
+            } catch (error) {
+              if (
+                isJoinCodeUniqueConflict(error) &&
+                attempt < MAX_JOIN_CODE_GENERATION_ATTEMPTS
+              ) {
+                continue;
+              }
+              throw error;
+            }
+          }
 
-      res.status(201).json(created);
-    } catch (error) {
-      res.status(400).json({
-        error:
-          error instanceof Error ? error.message : "Campaign konnte nicht erstellt werden",
-      });
-    }
-  });
+          throw new Error("Join-Code konnte nicht eindeutig generiert werden");
+        });
+
+        res.status(201).json(created);
+      } catch (error) {
+        res.status(400).json({
+          error:
+            error instanceof Error
+              ? error.message
+              : "Campaign konnte nicht erstellt werden",
+        });
+      }
+    },
+  );
 
   app.post(
     "/api/campaigns/join",
@@ -143,10 +164,14 @@ export function registerCampaignRoutes(app: Express) {
       const { joinCode } = req.body;
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
 
-      const code = String(joinCode ?? "").trim().toUpperCase();
+      const code = String(joinCode ?? "")
+        .trim()
+        .toUpperCase();
       if (!code) {
         return res.status(400).json({ error: "Join-Code fehlt" });
       }
@@ -164,7 +189,9 @@ export function registerCampaignRoutes(app: Express) {
           return res.status(404).json({ error: "Campaign nicht gefunden" });
         }
 
-        const existing = campaign.members.find((member) => member.userId === userId);
+        const existing = campaign.members.find(
+          (member) => member.userId === userId,
+        );
         if (existing) {
           return res.status(409).json({ error: "Bereits in der Campaign" });
         }
@@ -201,42 +228,52 @@ export function registerCampaignRoutes(app: Express) {
     },
   );
 
-  app.get("/api/campaigns/:slug", authenticateToken, async (req: AuthRequest, res: Response) => {
-    const userId = req.user?.id;
-    const slug = toSingleValue(req.params.slug);
+  app.get(
+    "/api/campaigns/:slug",
+    authenticateToken,
+    async (req: AuthRequest, res: Response) => {
+      const userId = req.user?.id;
+      const slug = toSingleValue(req.params.slug);
 
-    if (!userId) {
-      return res.status(400).json({ error: "User ID nicht im Token gefunden" });
-    }
+      if (!userId) {
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
+      }
 
-    const access = await loadCampaignForUser(userId, slug);
-    if (!access.campaign) {
-      return res.status(404).json({ error: "Campaign nicht gefunden" });
-    }
-    if (!access.membership && access.campaign.ownerId !== userId) {
-      return res.status(403).json({ error: "Kein Zugriff auf diese Campaign" });
-    }
+      const access = await loadCampaignForUser(userId, slug);
+      if (!access.campaign) {
+        return res.status(404).json({ error: "Campaign nicht gefunden" });
+      }
+      if (!access.membership && access.campaign.ownerId !== userId) {
+        return res
+          .status(403)
+          .json({ error: "Kein Zugriff auf diese Campaign" });
+      }
 
-    res.json({
-      id: access.campaign.id,
-      slug: access.campaign.slug,
-      name: access.campaign.name,
-      description: access.campaign.description,
-      joinCode: access.campaign.joinCode,
-      createdAt: access.campaign.createdAt,
-      updatedAt: access.campaign.updatedAt,
-      owner: access.campaign.owner,
-      members: access.campaign.members.map((member) => ({
-        id: member.id,
-        userId: member.userId,
-        role: member.role,
-        displayName: member.displayName,
-        joinedAt: member.joinedAt,
-        user: member.user,
-      })),
-      entities: access.campaign.entities.map((entity) => serializeEntity(entity)),
-    });
-  });
+      res.json({
+        id: access.campaign.id,
+        slug: access.campaign.slug,
+        name: access.campaign.name,
+        description: access.campaign.description,
+        joinCode: access.campaign.joinCode,
+        createdAt: access.campaign.createdAt,
+        updatedAt: access.campaign.updatedAt,
+        owner: access.campaign.owner,
+        members: access.campaign.members.map((member) => ({
+          id: member.id,
+          userId: member.userId,
+          role: member.role,
+          displayName: member.displayName,
+          joinedAt: member.joinedAt,
+          user: member.user,
+        })),
+        entities: access.campaign.entities.map((entity) =>
+          serializeEntity(entity),
+        ),
+      });
+    },
+  );
 
   // regenerate join code (invalidate old code)
   app.post(
@@ -247,20 +284,34 @@ export function registerCampaignRoutes(app: Express) {
       const slug = toSingleValue(req.params.slug);
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
 
       const access = await loadCampaignForUser(userId, slug);
       if (!access.campaign) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
-      if (!canManageCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
-        return res.status(403).json({ error: "Keine Berechtigung zum Bearbeiten" });
+      if (
+        !canManageCampaign(
+          access.campaign.ownerId,
+          access.membership?.role,
+          userId,
+        )
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Keine Berechtigung zum Bearbeiten" });
       }
 
       try {
         // attempt to update joinCode, retry on unique constraint
-        for (let attempt = 1; attempt <= MAX_JOIN_CODE_GENERATION_ATTEMPTS; attempt += 1) {
+        for (
+          let attempt = 1;
+          attempt <= MAX_JOIN_CODE_GENERATION_ATTEMPTS;
+          attempt += 1
+        ) {
           try {
             const newCode = createJoinCode();
             const updated = await prisma.campaign.update({
@@ -269,51 +320,74 @@ export function registerCampaignRoutes(app: Express) {
             });
             return res.json({ joinCode: updated.joinCode });
           } catch (error) {
-            if (isJoinCodeUniqueConflict(error) && attempt < MAX_JOIN_CODE_GENERATION_ATTEMPTS) continue;
+            if (
+              isJoinCodeUniqueConflict(error) &&
+              attempt < MAX_JOIN_CODE_GENERATION_ATTEMPTS
+            )
+              continue;
             throw error;
           }
         }
 
-        res.status(500).json({ error: "Join-Code konnte nicht generiert werden" });
+        res
+          .status(500)
+          .json({ error: "Join-Code konnte nicht generiert werden" });
       } catch (error) {
-        res.status(400).json({ error: error instanceof Error ? error.message : "Fehler beim Generieren des Codes" });
+        res.status(400).json({
+          error:
+            error instanceof Error
+              ? error.message
+              : "Fehler beim Generieren des Codes",
+        });
       }
     },
   );
 
-  app.get("/api/campaigns/:slug/overview", authenticateToken, async (req: AuthRequest, res: Response) => {
-    const userId = req.user?.id;
-    const slug = toSingleValue(req.params.slug);
+  app.get(
+    "/api/campaigns/:slug/overview",
+    authenticateToken,
+    async (req: AuthRequest, res: Response) => {
+      const userId = req.user?.id;
+      const slug = toSingleValue(req.params.slug);
 
-    if (!userId) {
-      return res.status(400).json({ error: "User ID nicht im Token gefunden" });
-    }
+      if (!userId) {
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
+      }
 
-    const access = await loadCampaignForUser(userId, slug);
-    if (!access.campaign) {
-      return res.status(404).json({ error: "Campaign nicht gefunden" });
-    }
-    if (!access.membership && access.campaign.ownerId !== userId) {
-      return res.status(403).json({ error: "Kein Zugriff auf diese Campaign" });
-    }
+      const access = await loadCampaignForUser(userId, slug);
+      if (!access.campaign) {
+        return res.status(404).json({ error: "Campaign nicht gefunden" });
+      }
+      if (!access.membership && access.campaign.ownerId !== userId) {
+        return res
+          .status(403)
+          .json({ error: "Kein Zugriff auf diese Campaign" });
+      }
 
-    const grouped = {
-      pc: access.campaign.entities.filter((entity) => entity.type === "PC"),
-      npc: access.campaign.entities.filter((entity) => entity.type === "NPC"),
-      magicitem: access.campaign.entities.filter((entity) => entity.type === "MAGIC_ITEM"),
-      location: access.campaign.entities.filter((entity) => entity.type === "LOCATION"),
-    };
+      const grouped = {
+        pc: access.campaign.entities.filter((entity) => entity.type === "PC"),
+        npc: access.campaign.entities.filter((entity) => entity.type === "NPC"),
+        magicitem: access.campaign.entities.filter(
+          (entity) => entity.type === "MAGIC_ITEM",
+        ),
+        location: access.campaign.entities.filter(
+          (entity) => entity.type === "LOCATION",
+        ),
+      };
 
-    res.json({
-      title: access.campaign.name,
-      sections: (Object.keys(grouped) as ApiEntityType[]).map((key) => ({
-        category: key,
-        title: ENTITY_TYPE_LABELS[key],
-        items: grouped[key].map((entity) => ({
-          label: entity.name,
-          href: `/api/campaigns/${slug}/${key}/${entity.slug}`,
+      res.json({
+        title: access.campaign.name,
+        sections: (Object.keys(grouped) as ApiEntityType[]).map((key) => ({
+          category: key,
+          title: ENTITY_TYPE_LABELS[key],
+          items: grouped[key].map((entity) => ({
+            label: entity.name,
+            href: `/api/campaigns/${slug}/${key}/${entity.slug}`,
+          })),
         })),
-      })),
-    });
-  });
+      });
+    },
+  );
 }

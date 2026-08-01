@@ -26,7 +26,13 @@ function getInternalRoute(href: string): string | null {
   }
 }
 
-function ListLink({ href, children }: { href: string; children: React.ReactNode }) {
+function ListLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
   const internalRoute = getInternalRoute(href);
   if (internalRoute) {
     return <Link to={internalRoute}>{children}</Link>;
@@ -39,7 +45,11 @@ function ListLink({ href, children }: { href: string; children: React.ReactNode 
   );
 }
 
-export default function CardContent({ content, editable, onChange }: CardContentProps) {
+export default function CardContent({
+  content,
+  editable,
+  onChange,
+}: CardContentProps) {
   if (!content) return null;
 
   if (editable) {
@@ -65,7 +75,11 @@ export default function CardContent({ content, editable, onChange }: CardContent
       <ul>
         {content.items.map((item, index) => (
           <li key={`${index}-${item.label}`}>
-            {item.href ? <ListLink href={item.href}>{item.label}</ListLink> : item.label}
+            {item.href ? (
+              <ListLink href={item.href}>{item.label}</ListLink>
+            ) : (
+              item.label
+            )}
           </li>
         ))}
       </ul>

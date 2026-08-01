@@ -20,7 +20,9 @@ export default function EditItemPage() {
 
   const [campaign, setCampaign] = React.useState<ApiCampaign | null>(null);
   const [entity, setEntity] = React.useState<ApiEntity | null>(null);
-  const [template, setTemplate] = React.useState<ApiEntityTemplate | null>(null);
+  const [template, setTemplate] = React.useState<ApiEntityTemplate | null>(
+    null,
+  );
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -49,7 +51,8 @@ export default function EditItemPage() {
               )
             : Promise.resolve(null),
         ] as const;
-        const [campaignData, entityData, templateData] = await Promise.all(requests);
+        const [campaignData, entityData, templateData] =
+          await Promise.all(requests);
         if (mounted) {
           setCampaign(campaignData);
           setEntity(entityData);
@@ -57,7 +60,9 @@ export default function EditItemPage() {
         }
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Failed to load entity");
+          setError(
+            err instanceof Error ? err.message : "Failed to load entity",
+          );
         }
       } finally {
         if (mounted) setLoading(false);
@@ -70,7 +75,9 @@ export default function EditItemPage() {
     };
   }, [apiType, campaignSlug, entitySlug, isNew]);
 
-  const currentMembership = campaign?.members.find((membership) => membership.userId === user?.id);
+  const currentMembership = campaign?.members.find(
+    (membership) => membership.userId === user?.id,
+  );
   const hasEditAccess =
     campaign?.owner?.id === user?.id ||
     currentMembership?.role === "DM" ||
@@ -84,7 +91,7 @@ export default function EditItemPage() {
         {error ? <div role="alert">{error}</div> : null}
         {campaignSlug && (isNew || entity) ? (
           <CampaignDetail
-            key={`${campaignSlug}:${apiType}:${isNew ? template?.type ?? "new" : entity?.id ?? "entity"}`}
+            key={`${campaignSlug}:${apiType}:${isNew ? (template?.type ?? "new") : (entity?.id ?? "entity")}`}
             campaignSlug={campaignSlug}
             entityType={apiType}
             entity={entity}

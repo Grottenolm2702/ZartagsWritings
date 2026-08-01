@@ -19,7 +19,9 @@ export function registerAuthRoutes(app: Express) {
     const { email, name, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ error: "E-Mail und Passwort sind erforderlich" });
+      return res
+        .status(400)
+        .json({ error: "E-Mail und Passwort sind erforderlich" });
     }
 
     // Password policy: at least one lower, one upper, one digit, only letters+digits, length 8-30
@@ -51,7 +53,9 @@ export function registerAuthRoutes(app: Express) {
           : "Unbekannter Fehler beim Registrieren";
 
       if (message.includes("UNIQUE constraint failed: User.email")) {
-        return res.status(409).json({ error: "Diese E-Mail ist bereits registriert" });
+        return res
+          .status(409)
+          .json({ error: "Diese E-Mail ist bereits registriert" });
       }
 
       res.status(400).json({ error: "User konnte nicht erstellt werden" });
@@ -100,9 +104,13 @@ export function registerAuthRoutes(app: Express) {
       }
 
       const user = decoded as { id: number; email: string };
-      const refreshedToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET!, {
-        expiresIn: "1h",
-      });
+      const refreshedToken = jwt.sign(
+        { id: user.id, email: user.email },
+        JWT_SECRET!,
+        {
+          expiresIn: "1h",
+        },
+      );
 
       setAuthCookie(res, refreshedToken);
       return res.json({ message: "Session verlängert" });

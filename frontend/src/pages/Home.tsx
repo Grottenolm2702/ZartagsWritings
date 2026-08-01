@@ -35,7 +35,9 @@ export default function Home() {
         if (mounted) setCampaigns(data);
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Failed to load campaigns");
+          setError(
+            err instanceof Error ? err.message : "Failed to load campaigns",
+          );
         }
       } finally {
         if (mounted) setLoading(false);
@@ -53,15 +55,20 @@ export default function Home() {
     setJoinLoading(true);
     setJoinError(null);
     try {
-      const result = await apiFetch<{ campaign: { slug: string } }>("/api/campaigns/join", {
-        method: "POST",
-        body: JSON.stringify({ joinCode }),
-      });
+      const result = await apiFetch<{ campaign: { slug: string } }>(
+        "/api/campaigns/join",
+        {
+          method: "POST",
+          body: JSON.stringify({ joinCode }),
+        },
+      );
       setShowJoin(false);
       setJoinCode("");
       navigate(`/campaigns/${result.campaign.slug}/overview`);
     } catch (err) {
-      setJoinError(err instanceof Error ? err.message : "Failed to join campaign");
+      setJoinError(
+        err instanceof Error ? err.message : "Failed to join campaign",
+      );
     } finally {
       setJoinLoading(false);
     }
@@ -74,7 +81,15 @@ export default function Home() {
 
         {!isLoggedIn ? (
           <p>
-            Please <Link className={contentStyles.inlineLink} to="/login">log in</Link> or <Link className={contentStyles.inlineLink} to="/register">register</Link> to see your campaigns.
+            Please{" "}
+            <Link className={contentStyles.inlineLink} to="/login">
+              log in
+            </Link>{" "}
+            or{" "}
+            <Link className={contentStyles.inlineLink} to="/register">
+              register
+            </Link>{" "}
+            to see your campaigns.
           </p>
         ) : (
           <div className={contentStyles.homeJoinActions}>
@@ -110,7 +125,11 @@ export default function Home() {
                   autoComplete="off"
                 />
                 <div className={contentStyles.homeJoinButtonRow}>
-                  <button type="submit" className={contentStyles.actionButton} disabled={joinLoading}>
+                  <button
+                    type="submit"
+                    className={contentStyles.actionButton}
+                    disabled={joinLoading}
+                  >
                     {joinLoading ? "Joining..." : "Join"}
                   </button>
                   <button
@@ -124,20 +143,31 @@ export default function Home() {
                     Cancel
                   </button>
                 </div>
-                {joinError ? <div className={contentStyles.errorMessage} role="alert">{joinError}</div> : null}
+                {joinError ? (
+                  <div className={contentStyles.errorMessage} role="alert">
+                    {joinError}
+                  </div>
+                ) : null}
               </form>
             </div>
           </div>
         ) : null}
 
         {loading ? <p>Loading...</p> : null}
-        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
+        {error ? (
+          <div className={contentStyles.errorMessage} role="alert">
+            {error}
+          </div>
+        ) : null}
 
         {isLoggedIn && campaigns.length > 0 ? (
           <section className={contentStyles.itemsGrid}>
             <div className={contentStyles.itemsMasonry}>
               {campaigns.map((campaign) => (
-                <article key={campaign.id} className={contentStyles.campaignCard}>
+                <article
+                  key={campaign.id}
+                  className={contentStyles.campaignCard}
+                >
                   <Link to={`/campaigns/${campaign.slug}/overview`}>
                     <h2>{campaign.name}</h2>
                     <p>{campaign.description || "No description"}</p>
@@ -148,7 +178,10 @@ export default function Home() {
             </div>
           </section>
         ) : isLoggedIn && !loading ? (
-          <section className={contentStyles.emptyStateCard} aria-label="No campaigns yet">
+          <section
+            className={contentStyles.emptyStateCard}
+            aria-label="No campaigns yet"
+          >
             <h2 className={contentStyles.emptyStateTitle}>No campaigns yet</h2>
             <p className={contentStyles.emptyStateText}>
               Create a new campaign or join an existing one with a join code.

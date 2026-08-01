@@ -3,7 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { useJWTAuth } from "../../context/JWTAuthContext";
 import { apiFetch } from "../../lib/api";
-import type { ApiCampaign, ApiEntity, ApiEntityType } from "../../types/campaign-api";
+import type {
+  ApiCampaign,
+  ApiEntity,
+  ApiEntityType,
+} from "../../types/campaign-api";
 import contentStyles from "../../styles/content.module.css";
 import CampaignDetail from "../../components/campaign/CampaignDetail";
 
@@ -34,7 +38,9 @@ export default function CampaignTypePage() {
         if (!campaignSlug) {
           throw new Error("Campaign slug is missing");
         }
-        const campaignData = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
+        const campaignData = await apiFetch<ApiCampaign>(
+          `/api/campaigns/${campaignSlug}`,
+        );
         if (mounted) setCampaign(campaignData);
         if (entitySlug) {
           const data = await apiFetch<ApiEntity>(
@@ -62,7 +68,9 @@ export default function CampaignTypePage() {
     };
   }, [campaignSlug, apiType, entitySlug]);
 
-  const currentMembership = campaign?.members.find((member) => member.userId === user?.id);
+  const currentMembership = campaign?.members.find(
+    (member) => member.userId === user?.id,
+  );
   const editable =
     campaign?.owner?.id === user?.id ||
     currentMembership?.role === "DM" ||
@@ -84,7 +92,9 @@ export default function CampaignTypePage() {
       <main>
         {!entity ? (
           <header className={contentStyles.campaignTypeHeader}>
-            <h1 className={contentStyles.campaignTypeTitle}>{TYPE_LABELS[apiType]}</h1>
+            <h1 className={contentStyles.campaignTypeTitle}>
+              {TYPE_LABELS[apiType]}
+            </h1>
             <div className={contentStyles.campaignTypeHeaderActions}>
               {editable ? (
                 <Link
@@ -99,7 +109,11 @@ export default function CampaignTypePage() {
         ) : null}
 
         {loading ? <p>Loading...</p> : null}
-        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
+        {error ? (
+          <div className={contentStyles.errorMessage} role="alert">
+            {error}
+          </div>
+        ) : null}
 
         {entity ? (
           <section className={contentStyles.campaignTypeSection}>
@@ -120,11 +134,15 @@ export default function CampaignTypePage() {
                     <h2>{entry.name}</h2>
                     <p>{entry.summary || "No description"}</p>
                     <div className={contentStyles.campaignTypeEntityActions}>
-                      <Link to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}`}>
+                      <Link
+                        to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}`}
+                      >
                         Open
                       </Link>
                       {editable ? (
-                        <Link to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}/edit`}>
+                        <Link
+                          to={`/campaigns/${campaignSlug}/${apiType}/${entry.slug}/edit`}
+                        >
                           Edit
                         </Link>
                       ) : null}
@@ -134,14 +152,22 @@ export default function CampaignTypePage() {
               </div>
             </div>
             {!loading && entities.length === 0 ? (
-              <section className={contentStyles.emptyStateCard} aria-label="No entries in this section">
-                <h2 className={contentStyles.emptyStateTitle}>No entries in this section</h2>
+              <section
+                className={contentStyles.emptyStateCard}
+                aria-label="No entries in this section"
+              >
+                <h2 className={contentStyles.emptyStateTitle}>
+                  No entries in this section
+                </h2>
                 <p className={contentStyles.emptyStateText}>
                   Start by creating your first entry for this type.
                 </p>
                 {editable ? (
                   <div className={contentStyles.emptyStateActions}>
-                    <Link className={contentStyles.actionButton} to={`/campaigns/${campaignSlug}/${apiType}/new`}>
+                    <Link
+                      className={contentStyles.actionButton}
+                      to={`/campaigns/${campaignSlug}/${apiType}/new`}
+                    >
                       New entry
                     </Link>
                   </div>

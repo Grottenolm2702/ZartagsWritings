@@ -9,7 +9,12 @@ import {
   mapCardToBlock,
   serializeEntity,
 } from "../entities.js";
-import { createSlug, entityTypeToApi, getEntityType, toSingleValue } from "../utils.js";
+import {
+  createSlug,
+  entityTypeToApi,
+  getEntityType,
+  toSingleValue,
+} from "../utils.js";
 
 export function registerEntityRoutes(app: Express) {
   app.get(
@@ -22,7 +27,9 @@ export function registerEntityRoutes(app: Express) {
       const entityType = getEntityType(type);
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
       if (!entityType) {
         return res.status(400).json({ error: "Ungültiger Entity-Typ" });
@@ -33,7 +40,9 @@ export function registerEntityRoutes(app: Express) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
       if (!access.membership && access.campaign.ownerId !== userId) {
-        return res.status(403).json({ error: "Kein Zugriff auf diese Campaign" });
+        return res
+          .status(403)
+          .json({ error: "Kein Zugriff auf diese Campaign" });
       }
 
       res.json({
@@ -54,7 +63,9 @@ export function registerEntityRoutes(app: Express) {
       const entityType = getEntityType(apiType);
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
       if (!entityType) {
         return res.status(400).json({ error: "Ungültiger Entity-Typ" });
@@ -65,10 +76,14 @@ export function registerEntityRoutes(app: Express) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
       if (!access.membership && access.campaign.ownerId !== userId) {
-        return res.status(403).json({ error: "Kein Zugriff auf diese Campaign" });
+        return res
+          .status(403)
+          .json({ error: "Kein Zugriff auf diese Campaign" });
       }
 
-      const entities = access.campaign.entities.filter((entity) => entity.type === entityType);
+      const entities = access.campaign.entities.filter(
+        (entity) => entity.type === entityType,
+      );
       res.json(entities.map((entity) => serializeEntity(entity)));
     },
   );
@@ -85,7 +100,9 @@ export function registerEntityRoutes(app: Express) {
       const entityType = getEntityType(apiType);
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
       if (!entityType) {
         return res.status(400).json({ error: "Ungültiger Entity-Typ" });
@@ -96,7 +113,9 @@ export function registerEntityRoutes(app: Express) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
       if (!access.membership && access.campaign.ownerId !== userId) {
-        return res.status(403).json({ error: "Kein Zugriff auf diese Campaign" });
+        return res
+          .status(403)
+          .json({ error: "Kein Zugriff auf diese Campaign" });
       }
 
       const entity = access.campaign.entities.find(
@@ -123,7 +142,9 @@ export function registerEntityRoutes(app: Express) {
       const payload = req.body as ApiEntityPayload;
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
       if (!entityType) {
         return res.status(400).json({ error: "Ungültiger Entity-Typ" });
@@ -133,8 +154,16 @@ export function registerEntityRoutes(app: Express) {
       if (!access.campaign) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
-      if (!canEditCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
-        return res.status(403).json({ error: "Keine Berechtigung zum Bearbeiten" });
+      if (
+        !canEditCampaign(
+          access.campaign.ownerId,
+          access.membership?.role,
+          userId,
+        )
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Keine Berechtigung zum Bearbeiten" });
       }
 
       const entitySlug = createSlug(payload.slug || payload.name);
@@ -164,7 +193,9 @@ export function registerEntityRoutes(app: Express) {
               : undefined,
             blocks: payload.cards?.length
               ? {
-                  create: payload.cards.map((card, index) => mapCardToBlock(card, index)),
+                  create: payload.cards.map((card, index) =>
+                    mapCardToBlock(card, index),
+                  ),
                 }
               : undefined,
           },
@@ -183,7 +214,10 @@ export function registerEntityRoutes(app: Express) {
         res.status(201).json(serializeEntity(created));
       } catch (error) {
         res.status(400).json({
-          error: error instanceof Error ? error.message : "Entity konnte nicht erstellt werden",
+          error:
+            error instanceof Error
+              ? error.message
+              : "Entity konnte nicht erstellt werden",
         });
       }
     },
@@ -202,7 +236,9 @@ export function registerEntityRoutes(app: Express) {
       const payload = req.body as ApiEntityPayload;
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
       if (!entityType) {
         return res.status(400).json({ error: "Ungültiger Entity-Typ" });
@@ -212,8 +248,16 @@ export function registerEntityRoutes(app: Express) {
       if (!access.campaign) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
-      if (!canEditCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
-        return res.status(403).json({ error: "Keine Berechtigung zum Bearbeiten" });
+      if (
+        !canEditCampaign(
+          access.campaign.ownerId,
+          access.membership?.role,
+          userId,
+        )
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Keine Berechtigung zum Bearbeiten" });
       }
 
       const entity = access.campaign.entities.find(
@@ -247,7 +291,9 @@ export function registerEntityRoutes(app: Express) {
                 : undefined,
               blocks: payload.cards?.length
                 ? {
-                    create: payload.cards.map((card, index) => mapCardToBlock(card, index)),
+                    create: payload.cards.map((card, index) =>
+                      mapCardToBlock(card, index),
+                    ),
                   }
                 : undefined,
             },
@@ -267,7 +313,10 @@ export function registerEntityRoutes(app: Express) {
         res.json(serializeEntity(updated));
       } catch (error) {
         res.status(400).json({
-          error: error instanceof Error ? error.message : "Entity konnte nicht aktualisiert werden",
+          error:
+            error instanceof Error
+              ? error.message
+              : "Entity konnte nicht aktualisiert werden",
         });
       }
     },
@@ -285,7 +334,9 @@ export function registerEntityRoutes(app: Express) {
       const entityType = getEntityType(apiType);
 
       if (!userId) {
-        return res.status(400).json({ error: "User ID nicht im Token gefunden" });
+        return res
+          .status(400)
+          .json({ error: "User ID nicht im Token gefunden" });
       }
       if (!entityType) {
         return res.status(400).json({ error: "Ungültiger Entity-Typ" });
@@ -295,8 +346,16 @@ export function registerEntityRoutes(app: Express) {
       if (!access.campaign) {
         return res.status(404).json({ error: "Campaign nicht gefunden" });
       }
-      if (!canEditCampaign(access.campaign.ownerId, access.membership?.role, userId)) {
-        return res.status(403).json({ error: "Keine Berechtigung zum Bearbeiten" });
+      if (
+        !canEditCampaign(
+          access.campaign.ownerId,
+          access.membership?.role,
+          userId,
+        )
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Keine Berechtigung zum Bearbeiten" });
       }
 
       const entity = access.campaign.entities.find(

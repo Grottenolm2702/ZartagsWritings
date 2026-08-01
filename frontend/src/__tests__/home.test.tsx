@@ -7,9 +7,10 @@ import Home from "../pages/Home";
 const navigate = vi.fn();
 
 vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual<typeof import("react-router-dom")>(
-    "react-router-dom",
-  );
+  const actual =
+    await vi.importActual<typeof import("react-router-dom")>(
+      "react-router-dom",
+    );
 
   return {
     ...actual,
@@ -52,7 +53,9 @@ describe("Home page", () => {
     });
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <Home />
       </MemoryRouter>,
     );
@@ -63,7 +66,9 @@ describe("Home page", () => {
     fireEvent.change(screen.getByLabelText(/join code/i), {
       target: { value: "abc123" },
     });
-    fireEvent.submit(screen.getByRole("button", { name: /^join$/i }).closest("form")!);
+    fireEvent.submit(
+      screen.getByRole("button", { name: /^join$/i }).closest("form")!,
+    );
 
     await waitFor(() => {
       expect(apiFetch).toHaveBeenCalledWith(

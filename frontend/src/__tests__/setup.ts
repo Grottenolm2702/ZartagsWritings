@@ -5,7 +5,8 @@ import { vi } from "vitest";
 const _origWarn = console.warn;
 console.warn = (...args: any[]) => {
   try {
-    const msg = typeof args[0] === "string" ? args[0] : JSON.stringify(args[0] || "");
+    const msg =
+      typeof args[0] === "string" ? args[0] : JSON.stringify(args[0] || "");
     if (msg.includes("React Router Future Flag Warning")) return;
   } catch (e) {
     // ignore

@@ -15,7 +15,9 @@ import Users from "./pages/Users";
 export default function App() {
   return (
     <JWTAuthProvider>
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <BrowserRouter
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -24,12 +26,21 @@ export default function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/campaigns/new" element={<CampaignCreate />} />
           <Route path="/campaigns/:slug" element={<CampaignOverview />} />
-          <Route path="/campaigns/:slug/overview" element={<CampaignOverview />} />
+          <Route
+            path="/campaigns/:slug/overview"
+            element={<CampaignOverview />}
+          />
           <Route path="/campaigns/:slug/:type" element={<CampaignTypePage />} />
           <Route path="/campaigns/:slug/:type/new" element={<EditItemPage />} />
-          <Route path="/campaigns/:slug/:type/:entitySlug/edit" element={<EditItemPage />} />
+          <Route
+            path="/campaigns/:slug/:type/:entitySlug/edit"
+            element={<EditItemPage />}
+          />
           <Route path="/campaigns/:slug/manage" element={<ManageCampaign />} />
-          <Route path="/campaigns/:slug/:type/:entitySlug" element={<CampaignTypePage />} />
+          <Route
+            path="/campaigns/:slug/:type/:entitySlug"
+            element={<CampaignTypePage />}
+          />
           <Route path="*" element={<Home />} />
         </Routes>
       </BrowserRouter>

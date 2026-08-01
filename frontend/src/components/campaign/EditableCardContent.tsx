@@ -8,45 +8,50 @@ type EditableCardContentProps = {
   onChange?: (content: ApiCardContent) => void;
 };
 
-type AutoResizeTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+type AutoResizeTextareaProps =
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const AutoResizeTextarea = React.forwardRef<HTMLTextAreaElement, AutoResizeTextareaProps>(
-  function AutoResizeTextarea({ onChange, style, ...props }, forwardedRef) {
-    const localRef = React.useRef<HTMLTextAreaElement | null>(null);
+const AutoResizeTextarea = React.forwardRef<
+  HTMLTextAreaElement,
+  AutoResizeTextareaProps
+>(function AutoResizeTextarea({ onChange, style, ...props }, forwardedRef) {
+  const localRef = React.useRef<HTMLTextAreaElement | null>(null);
 
-    const setRef = React.useCallback(
-      (node: HTMLTextAreaElement | null) => {
-        localRef.current = node;
+  const setRef = React.useCallback(
+    (node: HTMLTextAreaElement | null) => {
+      localRef.current = node;
 
-        if (typeof forwardedRef === "function") {
-          forwardedRef(node);
-        } else if (forwardedRef) {
-          forwardedRef.current = node;
-        }
-      },
-      [forwardedRef],
-    );
+      if (typeof forwardedRef === "function") {
+        forwardedRef(node);
+      } else if (forwardedRef) {
+        forwardedRef.current = node;
+      }
+    },
+    [forwardedRef],
+  );
 
-    React.useLayoutEffect(() => {
-      const element = localRef.current;
-      if (!element) return;
+  React.useLayoutEffect(() => {
+    const element = localRef.current;
+    if (!element) return;
 
-      element.style.height = "auto";
-      element.style.height = `${element.scrollHeight}px`;
-    }, [props.value]);
+    element.style.height = "auto";
+    element.style.height = `${element.scrollHeight}px`;
+  }, [props.value]);
 
-    return (
-      <textarea
-        {...props}
-        ref={setRef}
-        onChange={onChange}
-        style={{ ...style, overflow: "hidden", resize: "none" }}
-      />
-    );
-  },
-);
+  return (
+    <textarea
+      {...props}
+      ref={setRef}
+      onChange={onChange}
+      style={{ ...style, overflow: "hidden", resize: "none" }}
+    />
+  );
+});
 
-export default function EditableCardContent({ content, onChange }: EditableCardContentProps) {
+export default function EditableCardContent({
+  content,
+  onChange,
+}: EditableCardContentProps) {
   if (content.type === "paragraph") {
     return (
       <AutoResizeTextarea
@@ -54,7 +59,9 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
         rows={5}
         value={content.text}
         aria-label="Paragraph"
-        onChange={(e) => onChange?.({ type: "paragraph", text: e.target.value })}
+        onChange={(e) =>
+          onChange?.({ type: "paragraph", text: e.target.value })
+        }
       />
     );
   }
@@ -82,7 +89,9 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
               onClick={() =>
                 onChange?.({
                   type: "paragraphs",
-                  paragraphs: content.paragraphs.filter((_, paragraphIndex) => paragraphIndex !== index),
+                  paragraphs: content.paragraphs.filter(
+                    (_, paragraphIndex) => paragraphIndex !== index,
+                  ),
                 })
               }
             >
@@ -94,7 +103,10 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
           type="button"
           className={`${contentStyles.actionButton} ${contentStyles.secondary}`}
           onClick={() =>
-            onChange?.({ type: "paragraphs", paragraphs: [...content.paragraphs, ""] })
+            onChange?.({
+              type: "paragraphs",
+              paragraphs: [...content.paragraphs, ""],
+            })
           }
         >
           Add paragraph
@@ -116,7 +128,9 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
                 rows={1}
                 onChange={(e) => {
                   const next = content.items.map((entry, entryIndex) =>
-                    entryIndex === index ? { ...entry, label: e.target.value } : entry,
+                    entryIndex === index
+                      ? { ...entry, label: e.target.value }
+                      : entry,
                   );
                   onChange?.({ type: "list", items: next });
                 }}
@@ -129,7 +143,9 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
                 rows={1}
                 onChange={(e) => {
                   const next = content.items.map((entry, entryIndex) =>
-                    entryIndex === index ? { ...entry, href: e.target.value || undefined } : entry,
+                    entryIndex === index
+                      ? { ...entry, href: e.target.value || undefined }
+                      : entry,
                   );
                   onChange?.({ type: "list", items: next });
                 }}
@@ -141,7 +157,9 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
                 onClick={() =>
                   onChange?.({
                     type: "list",
-                    items: content.items.filter((_, entryIndex) => entryIndex !== index),
+                    items: content.items.filter(
+                      (_, entryIndex) => entryIndex !== index,
+                    ),
                   })
                 }
               >
@@ -180,7 +198,9 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
                 aria-label={`Attribute ${index + 1} name`}
                 onChange={(e) => {
                   const next = content.items.map((entry, entryIndex) =>
-                    entryIndex === index ? { ...entry, dt: e.target.value } : entry,
+                    entryIndex === index
+                      ? { ...entry, dt: e.target.value }
+                      : entry,
                   );
                   onChange?.({ type: "attributes", items: next });
                 }}
@@ -193,7 +213,9 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
                 aria-label={`Attribute ${index + 1} value`}
                 onChange={(e) => {
                   const next = content.items.map((entry, entryIndex) =>
-                    entryIndex === index ? { ...entry, dd: e.target.value } : entry,
+                    entryIndex === index
+                      ? { ...entry, dd: e.target.value }
+                      : entry,
                   );
                   onChange?.({ type: "attributes", items: next });
                 }}
@@ -204,7 +226,9 @@ export default function EditableCardContent({ content, onChange }: EditableCardC
                 onClick={() =>
                   onChange?.({
                     type: "attributes",
-                    items: content.items.filter((_, entryIndex) => entryIndex !== index),
+                    items: content.items.filter(
+                      (_, entryIndex) => entryIndex !== index,
+                    ),
                   })
                 }
               >

@@ -16,7 +16,11 @@ test("lets the first header field label and value be edited continuously", () =>
         fields={fields}
         editable={true}
         onChange={(index, updated) =>
-          setFields((current) => current.map((field, fieldIndex) => (fieldIndex === index ? updated : field)))
+          setFields((current) =>
+            current.map((field, fieldIndex) =>
+              fieldIndex === index ? updated : field,
+            ),
+          )
         }
       />
     );
@@ -26,7 +30,9 @@ test("lets the first header field label and value be edited continuously", () =>
 
   const firstLabel = screen.getByLabelText("Header field 1 label");
   fireEvent.change(firstLabel, { target: { value: "Character Name:" } });
-  fireEvent.change(firstLabel, { target: { value: "Character Name Updated:" } });
+  fireEvent.change(firstLabel, {
+    target: { value: "Character Name Updated:" },
+  });
 
   expect(firstLabel).toHaveValue("Character Name Updated:");
 });

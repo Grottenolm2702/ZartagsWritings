@@ -73,7 +73,9 @@ describe("Registration route", () => {
 
   it("returns 409 for duplicate email", async () => {
     const createMock = (config as any).__mocks.createMock;
-    createMock.mockRejectedValueOnce(new Error("UNIQUE constraint failed: User.email"));
+    createMock.mockRejectedValueOnce(
+      new Error("UNIQUE constraint failed: User.email"),
+    );
 
     const app = express();
     app.use(express.json());

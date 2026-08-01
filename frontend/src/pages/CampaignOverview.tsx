@@ -3,7 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import { useJWTAuth } from "../context/JWTAuthContext";
 import { apiFetch } from "../lib/api";
-import type { ApiCampaign, ApiEntity, ApiEntityType } from "../types/campaign-api";
+import type {
+  ApiCampaign,
+  ApiEntity,
+  ApiEntityType,
+} from "../types/campaign-api";
 import contentStyles from "../styles/content.module.css";
 import overviewStyles from "../styles/overview.module.css";
 
@@ -51,11 +55,15 @@ export default function CampaignOverview() {
         if (!campaignSlug) {
           throw new Error("Campaign slug is missing");
         }
-        const data = await apiFetch<ApiCampaign>(`/api/campaigns/${campaignSlug}`);
+        const data = await apiFetch<ApiCampaign>(
+          `/api/campaigns/${campaignSlug}`,
+        );
         if (mounted) setCampaign(data);
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Failed to load overview");
+          setError(
+            err instanceof Error ? err.message : "Failed to load overview",
+          );
         }
       } finally {
         if (mounted) setLoading(false);
@@ -68,7 +76,9 @@ export default function CampaignOverview() {
     };
   }, [campaignSlug]);
 
-  const currentMembership = campaign?.members.find((member) => member.userId === user?.id);
+  const currentMembership = campaign?.members.find(
+    (member) => member.userId === user?.id,
+  );
   const editable =
     campaign?.owner?.id === user?.id ||
     currentMembership?.role === "DM" ||
@@ -143,7 +153,10 @@ export default function CampaignOverview() {
             Overview{campaign?.name ? `: ${campaign.name}` : ""}
           </h1>
           <div className={contentStyles.campaignOverviewHeaderActions}>
-            <Link className={contentStyles.actionButton} to={`/campaigns/${campaignSlug}/manage`}>
+            <Link
+              className={contentStyles.actionButton}
+              to={`/campaigns/${campaignSlug}/manage`}
+            >
               Manage campaign
             </Link>
           </div>
@@ -161,78 +174,105 @@ export default function CampaignOverview() {
         </section>
 
         {loading ? <p>Loading...</p> : null}
-        {error ? <div className={contentStyles.errorMessage} role="alert">{error}</div> : null}
+        {error ? (
+          <div className={contentStyles.errorMessage} role="alert">
+            {error}
+          </div>
+        ) : null}
 
         {campaign && accessibleEntities.length === 0 ? (
-          <section className={contentStyles.emptyStateCard} aria-label="No entries found">
+          <section
+            className={contentStyles.emptyStateCard}
+            aria-label="No entries found"
+          >
             <h2 className={contentStyles.emptyStateTitle}>No entries yet</h2>
             <p className={contentStyles.emptyStateText}>
               There are no entries in this campaign yet.
             </p>
           </section>
         ) : null}
-        {campaign && accessibleEntities.length > 0 && filteredEntities.length === 0 ? (
-          <section className={contentStyles.emptyStateCard} aria-label="No search results">
-            <h2 className={contentStyles.emptyStateTitle}>No matching entries</h2>
+        {campaign &&
+        accessibleEntities.length > 0 &&
+        filteredEntities.length === 0 ? (
+          <section
+            className={contentStyles.emptyStateCard}
+            aria-label="No search results"
+          >
+            <h2 className={contentStyles.emptyStateTitle}>
+              No matching entries
+            </h2>
             <p className={contentStyles.emptyStateText}>
               Try a different search term.
             </p>
           </section>
         ) : null}
 
-        {campaign ? (
-          TYPE_ORDER.map((type) => {
-            const entries = groupedEntities[type];
-            if (entries.length === 0 && !editable) return null;
+        {campaign
+          ? TYPE_ORDER.map((type) => {
+              const entries = groupedEntities[type];
+              if (entries.length === 0 && !editable) return null;
 
-            return (
-              <section key={type} className={overviewStyles.elementSection} data-category={type}>
-                <h2 className={overviewStyles.sectionHeader}>
-                  <span>{TYPE_LABELS[type]}</span>
-                  {editable ? (
-                    <Link
-                      className={overviewStyles.smallNewButton}
-                      to={`/campaigns/${campaignSlug}/${type}/new`}
-                    >
-                      New
-                    </Link>
-                  ) : null}
-                </h2>
-                {entries.length > 0 ? (
-                  <ul className={overviewStyles.elementList}>
-                    {entries.map((entity) => (
-                      <li key={entity.id} className={overviewStyles.elementListItem}>
-                        <div className={overviewStyles.elementRow}>
-                          <Link
-                            to={getEntityPath(campaignSlug || "", entity)}
-                            className={`${overviewStyles.elementLink}${entity.isVisible ? "" : ` ${contentStyles.campaignOverviewEntityLinkHidden}`}`}
-                          >
-                            <strong>{entity.name}</strong>
-                            {entity.summary ? <span>{entity.summary}</span> : null}
-                          </Link>
+              return (
+                <section
+                  key={type}
+                  className={overviewStyles.elementSection}
+                  data-category={type}
+                >
+                  <h2 className={overviewStyles.sectionHeader}>
+                    <span>{TYPE_LABELS[type]}</span>
+                    {editable ? (
+                      <Link
+                        className={overviewStyles.smallNewButton}
+                        to={`/campaigns/${campaignSlug}/${type}/new`}
+                      >
+                        New
+                      </Link>
+                    ) : null}
+                  </h2>
+                  {entries.length > 0 ? (
+                    <ul className={overviewStyles.elementList}>
+                      {entries.map((entity) => (
+                        <li
+                          key={entity.id}
+                          className={overviewStyles.elementListItem}
+                        >
+                          <div className={overviewStyles.elementRow}>
+                            <Link
+                              to={getEntityPath(campaignSlug || "", entity)}
+                              className={`${overviewStyles.elementLink}${entity.isVisible ? "" : ` ${contentStyles.campaignOverviewEntityLinkHidden}`}`}
+                            >
+                              <strong>{entity.name}</strong>
+                              {entity.summary ? (
+                                <span>{entity.summary}</span>
+                              ) : null}
+                            </Link>
 
-                          {editable ? (
-                            <label className={overviewStyles.visibilityToggle}>
-                              <input
-                                type="checkbox"
-                                checked={entity.isVisible}
-                                aria-label={`${entity.name} visible`}
-                                onChange={() => updateVisibility(entity, !entity.isVisible)}
-                              />
-                              Visible
-                            </label>
-                          ) : null}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No entries yet.</p>
-                )}
-              </section>
-            );
-          })
-        ) : null}
+                            {editable ? (
+                              <label
+                                className={overviewStyles.visibilityToggle}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={entity.isVisible}
+                                  aria-label={`${entity.name} visible`}
+                                  onChange={() =>
+                                    updateVisibility(entity, !entity.isVisible)
+                                  }
+                                />
+                                Visible
+                              </label>
+                            ) : null}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No entries yet.</p>
+                  )}
+                </section>
+              );
+            })
+          : null}
       </main>
     </Layout>
   );

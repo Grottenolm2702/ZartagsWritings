@@ -108,10 +108,15 @@ describe("Server auth routes", () => {
     });
 
     it("verbietet Editor das Regenerieren des Join-Codes", async () => {
-      prismaMock.campaign.findUnique.mockResolvedValue(buildCampaignForMembership("EDITOR"));
+      prismaMock.campaign.findUnique.mockResolvedValue(
+        buildCampaignForMembership("EDITOR"),
+      );
 
       const app = createApp();
-      const token = jwt.sign({ id: 7, email: "editor@example.com" }, "test-secret");
+      const token = jwt.sign(
+        { id: 7, email: "editor@example.com" },
+        "test-secret",
+      );
       const res = await request(app)
         .post("/api/campaigns/wald/regenerate-join-code")
         .set("Cookie", `token=${token}`);
@@ -121,7 +126,9 @@ describe("Server auth routes", () => {
     });
 
     it("erlaubt DM das Regenerieren des Join-Codes", async () => {
-      prismaMock.campaign.findUnique.mockResolvedValue(buildCampaignForMembership("DM"));
+      prismaMock.campaign.findUnique.mockResolvedValue(
+        buildCampaignForMembership("DM"),
+      );
       prismaMock.campaign.update.mockResolvedValue({ joinCode: "NEWCODE2345" });
 
       const app = createApp();
@@ -135,10 +142,15 @@ describe("Server auth routes", () => {
     });
 
     it("verbietet Editor das Ändern von Member-Rollen", async () => {
-      prismaMock.campaign.findUnique.mockResolvedValue(buildCampaignForMembership("EDITOR"));
+      prismaMock.campaign.findUnique.mockResolvedValue(
+        buildCampaignForMembership("EDITOR"),
+      );
 
       const app = createApp();
-      const token = jwt.sign({ id: 7, email: "editor@example.com" }, "test-secret");
+      const token = jwt.sign(
+        { id: 7, email: "editor@example.com" },
+        "test-secret",
+      );
       const res = await request(app)
         .patch("/api/campaigns/wald/members/9")
         .set("Cookie", `token=${token}`)
@@ -149,7 +161,9 @@ describe("Server auth routes", () => {
     });
 
     it("erlaubt DM das Ändern von Member-Rollen", async () => {
-      prismaMock.campaign.findUnique.mockResolvedValue(buildCampaignForMembership("DM"));
+      prismaMock.campaign.findUnique.mockResolvedValue(
+        buildCampaignForMembership("DM"),
+      );
       prismaMock.campaignMember.findUnique.mockResolvedValue({
         id: 20,
         campaignId: 11,
@@ -178,7 +192,9 @@ describe("Server auth routes", () => {
   });
 
   it("lehnt doppelte Registrierung ab", async () => {
-    prismaMock.user.create.mockRejectedValue(new Error("UNIQUE constraint failed: User.email"));
+    prismaMock.user.create.mockRejectedValue(
+      new Error("UNIQUE constraint failed: User.email"),
+    );
 
     const app = createApp();
     const res = await request(app).post("/api/register").send({
