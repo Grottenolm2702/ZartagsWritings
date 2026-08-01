@@ -11,6 +11,14 @@ ZartagsWritings bietet pro Campaign eine eigene Arbeitsumgebung mit:
 - Campaign-Mitgliedern und Rollen (DM, EDITOR, PLAYER)
 - Login/Registrierung mit JWT in HttpOnly-Cookies
 
+Was die App kann:
+
+- Eigene Campaigns anlegen oder per Join-Code beitreten
+- Kampagneninhalte (PC, NPC, Location, Magic Item) strukturiert erfassen und bearbeiten
+- Sichtbarkeit von Einträgen steuern (z. B. Vorbereitung durch DM/Editor)
+- Mitgliederrollen in einer Campaign verwalten (Owner/DM)
+- Geschützte Bereiche nur für eingeloggte Nutzer bereitstellen
+
 ## Kriterien-Zuordnung M1
 
 | Kriterium                         | Datei                     | Zeile / Hinweis                          |
@@ -263,13 +271,10 @@ npm test
 
 ## Testuser
 
-Es gibt aktuell **keinen fest hinterlegten Seed-Testuser**.  
-Nach einem DB-Reset registrierst du Testnutzer über die App unter `/register`.
+Für die Bewertung kann folgender Testuser verwendet werden:
 
-Beispiel-Credentials (gültig zur Passwortregel):
-
-- E-Mail: `dm@example.com`
-- Passwort: `Testpass1`
+- E-Mail: `beispiel@beispiel.com`
+- Passwort: `Beisp1el`
 
 Passwortregel im Backend: 8–30 Zeichen, mindestens 1 Großbuchstabe, 1 Kleinbuchstabe, 1 Zahl, nur Buchstaben/Zahlen.
 
