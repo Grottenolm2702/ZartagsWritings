@@ -49,10 +49,13 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<AuthUser | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const lastActivityRef = React.useRef(Date.now());
+  const lastActivityRef = React.useRef(0);
   const lastRefreshRef = React.useRef(0);
   const refreshInFlightRef = React.useRef<Promise<boolean> | null>(null);
-  const activityListenerOptions = React.useMemo(() => ({ passive: true } as AddEventListenerOptions), []);
+  const activityListenerOptions = React.useMemo(
+    () => ({ passive: true }) as AddEventListenerOptions,
+    [],
+  );
 
   const refreshSession = React.useCallback(async () => {
     if (!user) {
@@ -102,40 +105,37 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
     return refreshPromise;
   }, [user]);
 
-  const login = React.useCallback(
-    async (email: string, password: string) => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-          credentials: "include",
-        });
-        if (!res.ok) {
-          const txt = await res.text();
-          throw new Error(extractErrorMessage(txt));
-        }
-        const userRes = await fetch("/api/user", {
-          credentials: "include",
-        });
-        if (!userRes.ok) {
-          const txt = await userRes.text();
-          throw new Error(extractErrorMessage(txt) || "Failed to load user");
-        }
-        const userData: AuthUser = await userRes.json();
-        setUser(userData);
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Unknown error";
-        setError(msg);
-        throw err;
-      } finally {
-        setLoading(false);
+  const login = React.useCallback(async (email: string, password: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(extractErrorMessage(txt));
       }
-    },
-    [],
-  );
+      const userRes = await fetch("/api/user", {
+        credentials: "include",
+      });
+      if (!userRes.ok) {
+        const txt = await userRes.text();
+        throw new Error(extractErrorMessage(txt) || "Failed to load user");
+      }
+      const userData: AuthUser = await userRes.json();
+      setUser(userData);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const register = React.useCallback(
     async (name: string, email: string, password: string) => {
@@ -176,6 +176,16 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   React.useEffect(() => {
+    if (lastActivityRef.current === 0) {
+      lastActivityRef.current = Date.now();
+    }
+
+    if (lastRefreshRef.current === 0) {
+      lastRefreshRef.current = Date.now();
+    }
+  }, []);
+
+  React.useEffect(() => {
     if (user) {
       const now = Date.now();
       lastActivityRef.current = now;
@@ -201,7 +211,9 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
       "focus",
     ];
 
-    events.forEach((eventName) => window.addEventListener(eventName, markActivity, activityListenerOptions));
+    events.forEach((eventName) =>
+      window.addEventListener(eventName, markActivity, activityListenerOptions),
+    );
 
     const onVisibilityChange = () => {
       if (document.visibilityState === "visible") {
@@ -211,13 +223,20 @@ export function JWTAuthProvider({ children }: { children: React.ReactNode }) {
 
     document.addEventListener("visibilitychange", onVisibilityChange);
 
-    const interval = window.setInterval(() => {
-      void refreshSession();
-    }, 5 * 60 * 1000);
+    const interval = window.setInterval(
+      () => {
+        void refreshSession();
+      },
+      5 * 60 * 1000,
+    );
 
     return () => {
       events.forEach((eventName) =>
-        window.removeEventListener(eventName, markActivity, activityListenerOptions),
+        window.removeEventListener(
+          eventName,
+          markActivity,
+          activityListenerOptions,
+        ),
       );
       document.removeEventListener("visibilitychange", onVisibilityChange);
       window.clearInterval(interval);

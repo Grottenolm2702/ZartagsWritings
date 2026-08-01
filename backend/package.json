@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "Melissa Armbruster Ronny Wittmer",
@@ -31,6 +32,8 @@
     "@types/node": "^25.9.4",
     "@types/supertest": "^7.2.0",
     "nodemon": "^3.1.14",
+    "prettier": "^3.8.1",
+    "prettier": "^3.9.6",
     "prisma": "^7.8.0",
     "supertest": "^7.2.2",
     "tsx": "^4.22.4",
