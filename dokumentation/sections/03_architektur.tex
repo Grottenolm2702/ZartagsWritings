@@ -56,6 +56,48 @@ Die Prisma-Client-Instanz wird zentral in \texttt{config.ts} erzeugt und über
 den Better-SQLite3-Adapter mit \texttt{DATABASE\_URL} verbunden.
 Das reduziert Kopplung, da Routen keine eigene DB-Verbindung aufbauen.
 
+\subsection{Architektur-Alternativen und Abwägungen}
+
+Für zentrale Architekturentscheidungen wurden bewusst Alternativen betrachtet
+und verworfen:
+
+\paragraph{SPA statt SSR/SSG}
+Wir haben uns gegen SSR/SSG entschieden, weil die Anwendung primär ein
+geschütztes, interaktives Arbeitswerkzeug nach dem Login ist.
+Der Hauptnutzen liegt in schnellen Zustandswechseln innerhalb einer laufenden
+Session (Rollen, Bearbeitung, Sichtbarkeiten), nicht in SEO oder öffentlichen
+Landingpages.
+SSR hätte hier zusätzliche Betriebs- und Caching-Komplexität erzeugt, ohne
+für den Projektkontext einen klaren Mehrwert zu liefern.
+
+\paragraph{Eigene REST-API statt externer Third-Party-API}
+Eine externe API wurde verworfen, weil Rollenmodell, Join-Code-Logik und
+Entity-Struktur projektspezifisch sind und serverseitig kontrolliert werden
+müssen.
+Mit einer eigenen API konnten wir Authentifizierung, Autorisierung und
+Domänenregeln konsistent aus einer Hand umsetzen und gezielt testen.
+
+\paragraph{Serverseitige Autorisierung statt rein clientseitiger Rechteprüfung}
+Eine rein clientseitige Rechteprüfung wurde verworfen, da sie durch manipulierte
+Requests umgangen werden kann.
+Deshalb liegen alle sicherheitsrelevanten Entscheidungen im Backend
+(\texttt{authenticateToken}, \texttt{canEditCampaign}, \texttt{canManageCampaign})
+und nicht nur in der UI-Darstellung.
+
+\paragraph{SQLite statt PostgreSQL}
+PostgreSQL wäre für Mehrinstanz-Betrieb und hohe Last besser skalierbar, wurde
+aber für den Abgabe- und Demo-Kontext bewusst nicht gewählt.
+SQLite reduziert Setup-Aufwand und Fehlerquellen deutlich und passt zum
+Einzelinstanz-Betrieb mit moderaten Datenmengen.
+Die Grenze dieser Entscheidung ist klar: Für produktiven Multi-User-Betrieb mit
+hoher Parallelität wäre ein Wechsel auf PostgreSQL sinnvoll.
+
+\paragraph{Modulare Routenstruktur statt Monolith-Datei}
+Eine zentrale große \texttt{server.ts}-Datei wurde verworfen, um mit wachsender
+Funktionalität die Wartbarkeit nicht zu verlieren.
+Die Trennung in Route-Module und wiederverwendbare Domain-Logik verhindert
+Duplikate und erleichtert Tests, Refactorings und Teamarbeit.
+
 \subsection{API-Design}
 
 Die API ist als \textbf{REST-orientierte JSON-API} unter \texttt{/api} umgesetzt.
@@ -83,21 +125,21 @@ an den Request hängt.
 \toprule
 \textbf{Methode} & \textbf{Pfad} & \textbf{Schutz} & \textbf{Zweck} \\
 \midrule
-POST & \url{/api/register} & nein & Benutzer registrieren \\
-POST & \url{/api/login} & nein & JWT-Cookie setzen \\
-POST & \url{/api/session/refresh} & ja (Cookie) & Session-Cookie verlängern \\
-POST & \url{/api/logout} & nein & JWT-Cookie löschen \\
-GET & \url{/api/user} & ja & aktuellen Benutzer laden \\
-DELETE & \url{/api/user} & ja & aktuellen Benutzer löschen \\
-GET & \url{/api/campaigns} & ja & Campaign-Liste des Users \\
-POST & \url{/api/campaigns} & ja & neue Campaign erstellen \\
-POST & \url{/api/campaigns/join} & ja & per Join-Code beitreten \\
-GET & \url{/api/campaigns/:slug} & ja & Campaign inkl.\ Entities laden \\
-GET & \url{/api/campaigns/:slug/overview} & ja & aggregierte Overview-Daten laden \\
-POST & \url{/api/campaigns/:slug/regenerate-join-code} & ja (DM/Owner) & Join-Code erneuern \\
-GET & \url{/api/campaigns/:slug/entities/:type/template} & ja & Template je Entity-Typ laden \\
-\shortstack[l]{GET/POST/\\PUT/DELETE} & \shortstack[l]{\texttt{/api/campaigns/:slug/entities/:type}\\\texttt{/api/campaigns/:slug/entities/:type/:entitySlug}} & ja (rollenabhängig) & Entity-Liste, Detail und CRUD \\
-PATCH & \url{/api/campaigns/:slug/members/:memberUserId} & ja (DM/Owner) & Mitgliedsdaten/Rolle ändern \\
+POST & \texttt{/api/register} & nein & Benutzer registrieren \\
+POST & \texttt{/api/login} & nein & JWT-Cookie setzen \\
+POST & \texttt{/api/session/refresh} & ja (Cookie) & Session-Cookie verlängern \\
+POST & \texttt{/api/logout} & nein & JWT-Cookie löschen \\
+GET & \texttt{/api/user} & ja & aktuellen Benutzer laden \\
+DELETE & \texttt{/api/user} & ja & aktuellen Benutzer löschen \\
+GET & \texttt{/api/campaigns} & ja & Campaign-Liste des Users \\
+POST & \texttt{/api/campaigns} & ja & neue Campaign erstellen \\
+POST & \texttt{/api/campaigns/join} & ja & per Join-Code beitreten \\
+GET & \texttt{/api/campaigns/:slug} & ja & Campaign inkl.\ Entities laden \\
+GET & \texttt{/api/campaigns/:slug/overview} & ja & aggregierte Overview-Daten laden \\
+POST & \texttt{/api/campaigns/:slug/regenerate-join-code} & ja (DM/Owner) & Join-Code erneuern \\
+GET & \shortstack[l]{\texttt{/api/campaigns/:slug/entities/:type/}\\\texttt{template}} & ja & Template je Entity-Typ laden \\
+\shortstack[l]{GET/POST/\\PUT/DELETE} & \shortstack[l]{\texttt{/api/campaigns/:slug/entities/:type}\\\texttt{/api/campaigns/:slug/entities/:type/}\\\texttt{:entitySlug}} & ja (rollenabhängig) & Entity-Liste, Detail und CRUD \\
+PATCH & \texttt{/api/campaigns/:slug/members/:memberUserId} & ja (DM/Owner) & Mitgliedsdaten/Rolle ändern \\
 \bottomrule
 \end{tabularx}
 \caption{Zentrale API-Endpunkte}

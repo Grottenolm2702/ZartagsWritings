@@ -294,22 +294,22 @@ hervorgegangenen Modulen einschließlich des finalen Betriebsstands.
 
 \bottomrule
 \endlastfoot
-Semantisches HTML & M1 & \path{src/about.html}, \path{src/login.html} & Strukturierung über \texttt{main}, \texttt{section}, \texttt{nav}, formulargerechte Labels/Inputs. \\
-Responsive Design & M1 & \path{src/styles/navigation.css} & Mobile Sidebar per Media Query (\texttt{max-width: 800px}) und Overlay-Logik. \\
-DOM-Interaktion mit JS & M1 & \path{src/script.js} & Zustandswechsel der Navigation über Klassen, ARIA-Attribute und \texttt{inert}. \\
-Build-Tooling & M2 & \path{package.json}, \path{vite.config.js} & Dev-Server/Build-Pipeline mit Vite als Grundlage für SPA-Entwicklung. \\
-TypeScript-Typisierung & M2 & \path{src/types/*}, \path{src/context/AuthContext.tsx} & Typisierte Daten- und Context-Verträge zur Reduktion von Integrationsfehlern. \\
-Komponentenarchitektur & M2 & \path{src/components/*} & Zerlegung in wiederverwendbare UI-Bausteine statt seitenweiser Duplikation. \\
-React Router & M2/M3 & \path{src/App.tsx}, später \path{frontend/src/App.tsx} & Clientseitige Navigation mit dynamischen Routen für Campaign- und Entity-Ansichten. \\
-State-Management (Hooks) & M2 & \path{src/pages/CampaignOverview.tsx} & \texttt{useState}/\texttt{useEffect} für Suche, Sichtbarkeit und UI-Interaktionen. \\
-Geteilter Zustand (Context) & M2/M3 & \path{AuthContext} bzw.\ \path{JWTAuthContext} & Zentrale Verwaltung von Rollen/Session-Informationen über den Komponentenbaum. \\
-REST-API-Design & M3 & \path{backend/src/server.ts} & Ressourcenorientierte Endpunkte und methodenkonforme CRUD-/Auth-Operationen. \\
-Middleware-Prinzip & M3 & \path{authenticateToken} in \path{backend/src/server.ts} & Vorverarbeitung geschützter Requests inkl.\ JWT-Prüfung. \\
-Authentifizierung mit JWT & M3 & \path{backend/src/server.ts}, \path{frontend/src/context/JWTAuthContext.tsx} & Login erzeugt Token; geschützte Requests nutzen Cookie-basierten Auth-Flow. \\
-Passwortsicherheit & M3 & \path{backend/src/server.ts} & Serverseitiges Hashing und Vergleich über \texttt{bcrypt}. \\
-Persistenz/ORM & M3 & \path{backend/prisma/schema.prisma} & Relationales Modell für User, Campaigns, Rollen und Inhalte via Prisma + SQLite. \\
-Automatisierte Tests & M3/M4 & \path{backend/src/server.test.ts}, \path{frontend/src/__tests__/auth.test.tsx} & Absicherung zentraler Backend-/Frontend-Pfade mit Vitest, Supertest, Testing Library. \\
-Deployment/Betrieb & M4 & \path{docker-compose.yml}, \path{docker_setup.sh/.bat}, \path{docker_start.sh/.bat}, \path{docker_shutdown.sh/.bat}, \path{README.md}, \path{dokumentation/sections/06_betrieb.tex} & Reproduzierbarer Startprozess, standardisierte Betriebs-Skripte für mehrere Betriebssysteme, dokumentierte Betriebsanleitung und Abgabevorbereitung. \\
+Semantisches HTML (VL 2) & M1 & \path{src/about.html}, \path{src/login.html} & Strukturierung über \texttt{main}, \texttt{section}, \texttt{nav}, formulargerechte Labels/Inputs. \\
+Responsive Design (VL 3) & M1 & \path{src/styles/navigation.css} & Mobile Sidebar per Media Query (\texttt{max-width: 800px}) und Overlay-Logik. \\
+DOM-Interaktion mit JS (VL 4/5) & M1 & \path{src/script.js} & Zustandswechsel der Navigation über Klassen, ARIA-Attribute und \texttt{inert}. \\
+Build-Tooling (VL 7) & M2 & \path{package.json}, \path{vite.config.js} & Dev-Server/Build-Pipeline mit Vite als Grundlage für SPA-Entwicklung. \\
+TypeScript-Typisierung (VL 7) & M2 & \path{src/types/*}, \path{src/context/AuthContext.tsx} & Typisierte Daten- und Context-Verträge zur Reduktion von Integrationsfehlern. \\
+Komponentenarchitektur (VL 8) & M2 & \path{src/components/*} & Zerlegung in wiederverwendbare UI-Bausteine statt seitenweiser Duplikation. \\
+React Router (VL 10) & M2/M3 & \path{src/App.tsx}, später \path{frontend/src/App.tsx} & Clientseitige Navigation mit dynamischen Routen für Campaign- und Entity-Ansichten. \\
+State-Management (Hooks) (VL 9) & M2 & \path{src/pages/CampaignOverview.tsx} & \texttt{useState}/\texttt{useEffect} für Suche, Sichtbarkeit und UI-Interaktionen. \\
+Geteilter Zustand (Context) (VL 9) & M2/M3 & \path{AuthContext} bzw.\ \path{JWTAuthContext} & Zentrale Verwaltung von Rollen/Session-Informationen über den Komponentenbaum. \\
+REST-API-Design (VL 6) & M3 & \path{backend/src/server.ts} & Ressourcenorientierte Endpunkte und methodenkonforme CRUD-/Auth-Operationen. \\
+Middleware-Prinzip (VL 11) & M3 & \path{authenticateToken} in \path{backend/src/server.ts} & Vorverarbeitung geschützter Requests inkl.\ JWT-Prüfung. \\
+Authentifizierung mit JWT (VL 11) & M3 & \path{backend/src/server.ts}, \path{frontend/src/context/JWTAuthContext.tsx} & Login erzeugt Token; geschützte Requests nutzen Cookie-basierten Auth-Flow. \\
+Passwortsicherheit (VL 11) & M3 & \path{backend/src/server.ts} & Serverseitiges Hashing und Vergleich über \texttt{bcrypt}. \\
+Persistenz/ORM (VL 11) & M3 & \path{backend/prisma/schema.prisma} & Relationales Modell für User, Campaigns, Rollen und Inhalte via Prisma + SQLite. \\
+Automatisierte Tests (VL 10) & M3/M4 & \path{backend/src/server.test.ts}, \path{frontend/src/__tests__/auth.test.tsx} & Absicherung zentraler Backend-/Frontend-Pfade mit Vitest, Supertest, Testing Library. \\
+Deployment/Betrieb (VL 12) & M4 & \path{docker-compose.yml}, \path{docker_setup.sh/.bat}, \path{docker_start.sh/.bat}, \path{docker_shutdown.sh/.bat}, \path{README.md}, \path{dokumentation/sections/06_betrieb.tex} & Reproduzierbarer Startprozess, standardisierte Betriebs-Skripte für mehrere Betriebssysteme, dokumentierte Betriebsanleitung und Abgabevorbereitung. \\
 \end{longtable}
 
 \paragraph{Zusammenfassung der Umsetzungslogik}
